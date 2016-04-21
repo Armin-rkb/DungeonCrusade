@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour {
     private float _movementSpeed = 2f;
     private float _jumpSpeed = 10f;
     private float _gravityPlayer = 20f;
+    private float _amountJumps = 0;
     //Float
 
     //Vector2
@@ -19,47 +20,82 @@ public class PlayerMovement : MonoBehaviour {
     private CharacterController _playerController;
     //CharacterController
 
+    //Bool
+    [SerializeField]
+    private bool _isGrounded;
+    private bool _spacePressed;
+    private bool _canJump;
+    //Bool
+
     
-
+    //RigidBody2D
     private Rigidbody2D _playerRigidBody2D;
-
-   
-
-   
-
+    //RigidBody2D
+  
 	void Start ()
     {
         _playerController = this.gameObject.GetComponent<CharacterController>();
-       // _playerRigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
-       // Mathf.Clamp(_playerRigidBody2D.velocity.x, -_movementSpeed, _movementSpeed);
+        _playerRigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
 	}
 	
-	void Update ()
+	void FixedUpdate ()
     {
-        /*
-        float x = Input.GetAxis("Horizontal");
-        Vector2 movement = new Vector2(x, 0);
-        print(_playerRigidBody2D.velocity.x);
-       _playerRigidBody2D.AddForce(movement * _movementSpeed);
-        */
-
-        if (_playerController.isGrounded)
-        {
-
-            _moveDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            _moveDirection = transform.TransformDirection(_moveDirection);
-            _moveDirection *= _movementSpeed;
-
-            if (Input.GetButton("Jump")) //If the Jump button has been pressed...
-            {
-                _moveDirection.y = _jumpSpeed; //Jump!
-            } 
-        }
-            
-
-            _moveDirection.y -= _gravityPlayer * Time.deltaTime;
-            _playerController.Move(_moveDirection * Time.deltaTime);
-
-       
+        RigidBodyMove();
+        Jump();
 	}
+
+    void Update ()
+    {
+        JumpBool();
+    }
+
+    void RigidBodyMove()
+    {
+        float x = Input.GetAxis("Horizontal");
+        _playerRigidBody2D.velocity = new Vector2(x * _movementSpeed, _playerRigidBody2D.velocity.y);
+    }
+
+    private void JumpBool()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _canJump = true;
+        }
+    }
+
+    private void Jump()
+    {
+        if (_canJump)
+        {
+            if (!_spacePressed && _amountJumps < 2)
+            {
+                _playerRigidBody2D.velocity = new Vector2(0, _jumpSpeed);
+
+                _spacePressed = true;
+                _isGrounded = false;
+
+                _jumpSpeed -= 2f;
+
+                _amountJumps++;
+            }
+            else
+            {
+                _spacePressed = false;
+                _canJump = false;
+            }
+                
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == GameTags.ground)
+        {
+            _isGrounded = true;
+            _amountJumps = 0;
+            _jumpSpeed = 10f;
+        }
+    }
+
+
 }
