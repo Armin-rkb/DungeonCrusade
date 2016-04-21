@@ -17,7 +17,7 @@ public class Arrow : MonoBehaviour
 
     void FixedUpdate()
     {
-        rbArrow.AddForce(transform.up * 50);
+        rbArrow.velocity = new Vector2(10, rbArrow.velocity.y);
     }
 
     void Hit(GameObject player)
@@ -30,9 +30,15 @@ public class Arrow : MonoBehaviour
     
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Player")
+        if (coll.gameObject != null)
         {
-            Hit(coll.gameObject);
+            print(coll.gameObject.name);
+
+            if (coll.gameObject.tag == "Player")
+            {
+                Hit(coll.gameObject);
+            }
         }
+            
     }
 }

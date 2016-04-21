@@ -5,9 +5,11 @@ public class DefaultBow : MonoBehaviour, IWeapons
 {
     [SerializeField] private GameObject arrow;
 
+
+
     public void Attack()
     {
-        Instantiate(arrow, transform.position, transform.rotation);
+        Instantiate(arrow, new Vector2(transform.position.x + 1, transform.position.y), transform.rotation);
     }
 
     void Update()
