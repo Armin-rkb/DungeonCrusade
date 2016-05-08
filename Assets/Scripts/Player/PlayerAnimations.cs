@@ -14,8 +14,6 @@ public class PlayerAnimations : MonoBehaviour {
 
 	void Update () 
     {
-        print(_isGrounded);
-
         WalkAnimation();
         JumpAnimation();
         AttackAnimation();

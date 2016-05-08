@@ -28,9 +28,6 @@ public class PlayerMovement : MonoBehaviour {
     private Rigidbody2D _playerRigidBody2D;
     //RigidBody2D
 
-    [SerializeField]
-    private CameraShake _camShake;
-
 	void Start ()
     {
         _playerRigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
@@ -104,7 +101,6 @@ public class PlayerMovement : MonoBehaviour {
         {
             _onWall = true;
             _amountJumps = 2f;
-            _camShake.Shake(1f);
         }
 
         if (coll.gameObject.tag == GameTags.wall)
