@@ -1,46 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class DefaultBow : MonoBehaviour, IWeapons
+public class DefaultBow : MonoBehaviour, IWeapon
 {
-    [SerializeField] private GameObject arrow;
-    private Arrow arrowScript;
+    [SerializeField] private Arrow arrow;
     private PlayerFlip flip;
-    private float cooldown = 0;
+    
 
     void Awake()
     {
         flip = GetComponent<PlayerFlip>();
     }
 
-    public void Attack()
+    public void Shoot()
     {
         if (flip.facingRight)
         {
-            GameObject currArrow = Instantiate(arrow, new Vector2(transform.position.x + 1, transform.position.y), arrow.transform.rotation)as GameObject;
+            Arrow currArrow = Instantiate(arrow, new Vector2(transform.position.x + 1, transform.position.y), arrow.transform.rotation) as Arrow;
             currArrow.GetComponent<Arrow>().ShootRight();
         }
         else
         {
-            GameObject currArrow = Instantiate(arrow, new Vector2(transform.position.x - 1, transform.position.y), arrow.transform.rotation) as GameObject;
+            Arrow currArrow = Instantiate(arrow, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(arrow.transform.rotation)) as Arrow;
             currArrow.GetComponent<Arrow>().ShootLeft();
-        }
-    }
-
-    void Update()
-    {
-        if (cooldown <= 60)
-        {
-            cooldown--;
-
-            if (cooldown <= 1)
-                cooldown = 0;
-        }
-
-        if (Input.GetMouseButtonDown(0) && cooldown == 0)
-        {
-            cooldown = 60;
-            Attack();
         }
     }
 }

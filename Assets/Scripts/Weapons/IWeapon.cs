@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface IWeapons
+public interface IWeapon
 {
-    void Attack();
+    void Shoot();
 }
