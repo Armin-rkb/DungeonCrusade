@@ -23,6 +23,10 @@ public class PlayerMovement : MonoBehaviour {
     private bool _onWall;
     //Bool
 
+    //Int
+    public int _playerNumber;
+    //int
+
     
     //RigidBody2D
     private Rigidbody2D _playerRigidBody2D;
@@ -46,17 +50,18 @@ public class PlayerMovement : MonoBehaviour {
 
     void RigidBodyMove()
     {
-       
 
-        float x = Input.GetAxis("Horizontal");
+
+        float x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
 
         if (!_onWall)
         _playerRigidBody2D.velocity = new Vector2(x * _movementSpeed, _playerRigidBody2D.velocity.y);
     }
 
+
     private void JumpBool()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButtonDown(ControllerInputs.jumpp + _playerNumber))
         {
             _canJump = true;
         }

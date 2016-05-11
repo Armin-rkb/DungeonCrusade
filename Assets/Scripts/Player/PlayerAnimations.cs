@@ -3,12 +3,22 @@ using System.Collections;
 
 public class PlayerAnimations : MonoBehaviour {
 
+    // Animator
     Animator _playerAnimations;
+    // Animator
 
+    //Bool
     private bool _isGrounded;
+    //Bool
+
+    //Scripts
+    private PlayerMovement _playerMovement;
+    //Scripts
+
 
     void Start()
     {
+        _playerMovement = this.GetComponent<PlayerMovement>();
         _playerAnimations = this.GetComponent<Animator>();
     }
 
@@ -23,22 +33,22 @@ public class PlayerAnimations : MonoBehaviour {
     {
         if (_isGrounded)
         {
-            if (Input.GetAxis("Horizontal") != 0)
+            if (Input.GetAxis(ControllerInputs.horizontalp + _playerMovement._playerNumber) != 0)
             {
-                _playerAnimations.SetBool("Run", true);
-                _playerAnimations.SetBool("Idle", false);
+                _playerAnimations.SetBool(AnimationStrings.run, true);
+                _playerAnimations.SetBool(AnimationStrings.idle, false);
 
-                _playerAnimations.SetBool("Jump", false);
-                _playerAnimations.SetBool("Attack", false);
+                _playerAnimations.SetBool(AnimationStrings.jump, false);
+                _playerAnimations.SetBool(AnimationStrings.attack, false);
             }
 
-            else if (Input.GetAxis("Horizontal") == 0)
+            else if (Input.GetAxis(ControllerInputs.horizontalp + _playerMovement._playerNumber) == 0)
             {
-                _playerAnimations.SetBool("Run", false);
-                _playerAnimations.SetBool("Idle", true);
+                _playerAnimations.SetBool(AnimationStrings.run, false);
+                _playerAnimations.SetBool(AnimationStrings.idle, true);
 
-                _playerAnimations.SetBool("Jump", false);
-                _playerAnimations.SetBool("Attack", false);
+                _playerAnimations.SetBool(AnimationStrings.jump, false);
+                _playerAnimations.SetBool(AnimationStrings.attack, false);
             }
         }
        
@@ -48,10 +58,10 @@ public class PlayerAnimations : MonoBehaviour {
     {
         if (!_isGrounded)
         {
-            _playerAnimations.SetBool("Jump", true);
-            _playerAnimations.SetBool("Run", false);
-            _playerAnimations.SetBool("Idle", false);
-            _playerAnimations.SetBool("Attack", false);
+            _playerAnimations.SetBool(AnimationStrings.jump, true);
+            _playerAnimations.SetBool(AnimationStrings.run, false);
+            _playerAnimations.SetBool(AnimationStrings.idle, false);
+            _playerAnimations.SetBool(AnimationStrings.attack, false);
         }
            
     }
@@ -62,9 +72,9 @@ public class PlayerAnimations : MonoBehaviour {
         {
             if (Input.GetButton("Fire1") || Input.GetKeyDown(KeyCode.S))
             {
-                _playerAnimations.SetBool("Attack", true);
-                _playerAnimations.SetBool("Run", false);
-                _playerAnimations.SetBool("Idle", false);
+                _playerAnimations.SetBool(AnimationStrings.attack, true);
+                _playerAnimations.SetBool(AnimationStrings.run, false);
+                _playerAnimations.SetBool(AnimationStrings.idle, false);
             }
         }
    }

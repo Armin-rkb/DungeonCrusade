@@ -3,23 +3,26 @@ using System.Collections;
 
 public class FXManager : MonoBehaviour {
 
+
+    // Bool
     [SerializeField]
     private bool _playAtStart;
+    // Bool
 
-    [SerializeField]
-    private GameObject _singleFXObj;
-
+    // GameObject
     [SerializeField]
     private GameObject[] _FXObj;
-
+    // GameObject
     private Animation _animatorFX;
 
+    // int
     [SerializeField]
     private int _customFXPlay;
-
+    // int
+    
     /*
      * FX INDEX
-     * 0 = Smoke 
+     * 0 = Smoke
      * 
      */
 
