@@ -1,43 +1,43 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &165050
+--- !u!1 &133024
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 497630}
-  - 212: {fileID: 21270306}
-  - 50: {fileID: 5010026}
-  - 61: {fileID: 6179852}
-  - 114: {fileID: 11410732}
+  - 4: {fileID: 442246}
+  - 212: {fileID: 21288702}
+  - 50: {fileID: 5012304}
+  - 61: {fileID: 6173126}
+  - 114: {fileID: 11466928}
   m_Layer: 0
   m_Name: Shuriken
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &497630
+--- !u!4 &442246
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165050}
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: -1.85, y: 0.74, z: 0}
-  m_LocalScale: {x: 1.25, y: 0.75, z: 6}
+  m_GameObject: {fileID: 133024}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.85, y: -3.26, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!50 &5010026
+--- !u!50 &5012304
 Rigidbody2D:
   serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165050}
+  m_GameObject: {fileID: 133024}
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -48,38 +48,40 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &6179852
+--- !u!61 &6173126
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165050}
+  m_GameObject: {fileID: 133024}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: -0.05}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.12, y: 0.46}
---- !u!114 &11410732
+  m_Size: {x: 0.15, y: 0.15}
+--- !u!114 &11466928
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165050}
+  m_GameObject: {fileID: 133024}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 671c6050b764c1a4c923eb7525c4a458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbShuriken: {fileID: 5010026}
---- !u!212 &21270306
+  rbShuriken: {fileID: 5012304}
+  speed: 15
+  damage: 1
+--- !u!212 &21288702
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 165050}
+  m_GameObject: {fileID: 133024}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -100,8 +102,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 52f0db14fca25724682e1426da145150, type: 3}
-  m_Color: {r: 0.072934695, g: 0.0733952, b: 0.1397059, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 8e2d3f5ce330d764e92b59014271b975, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &100100000
@@ -113,5 +115,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 165050}
+  m_RootGameObject: {fileID: 133024}
   m_IsPrefabParent: 1

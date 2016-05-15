@@ -1,43 +1,43 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &172122
+--- !u!1 &109088
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 460710}
-  - 212: {fileID: 21286906}
-  - 50: {fileID: 5012468}
-  - 61: {fileID: 6132440}
-  - 114: {fileID: 11495816}
+  - 4: {fileID: 442556}
+  - 212: {fileID: 21272338}
+  - 50: {fileID: 5067676}
+  - 61: {fileID: 6108838}
+  - 114: {fileID: 11409932}
   m_Layer: 0
   m_Name: Pill
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &460710
+--- !u!4 &442556
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172122}
+  m_GameObject: {fileID: 109088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.92, y: -2.0080492, z: 0}
-  m_LocalScale: {x: 3, y: 0.97755426, z: 6}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!50 &5012468
+--- !u!50 &5067676
 Rigidbody2D:
   serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172122}
+  m_GameObject: {fileID: 109088}
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -48,38 +48,40 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &6132440
+--- !u!61 &6108838
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172122}
+  m_GameObject: {fileID: 109088}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: -0.05}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.12, y: 0.46}
---- !u!114 &11495816
+  m_Size: {x: 0.06, y: 0.1}
+--- !u!114 &11409932
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172122}
+  m_GameObject: {fileID: 109088}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 077d17e33cdda9f4cbc817ad6c305554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbPill: {fileID: 5012468}
---- !u!212 &21286906
+  rbPill: {fileID: 5067676}
+  speed: 4
+  damage: 3
+--- !u!212 &21272338
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 172122}
+  m_GameObject: {fileID: 109088}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -100,8 +102,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 52f0db14fca25724682e1426da145150, type: 3}
-  m_Color: {r: 0.48685107, g: 0.36224046, b: 0.9852941, a: 1}
+  m_Sprite: {fileID: 21300000, guid: b26fc42ee19dd17498782d18e479163a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &100100000
@@ -113,5 +115,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 172122}
+  m_RootGameObject: {fileID: 109088}
   m_IsPrefabParent: 1

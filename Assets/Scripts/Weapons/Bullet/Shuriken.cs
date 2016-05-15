@@ -3,8 +3,11 @@ using System.Collections;
 
 public class Shuriken : MonoBehaviour
 {
-    [SerializeField]
-    private Rigidbody2D rbShuriken;
+    [SerializeField] private Rigidbody2D rbShuriken;
+    //Speed of the bullet
+    [SerializeField] private float speed;
+    //Amout of damage that the bullet will deal
+    [SerializeField] private float damage;
     private bool isRight;
     private bool isLeft;
 
@@ -23,15 +26,17 @@ public class Shuriken : MonoBehaviour
     void FixedUpdate()
     {
         if (isRight)
-            rbShuriken.velocity = new Vector2(15, rbShuriken.velocity.y);
+            rbShuriken.velocity = new Vector2(speed, rbShuriken.velocity.y);
         else if (isLeft)
-            rbShuriken.velocity = new Vector2(-15, rbShuriken.velocity.y);
+            rbShuriken.velocity = new Vector2(-speed, rbShuriken.velocity.y);
     }
 
     void Hit(GameObject player)
     {
-        //HP moet eraf
-        //Give knockback
+        //Finds the health script of the hit player 
+        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
+        healthPlayer.ChangeHealth(damage);
+        //Give the player knockback
         Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
         rb.AddForce(player.transform.right * 500);
         print("push");

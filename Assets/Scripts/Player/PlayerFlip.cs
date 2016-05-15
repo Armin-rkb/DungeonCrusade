@@ -8,9 +8,11 @@ public class PlayerFlip : MonoBehaviour {
     //Bools
 
     private SpriteRenderer _playerSpriteRenderer;
+    private PlayerMovement _playerMovement;
 
-    void Start ()
+    void Start()
     {
+        _playerMovement = this.GetComponent<PlayerMovement>();
         _playerSpriteRenderer = this.GetComponent<SpriteRenderer>();
     }
 
@@ -23,8 +25,8 @@ public class PlayerFlip : MonoBehaviour {
     private void CheckMovement()
     {
 
-        
-            float x = Input.GetAxis("Horizontal");
+
+        float x = Input.GetAxis(ControllerInputs.horizontalp + _playerMovement._playerNumber);
 
             if (x > 0 && !facingRight)
             {

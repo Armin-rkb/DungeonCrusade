@@ -470,6 +470,10 @@ Prefab:
       propertyPath: m_FlipX
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11401754, guid: 0cd8610784654774a8062687fdf0079f, type: 2}
+      propertyPath: _playerNumber
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0cd8610784654774a8062687fdf0079f, type: 2}
   m_IsPrefabParent: 0
