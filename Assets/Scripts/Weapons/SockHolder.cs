@@ -17,11 +17,13 @@ public class SockHolder : MonoBehaviour, IWeapon
         if (flip.facingRight)
         {
             Sock currSock = Instantiate(sock, new Vector2(transform.position.x + 1, transform.position.y), sock.transform.rotation) as Sock;
+            Physics2D.IgnoreCollision(currSock.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currSock.GetComponent<Sock>().ShootRight();
         }
         else
         {
             Sock currSock = Instantiate(sock, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(sock.transform.rotation)) as Sock;
+            Physics2D.IgnoreCollision(currSock.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currSock.GetComponent<Sock>().ShootLeft();
         }
     }

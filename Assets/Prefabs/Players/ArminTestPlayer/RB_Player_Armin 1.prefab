@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e4092579c8ab44f8358c19c785334d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hadouken: {fileID: 11462800, guid: b2912bae10b101046884e2293be0967e, type: 2}
+  hadouken: {fileID: 11410440, guid: 71d6aaf3b906e7849bf66d3560244af5, type: 2}
 --- !u!114 &11451334
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  num: 0
+  currNumber: 0
 --- !u!114 &11480410
 MonoBehaviour:
   m_ObjectHideFlags: 1

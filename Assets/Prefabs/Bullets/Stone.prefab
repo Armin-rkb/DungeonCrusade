@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11434972}
   m_Layer: 0
   m_Name: Stone
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,6 +76,7 @@ MonoBehaviour:
   rbStone: {fileID: 5090160}
   speed: 10
   damage: 2
+  sprite: {fileID: 21201322}
 --- !u!212 &21201322
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -17,11 +17,13 @@ public class PizzaHolder : MonoBehaviour, IWeapon
         if (flip.facingRight)
         {
             Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x + 1, transform.position.y), pizza.transform.rotation) as Pizza;
+            Physics2D.IgnoreCollision(currPizza.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currPizza.GetComponent<Pizza>().ShootRight();
         }
         else
         {
             Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(pizza.transform.rotation)) as Pizza;
+            Physics2D.IgnoreCollision(currPizza.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currPizza.GetComponent<Pizza>().ShootLeft();
         }
     }

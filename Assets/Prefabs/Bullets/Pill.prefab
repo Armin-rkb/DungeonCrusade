@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11409932}
   m_Layer: 0
   m_Name: Pill
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,6 +76,7 @@ MonoBehaviour:
   rbPill: {fileID: 5067676}
   speed: 4
   damage: 3
+  sprite: {fileID: 21272338}
 --- !u!212 &21272338
 SpriteRenderer:
   m_ObjectHideFlags: 1

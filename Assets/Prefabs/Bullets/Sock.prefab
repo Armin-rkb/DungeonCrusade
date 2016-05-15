@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11491612}
   m_Layer: 0
   m_Name: Sock
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -78,6 +78,7 @@ MonoBehaviour:
   damage: 1
   explodeTime: 150
   explosionObj: {fileID: 123896, guid: c8ab5cad7bdc7cf4abad8d69da00a77c, type: 2}
+  sprite: {fileID: 21286500}
 --- !u!212 &21286500
 SpriteRenderer:
   m_ObjectHideFlags: 1

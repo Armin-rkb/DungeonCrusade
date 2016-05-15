@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11420664}
   m_Layer: 0
   m_Name: Barrel
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,6 +76,7 @@ MonoBehaviour:
   rbBarrel: {fileID: 5076528}
   speed: 2
   damage: 4
+  sprite: {fileID: 21281442}
 --- !u!212 &21281442
 SpriteRenderer:
   m_ObjectHideFlags: 1

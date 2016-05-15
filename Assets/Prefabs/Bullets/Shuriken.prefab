@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11466928}
   m_Layer: 0
   m_Name: Shuriken
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,6 +76,7 @@ MonoBehaviour:
   rbShuriken: {fileID: 5012304}
   speed: 15
   damage: 1
+  sprite: {fileID: 21288702}
 --- !u!212 &21288702
 SpriteRenderer:
   m_ObjectHideFlags: 1

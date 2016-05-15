@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 11406038}
   m_Layer: 0
   m_Name: Pizza
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,6 +76,7 @@ MonoBehaviour:
   rbPizza: {fileID: 5039138}
   speed: 9
   damage: 5
+  sprite: {fileID: 21244484}
 --- !u!212 &21244484
 SpriteRenderer:
   m_ObjectHideFlags: 1

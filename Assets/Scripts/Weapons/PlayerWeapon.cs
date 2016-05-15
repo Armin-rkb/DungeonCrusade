@@ -14,10 +14,20 @@ public class PlayerWeapon : MonoBehaviour
     private BarrelHolder barrelHolder;
 
     private List<IWeapon> weaponList = new List<IWeapon>();
-    //The number of our current Weapon
-    [SerializeField] private int num;
     //Cooldown of our gun
     private float cooldown = 0;
+    //The number of our current Weapon
+    public int currNumber;
+    /*
+    WeaponList:
+        0 = Stone
+        1 = Pill
+        2 = Shuriken
+        3 = Hadouken
+        4 = Pizza
+        5 = Sock
+        6 = Barrel
+    */
 
     void Awake()
     {
@@ -42,13 +52,13 @@ public class PlayerWeapon : MonoBehaviour
         weaponList.Add(sockHolder);
         weaponList.Add(barrelHolder);
 
-        currentWeapon = weaponList[num];
+        currentWeapon = weaponList[currNumber];
     }
 
     void Update()
     {
-        SetWeapon();
-        SwitchWeapons();
+        //SetWeapon();
+        //SwitchWeapons();
 
         if (cooldown <= 60)
         {
@@ -65,23 +75,28 @@ public class PlayerWeapon : MonoBehaviour
         }
     }
 
+    public void SetNewWeapon(int wepNumber)
+    {
+        currentWeapon = weaponList[wepNumber];
+        currNumber = wepNumber;
+    }
 
     void SetWeapon()
     {
-        if (num < 0)
-            num = 6;
-        else if (num > 6)
-            num = 0;
-        currentWeapon = weaponList[num];
+        if (currNumber < 0)
+            currNumber = 6;
+        else if (currNumber > 6)
+            currNumber = 0;
+        currentWeapon = weaponList[currNumber];
     }
 
     void SwitchWeapons()
     {
         //Switch with Scroll
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
-            num++;
+            currNumber++;
         else if (Input.GetAxis("Mouse ScrollWheel") < 0)
-            num--;
+            currNumber--;
     }
 
 }

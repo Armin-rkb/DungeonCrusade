@@ -18,11 +18,13 @@ public class ShurikenHolder : MonoBehaviour, IWeapon
         if (flip.facingRight)
         {
             Shuriken currShuriken = Instantiate(shuriken, new Vector2(transform.position.x + 1, transform.position.y), shuriken.transform.rotation) as Shuriken;
+            Physics2D.IgnoreCollision(currShuriken.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currShuriken.GetComponent<Shuriken>().ShootRight();
         }
         else
         {
             Shuriken currShuriken = Instantiate(shuriken, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(shuriken.transform.rotation)) as Shuriken;
+            Physics2D.IgnoreCollision(currShuriken.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currShuriken.GetComponent<Shuriken>().ShootLeft();
         }
     }

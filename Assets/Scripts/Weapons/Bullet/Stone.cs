@@ -8,6 +8,8 @@ public class Stone : MonoBehaviour
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
     [SerializeField] private float damage;
+    //Sprite of this bullet
+    [SerializeField] private SpriteRenderer sprite;
     private bool isRight;
     private bool isLeft;
 
@@ -15,6 +17,7 @@ public class Stone : MonoBehaviour
     public void ShootLeft()
     {
         isLeft = true;
+        sprite.flipX = true;
     }
 
     //Sets the place the player is facing
@@ -51,6 +54,7 @@ public class Stone : MonoBehaviour
                 Hit(coll.gameObject);
                 Destroy(this.gameObject);
             }
+
             else
                 Destroy(this.gameObject);
         }

@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e4092579c8ab44f8358c19c785334d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hadouken: {fileID: 11462800, guid: b2912bae10b101046884e2293be0967e, type: 2}
+  hadouken: {fileID: 11410440, guid: 71d6aaf3b906e7849bf66d3560244af5, type: 2}
 --- !u!212 &21213196
 SpriteRenderer:
   m_ObjectHideFlags: 1

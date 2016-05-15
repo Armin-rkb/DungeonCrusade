@@ -12,6 +12,8 @@ public class Sock : MonoBehaviour
     [SerializeField] private float explodeTime;
     //Explosion object
     [SerializeField] private GameObject explosionObj;
+    //Sprite of this bullet
+    [SerializeField] private SpriteRenderer sprite;
     private bool isRight;
     private bool isLeft;
     private bool bounce;
@@ -20,6 +22,7 @@ public class Sock : MonoBehaviour
     public void ShootLeft()
     {
         isLeft = true;
+        sprite.flipX = true;
     }
 
     //Sets the place the player is facing
@@ -30,7 +33,6 @@ public class Sock : MonoBehaviour
 
     void FixedUpdate()
     {
-        //Time left for explosion
         explodeTime--;
 
         if (isRight)
@@ -46,6 +48,7 @@ public class Sock : MonoBehaviour
 
         if (explodeTime < 0)
         {
+            //When the time is up instantiate our explosion obj and remove this obj
             Instantiate(explosionObj, transform.position, transform.rotation);
             Destroy(this.gameObject);
         }
