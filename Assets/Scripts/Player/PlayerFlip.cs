@@ -26,7 +26,7 @@ public class PlayerFlip : MonoBehaviour {
     {
 
 
-        float x = Input.GetAxis(ControllerInputs.horizontalp + _playerMovement._playerNumber);
+        float x = Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber);
 
             if (x > 0 && !facingRight)
             {

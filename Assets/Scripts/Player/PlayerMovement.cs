@@ -24,7 +24,13 @@ public class PlayerMovement : MonoBehaviour {
     //Bool
 
     //Int
-    public int _playerNumber;
+    [SerializeField]
+    private int _playerNumber;
+
+    public int PlayerNumber
+    {
+    get { return _playerNumber; }
+    }
     //int
 
     

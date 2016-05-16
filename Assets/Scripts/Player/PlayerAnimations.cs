@@ -33,7 +33,7 @@ public class PlayerAnimations : MonoBehaviour {
     {
         if (_isGrounded)
         {
-            if (Input.GetAxis(ControllerInputs.horizontalp + _playerMovement._playerNumber) != 0)
+            if (Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber) != 0)
             {
                 _playerAnimations.SetBool(AnimationStrings.run, true);
                 _playerAnimations.SetBool(AnimationStrings.idle, false);
@@ -42,7 +42,7 @@ public class PlayerAnimations : MonoBehaviour {
                 _playerAnimations.SetBool(AnimationStrings.attack, false);
             }
 
-            else if (Input.GetAxis(ControllerInputs.horizontalp + _playerMovement._playerNumber) == 0)
+            else if (Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber) == 0)
             {
                 _playerAnimations.SetBool(AnimationStrings.run, false);
                 _playerAnimations.SetBool(AnimationStrings.idle, true);
