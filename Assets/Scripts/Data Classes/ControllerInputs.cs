@@ -6,5 +6,6 @@ public class ControllerInputs  {
     public const string allhorizontal = "AllHorizontal";
 
     public const string horizontalp = "HorizontalP";
+    public const string attackp = "AttackP";
     public const string jumpp = "JumpP";
 }

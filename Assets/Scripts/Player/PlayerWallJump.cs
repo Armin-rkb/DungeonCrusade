@@ -27,6 +27,14 @@ public class PlayerWallJump : MonoBehaviour {
 
 	}
 
+    void Update()
+    {
+        if (Input.GetButtonDown(ControllerInputs.jumpp + 1) || (Input.GetButtonDown(ControllerInputs.jumpp + 2)))
+        {
+            // Walljump?
+        }
+    }
+
  
 
     void OnCollisionStay2D(Collision2D coll)

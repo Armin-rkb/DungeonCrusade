@@ -21,6 +21,8 @@ public class PlayerMovement : MonoBehaviour {
     private bool _spacePressed;
     private bool _canJump;
     private bool _onWall;
+
+    private bool _joystickEnabled;
     //Bool
 
     //Int

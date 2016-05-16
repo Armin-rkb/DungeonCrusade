@@ -12,11 +12,16 @@ public class CameraShake : MonoBehaviour {
     private bool _isShaking;
 	//Bool
 
+    //Camera
+    private Camera _gameCamera;
+    //Camera
+
     private Vector3 _startPos;
 
 
     void Start ()
     {
+        _gameCamera = this.GetComponent<Camera>();
         _startPos = this.transform.position;
     }
 
@@ -29,8 +34,11 @@ public class CameraShake : MonoBehaviour {
     {
         if (_isShaking)
         {
+            _gameCamera.orthographicSize = 4.95f;
             transform.localPosition = transform.localPosition + Random.insideUnitSphere * _shakePower;
         }
+        else
+            _gameCamera.orthographicSize = 5f;
     }
 
 

@@ -17,8 +17,9 @@ public class MainMenu : MonoBehaviour {
     private RoundsSetUp _roundsSetUp;
     // NEEDS DELEGATE. FIXING!
 
-
+    //Bool
     private bool _runOnce;
+    //Bool
 
     void Start ()
     {
@@ -30,8 +31,6 @@ public class MainMenu : MonoBehaviour {
         StartCoroutine("PlayButton");
     }
 
-   
-
     void Update()
     {
         AdjustRound();    
@@ -39,28 +38,25 @@ public class MainMenu : MonoBehaviour {
 
     void AdjustRound()
     {
-
         if (Input.GetAxis(ControllerInputs.allhorizontal) < 0)
         {
             if (!_runOnce)
             {
-                _roundsSetUp.MinRound--;
-                print("Less");
-                _runOnce = true;
+             if (_roundsSetUp.Round > 5)
+             {
+                 _roundsSetUp.MinRound--;
+                 _runOnce = true;
+             }          
             }
-
         }
 
         else if (Input.GetAxis(ControllerInputs.allhorizontal) > 0)
         {
-
             if (!_runOnce)
             {
                 _roundsSetUp.AddRound++;
-                print("More");
                 _runOnce = true;
             }
-
         }
 
         else
@@ -75,8 +71,6 @@ public class MainMenu : MonoBehaviour {
             falseobject.SetActive(false);
 
         _loadingObject.SetActive(true);
-
-        yield return new WaitForSeconds(1);
 
 
         AsyncOperation async = Application.LoadLevelAsync("SceneFerry");

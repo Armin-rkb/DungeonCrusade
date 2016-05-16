@@ -70,7 +70,7 @@ public class PlayerAnimations : MonoBehaviour {
    {
         if (_isGrounded)
         {
-            if (Input.GetButton("Fire1") || Input.GetKeyDown(KeyCode.S))
+            if (Input.GetButtonDown(ControllerInputs.attackp + _playerMovement.PlayerNumber))
             {
                 _playerAnimations.SetBool(AnimationStrings.attack, true);
                 _playerAnimations.SetBool(AnimationStrings.run, false);

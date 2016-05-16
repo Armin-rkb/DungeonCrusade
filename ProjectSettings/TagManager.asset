@@ -8,6 +8,9 @@ TagManager:
   - Wall
   - Bullet
   - Pickup
+  - LeftWall
+  - RightWall
+  - Point
   layers:
   - Default
   - TransparentFX

@@ -55,13 +55,8 @@ public class RoundsSetUp : MonoBehaviour
 
     void CheckRound()
     {
-      //  if (Input.GetAxis(ControllerInputs.allhorizontal) != 0)
-      //  {
             _roundText = _roundObj.GetComponent<Text>();
             _roundText.text = "Rounds: " + Round;
-
-        
-      //  }
     }
 
     public void SaveResource()
@@ -93,7 +88,6 @@ public class RoundsSetUp : MonoBehaviour
             round = saveData.round;
 
             file.Close();
-
 
             _roundText = _roundObj.GetComponent<Text>();
             _roundText.text = "Rounds: " + saveData.round;
