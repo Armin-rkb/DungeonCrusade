@@ -21,7 +21,8 @@ public class MatchStart : MonoBehaviour {
     //Text
 
     //Float
-    private float _countDownTimer = 5f;
+    [SerializeField]
+    private float _countDownTimer = 3f;
     //Float
 
     //Transform
@@ -68,7 +69,7 @@ public class MatchStart : MonoBehaviour {
 
         yield return new WaitForSeconds(_countDownTimer);
 
-        _countDownTimer = 5;
+        _countDownTimer = 3;
         _countDownObj.SetActive(false);
 
         InstantiateCharacters();
