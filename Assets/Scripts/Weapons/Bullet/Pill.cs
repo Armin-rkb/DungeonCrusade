@@ -3,16 +3,25 @@ using System.Collections;
 
 public class Pill : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D rbPill;
+    //Rigidbody of the Gameobject
+    private Rigidbody2D rbPill;
+    //Sprite of this bullet
+    private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
     [SerializeField] private float damage;
-    //Sprite of this bullet
-    [SerializeField] private SpriteRenderer sprite;
+    //Amount of Knockback the bullet will give
+    [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
     private bool bounce;
+
+    void Awake()
+    {
+        rbPill = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -47,23 +56,21 @@ public class Pill : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-        rb.AddForce(player.transform.right * 500);
-        print("push");
+        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        rbPlayer.AddForce((rbPill.position - rbPlayer.position).normalized * -knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject != null)
         {
-            if (coll.gameObject.tag == "Player")
+            if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
                 Destroy(this.gameObject);
             }
 
-            else if (coll.gameObject.tag == "Ground")
-            {
+            else if (coll.gameObject.CompareTag(GameTags.ground))
                 bounce = true;
             }
 
@@ -71,4 +78,3 @@ public class Pill : MonoBehaviour
                 Destroy(this.gameObject);
         }
     }
-}

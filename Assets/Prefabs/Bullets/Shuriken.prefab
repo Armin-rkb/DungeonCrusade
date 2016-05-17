@@ -76,6 +76,7 @@ MonoBehaviour:
   rbShuriken: {fileID: 5012304}
   speed: 15
   damage: 1
+  knockback: 200
   sprite: {fileID: 21288702}
 --- !u!212 &21288702
 SpriteRenderer:

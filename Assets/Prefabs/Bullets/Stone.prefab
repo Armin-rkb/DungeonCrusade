@@ -75,7 +75,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rbStone: {fileID: 5090160}
   speed: 10
-  damage: 2
+  damage: 1
+  knockback: 500
   sprite: {fileID: 21201322}
 --- !u!212 &21201322
 SpriteRenderer:

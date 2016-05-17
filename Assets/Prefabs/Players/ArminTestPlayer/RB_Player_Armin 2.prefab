@@ -291,7 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  num: 0
+  currNumber: 0
 --- !u!114 &11460554
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -318,6 +318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roundObject: {fileID: 118860, guid: fa9fd4e272388d04aa26e3e7781d9752, type: 2}
+  _pointObjects: []
   health: 5
 --- !u!114 &11468540
 MonoBehaviour:

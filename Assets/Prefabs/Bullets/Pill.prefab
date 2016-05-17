@@ -76,6 +76,7 @@ MonoBehaviour:
   rbPill: {fileID: 5067676}
   speed: 4
   damage: 3
+  knockback: 450
   sprite: {fileID: 21272338}
 --- !u!212 &21272338
 SpriteRenderer:

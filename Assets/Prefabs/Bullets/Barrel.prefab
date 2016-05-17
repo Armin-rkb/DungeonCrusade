@@ -76,6 +76,7 @@ MonoBehaviour:
   rbBarrel: {fileID: 5076528}
   speed: 2
   damage: 4
+  knockback: 600
   sprite: {fileID: 21281442}
 --- !u!212 &21281442
 SpriteRenderer:

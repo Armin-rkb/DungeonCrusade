@@ -12,6 +12,8 @@ public class PlayerWeapon : MonoBehaviour
     private PizzaHolder pizzaHolder;
     private SockHolder sockHolder;
     private BarrelHolder barrelHolder;
+    
+    private PlayerMovement playerMovement;
 
     private List<IWeapon> weaponList = new List<IWeapon>();
     //Cooldown of our gun
@@ -31,6 +33,8 @@ public class PlayerWeapon : MonoBehaviour
 
     void Awake()
     {
+        playerMovement = GetComponent<PlayerMovement>();
+
         //Getting all our weapon components
         stoneHolder = GetComponent<StoneHolder>();
         pillHolder = GetComponent<PillHolder>();
@@ -68,7 +72,7 @@ public class PlayerWeapon : MonoBehaviour
                 cooldown = 0;
         }
 
-        if (Input.GetMouseButtonDown(0) && cooldown == 0)
+        if (Input.GetButtonDown(ControllerInputs.attackp + playerMovement.PlayerNumber) && cooldown == 0)
         {
             cooldown = 60;
             currentWeapon.Shoot();

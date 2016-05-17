@@ -76,6 +76,7 @@ MonoBehaviour:
   rbHadouken: {fileID: 5025316}
   speed: 3
   damage: 3
+  knockback: 500
   sprite: {fileID: 21212082}
 --- !u!212 &21212082
 SpriteRenderer:

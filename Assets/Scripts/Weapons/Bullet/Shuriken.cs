@@ -3,15 +3,24 @@ using System.Collections;
 
 public class Shuriken : MonoBehaviour
 {
-    [SerializeField] private Rigidbody2D rbShuriken;
+    //Rigidbody of the Gameobject
+    private Rigidbody2D rbShuriken;
+    //Sprite of this bullet
+    private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
     [SerializeField] private float damage;
-    //Sprite of this bullet
-    [SerializeField] private SpriteRenderer sprite;
+    //Amount of Knockback the bullet will give
+    [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
+
+    void Awake()
+    {
+        rbShuriken = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -40,22 +49,29 @@ public class Shuriken : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-        rb.AddForce(player.transform.right * 500);
-        print("push");
+        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        rbPlayer.isKinematic = true;
+        rbPlayer.AddForce((rbShuriken.position - rbPlayer.position).normalized * -knockback);
+        rbPlayer.isKinematic = false;
     }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject != null)
         {
-            if (coll.gameObject.tag == "Player")
+            if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
                 Destroy(this.gameObject);
             }
             else
-                Destroy(this.gameObject);
+            {
+                isRight = false;
+                isLeft = false;
+                rbShuriken.isKinematic = true;
+                gameObject.AddComponent<Fade>();
+            }
+
         }
     }
 }

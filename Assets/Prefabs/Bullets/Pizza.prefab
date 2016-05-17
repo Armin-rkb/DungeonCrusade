@@ -76,6 +76,7 @@ MonoBehaviour:
   rbPizza: {fileID: 5039138}
   speed: 9
   damage: 5
+  knockback: 800
   sprite: {fileID: 21244484}
 --- !u!212 &21244484
 SpriteRenderer:
