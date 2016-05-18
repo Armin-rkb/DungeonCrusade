@@ -34,11 +34,11 @@ public class CameraShake : MonoBehaviour {
     {
         if (_isShaking)
         {
-            _gameCamera.orthographicSize = 4.95f;
+            _gameCamera.orthographicSize = 6.95f;
             transform.localPosition = transform.localPosition + Random.insideUnitSphere * _shakePower;
         }
         else
-            _gameCamera.orthographicSize = 5f;
+            _gameCamera.orthographicSize = 7f;
     }
 
 

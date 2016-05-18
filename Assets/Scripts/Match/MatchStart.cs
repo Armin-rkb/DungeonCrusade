@@ -11,7 +11,7 @@ public class MatchStart : MonoBehaviour {
     [SerializeField]
     private List<GameObject> _amountCharacters;
     [SerializeField]
-    private List<GameObject> _inGameCharacters;
+    private GameObject[] _inGameCharacters;
 
     private GameObject[] _playerObject;
     //GameObjects
@@ -29,13 +29,12 @@ public class MatchStart : MonoBehaviour {
     [SerializeField]
     private Transform[] _transformPoints;
     //Transform
-   
 
+    bool _runOnce;
 
 	void Start ()
     {
         _countDownText = _countDownObj.GetComponent<Text>();
-
         StartCoroutine("StartRound");
 	}
 	
@@ -44,12 +43,6 @@ public class MatchStart : MonoBehaviour {
     {
         if (_countDownObj != null)
         CountDown();
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            foreach (GameObject character in _amountCharacters)
-                character.SetActive(false);
-        }
     }
 
 
@@ -61,9 +54,9 @@ public class MatchStart : MonoBehaviour {
 
             _countDownText.text = _countDownTimer.ToString("0");
         }
-
     }
-    public IEnumerator StartRound()
+
+     IEnumerator StartRound()
     {
         _countDownObj.SetActive(true);
 
@@ -74,10 +67,7 @@ public class MatchStart : MonoBehaviour {
 
         InstantiateCharacters();
 
-        _playerObject = GameObject.FindGameObjectsWithTag(GameTags.player);
-
-        foreach (GameObject player in _playerObject)
-            _inGameCharacters.Add(player);
+        _inGameCharacters = GameObject.FindGameObjectsWithTag(GameTags.player);      
     }
 
     public IEnumerator StartNewRound()
@@ -89,18 +79,10 @@ public class MatchStart : MonoBehaviour {
             _countDownTimer = 5;
             _countDownObj.SetActive(false);
 
+            _inGameCharacters[0] = GameObject.Find("Player(Clone)");
+            _inGameCharacters[1] = GameObject.Find("Player 2(Clone)");
+
             InstantiateNewCharacters();
-
-        /*
-            _playerObject = GameObject.FindGameObjectsWithTag(GameTags.player);
-
-        foreach (GameObject player in _playerObject)
-            if (player != null)
-            _inGameCharacters.Add(player);
-         */
-
-            _inGameCharacters[0] = GameObject.Find("RB_Player(Clone)");
-            _inGameCharacters[1] = GameObject.Find("RB_Player 2(Clone)");
     }
 
 
@@ -110,26 +92,15 @@ public class MatchStart : MonoBehaviour {
         //P1
             Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
         //P2  
-
     }
 
     private void InstantiateNewCharacters()
     {
-
         if (_inGameCharacters[0] == null)
                 Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
                 //P1
         else if (_inGameCharacters[1] == null)
                 Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
-                //P2  
-
-
-    //    _playerObject.SetValue(0,0);
-          //  foreach (GameObject player in _playerObject)
-                
-         
+                //P2           
     }
-     
-    
-
 }

@@ -1,0 +1,141 @@
+fileFormatVersion: 2
+guid: 8194bf8f5bd5fff49a451dca252ecd58
+timeCreated: 1463133914
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Explosion2_0
+    21300002: Explosion2_1
+    21300004: Explosion2_2
+    21300006: Explosion2_3
+    21300008: Explosion2_4
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 30
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Explosion2_0
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 7
+        width: 26
+        height: 24
+      alignment: 9
+      pivot: {x: 0.5409746, y: 0.50000006}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Explosion2_1
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 2
+        width: 43
+        height: 37
+      alignment: 9
+      pivot: {x: 0.5148653, y: 0.45968974}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -18.139206, y: 19.99148}
+        - {x: -22.139206, y: 16.99148}
+        - {x: -22.139206, y: -17.00852}
+        - {x: 20.860794, y: -17.00852}
+        - {x: 20.860794, y: 18.99148}
+        - {x: 16.860794, y: 19.99148}
+    - name: Explosion2_2
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 45
+        height: 40
+      alignment: 9
+      pivot: {x: 0.53314376, y: 0.5159801}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -23.99147, y: 19.360794}
+        - {x: -23.99147, y: -20.639206}
+        - {x: 21.00853, y: -20.639206}
+        - {x: 21.00853, y: 19.360794}
+    - name: Explosion2_3
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 57
+        height: 40
+      alignment: 9
+      pivot: {x: 0.485048, y: 0.5106534}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -27.647736, y: 19.573864}
+        - {x: -27.647736, y: -20.426136}
+        - {x: 29.352264, y: -20.426136}
+        - {x: 29.352264, y: 19.573864}
+    - name: Explosion2_4
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 0
+        width: 54
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -27, y: -20}
+        - {x: -24, y: -20}
+        - {x: -24, y: -15}
+        - {x: -26, y: -13}
+        - {x: -27, y: -13}
+      - - {x: -26, y: 20}
+        - {x: -27, y: 19}
+        - {x: -27, y: -20}
+        - {x: 27, y: -20}
+        - {x: 27, y: 20}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

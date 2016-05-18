@@ -23,7 +23,7 @@ public class FXManager : MonoBehaviour {
     /*
      * FX INDEX
      * 0 = Smoke
-     * 
+     * 1 = Explosion
      */
 
 	void Start () 
@@ -32,15 +32,17 @@ public class FXManager : MonoBehaviour {
             Instantiate(_FXObj[_customFXPlay], transform.position, Quaternion.identity);
 	}
 	
-	public void PlayFX(int fx)
+	public void PlayFX(int fx, Vector2 fxposition)
     {
-        Instantiate(_FXObj[fx], transform.position, Quaternion.identity);
-        StartCoroutine(DestroyFX(fx));
+        Instantiate(_FXObj[fx], fxposition, Quaternion.identity);
+       // StartCoroutine(DestroyFX(fx));
     }
 
+    
     private IEnumerator DestroyFX(int fx)
     {
         yield return new WaitForSeconds(3);
         Destroy(_FXObj[fx].gameObject);
     }
+     
 }

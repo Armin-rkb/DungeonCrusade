@@ -1,0 +1,86 @@
+fileFormatVersion: 2
+guid: 7099d67dd2c2c0d4ea1edeb60be2e22e
+timeCreated: 1463519054
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: silver knight hadouken sprite_0
+    21300002: silver knight hadouken sprite_1
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.23526078, y: 0.1850907}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 42
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: silver knight hadouken sprite_0
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 12
+        width: 22
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5052566, y: 0.675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: silver knight hadouken sprite_1
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 12
+        width: 32
+        height: 39
+      alignment: 9
+      pivot: {x: 0.48696136, y: 0.675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -0.5827637, y: 12.674999}
+        - {x: -14.582764, y: 12.674999}
+        - {x: -15.582764, y: 11.674999}
+        - {x: -15.582764, y: -26.325}
+        - {x: -14.582764, y: -26.325}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

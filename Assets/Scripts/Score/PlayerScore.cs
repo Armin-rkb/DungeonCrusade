@@ -28,12 +28,13 @@ public class PlayerScore : MonoBehaviour {
 
     private void AddScoreP1(HealthPlayer player)
     {
-            p1Score += player.PlayerCurrency;
-       
+        p1Score += player.PlayerPoint;
+        print("P1 SCORE");
     }
 
     private void AddScoreP2(HealthPlayer player)
     {
-            p2Score += player.PlayerCurrency;
+        p2Score += player.PlayerPoint;
+        print("P2 SCORE");
     }
 }
