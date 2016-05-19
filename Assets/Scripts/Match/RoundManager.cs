@@ -16,6 +16,7 @@ public class RoundManager : MonoBehaviour {
     //List
 
     //Scripts
+    [SerializeField]
     private PlayerScore _checkScore;
     //Scripts
     
@@ -29,13 +30,18 @@ public class RoundManager : MonoBehaviour {
     private Text _roundText;
 
   
-  //[SerializeField]
-    //private Text _scoreText;
+  [SerializeField]
+    private Text _scoreText;
     //Text
 
     //GameObject
     [SerializeField]
     private GameObject _winText;
+    //GameObject
+
+    //GameObject
+    [SerializeField]
+    private GameObject _extendedText;
     //GameObject
 
     //Scripts
@@ -46,9 +52,11 @@ public class RoundManager : MonoBehaviour {
 
 	void Start () 
     {
-
         _winText.SetActive(false);
+        _extendedText.SetActive(false);
+
         _roundSetUp = this.GetComponent<RoundsSetUp>();
+        _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
         foreach (GameObject roundobj in _roundObjects)
             _roundText = roundobj.GetComponent<Text>();
@@ -61,6 +69,8 @@ public class RoundManager : MonoBehaviour {
     void Update ()
     {
         StopMatch();
+
+        print(_roundSetUp.Round);
     }
 
     private void StopMatch()
@@ -69,11 +79,27 @@ public class RoundManager : MonoBehaviour {
             StartCoroutine("StopGame");
     }
 
+    private void ExtendMatch()
+    {
+        if (_amountOfRounds >= 3)
+        {
+            if (_checkScore.P1Score == _checkScore.P2Score || _checkScore.P2Score == _checkScore.P1Score)
+            {
+                _extendedText.SetActive(true);
+                _roundSetUp.AddRound += 1;
+                _scoreText.color = new Color(255, 0, 0);
+            }
+        }
+            
+    }
+
     public IEnumerator AddRound()
     {
+        
 
         _amountOfRounds++;
 
+       
 
             foreach (GameObject roundobj in _roundObjects)
                 _roundText = roundobj.GetComponent<Text>();
@@ -83,18 +109,11 @@ public class RoundManager : MonoBehaviour {
 
             if (_amountOfRounds <= _roundSetUp.Round)
             {
-            
-
             _roundObjects[0].SetActive(true);
-
-            _checkScore = GameObject.FindGameObjectWithTag(GameTags.player).GetComponent<PlayerScore>();
-
-           
-
 
             yield return new WaitForSeconds(2);
 
-            //_scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
+            
 
 
             _roundObjects[0].SetActive(false);
@@ -102,14 +121,20 @@ public class RoundManager : MonoBehaviour {
 
             _matchStart.StartCoroutine("StartNewRound");
             }
-            _roundText.text = "Round " + _amountOfRounds;
 
-           
+
+            _roundText.text = "Round " + _amountOfRounds;
+            _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
+
+
+            ExtendMatch();
+            yield return new WaitForSeconds(1);
+            _extendedText.SetActive(false);
     }
 
     private IEnumerator StopGame()
     {
-        _checkScore = GameObject.FindGameObjectWithTag(GameTags.player).GetComponent<PlayerScore>();
+        _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
         _winText.SetActive(true);
 

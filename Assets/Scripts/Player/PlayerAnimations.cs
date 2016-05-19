@@ -68,15 +68,12 @@ public class PlayerAnimations : MonoBehaviour {
 
     private void AttackAnimation()
    {
-        if (_isGrounded)
-        {
             if (Input.GetButtonDown(ControllerInputs.attackp + _playerMovement.PlayerNumber))
             {
                 _playerAnimations.SetBool(AnimationStrings.attack, true);
                 _playerAnimations.SetBool(AnimationStrings.run, false);
                 _playerAnimations.SetBool(AnimationStrings.idle, false);
             }
-        }
    }
 
     void OnCollisionStay2D(Collision2D coll)

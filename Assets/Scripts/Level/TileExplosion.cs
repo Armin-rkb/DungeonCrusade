@@ -18,7 +18,7 @@ public class TileExplosion : MonoBehaviour {
         {
 
             print("GOT EEM");
-            _fxManager.PlayFX(0);
+            _fxManager.PlayFX(0, transform.position);
             Destroy(this.gameObject);
            
         }

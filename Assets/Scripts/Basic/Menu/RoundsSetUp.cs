@@ -10,7 +10,7 @@ public class RoundsSetUp : MonoBehaviour
     //Int
     [SerializeField]
     private int round;
-    private int minus = 1;
+    private int one = 1;
     //Int
 
     //Text
@@ -39,13 +39,13 @@ public class RoundsSetUp : MonoBehaviour
     public int AddRound
     {
         get { return round; }
-        set { round += minus;  }
+        set { round += one; }
     }
 
     public int MinRound
     {
          get { return round; }
-        set { round -= minus; }
+        set { round -= one; }
     }
 
     void Update()
