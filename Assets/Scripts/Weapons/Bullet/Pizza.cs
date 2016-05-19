@@ -4,9 +4,9 @@ using System.Collections;
 public class Pizza : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbPizza;
+    [SerializeField] private Rigidbody2D rbPizza;
     //Sprite of this bullet
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -15,12 +15,6 @@ public class Pizza : MonoBehaviour
     [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
-
-    void Awake()
-    {
-        rbPizza = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -49,8 +43,8 @@ public class Pizza : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        rbPlayer.AddForce((rbPizza.position - rbPlayer.position).normalized * -knockback);
+        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        //rbPlayer.AddForce((rbPizza.position - rbPlayer.position).normalized * -knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

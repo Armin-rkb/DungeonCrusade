@@ -48,7 +48,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!61 &6133146
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -86,6 +86,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94cb99c11b5e0484b9af0c4b1ba335ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rbExplosion: {fileID: 5099182}
+  boxCollider: {fileID: 6133146}
   damage: 3
   knockback: 300
 --- !u!212 &21286284

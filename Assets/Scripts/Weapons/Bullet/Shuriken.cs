@@ -4,9 +4,9 @@ using System.Collections;
 public class Shuriken : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbShuriken;
+    [SerializeField] private Rigidbody2D rbShuriken;
     //Sprite of this bullet
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -15,12 +15,6 @@ public class Shuriken : MonoBehaviour
     [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
-
-    void Awake()
-    {
-        rbShuriken = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -49,10 +43,10 @@ public class Shuriken : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        rbPlayer.isKinematic = true;
-        rbPlayer.AddForce((rbShuriken.position - rbPlayer.position).normalized * -knockback);
-        rbPlayer.isKinematic = false;
+        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        //rbPlayer.isKinematic = true;
+        //rbPlayer.AddForce((rbShuriken.position - rbPlayer.position).normalized * -knockback);
+        //rbPlayer.isKinematic = false;
     }
 
     void OnCollisionEnter2D(Collision2D coll)

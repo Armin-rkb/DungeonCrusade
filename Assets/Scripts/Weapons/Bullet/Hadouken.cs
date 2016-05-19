@@ -4,9 +4,9 @@ using System.Collections;
 public class Hadouken : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbHadouken;
+    [SerializeField] private Rigidbody2D rbHadouken;
     //Sprite of this bullet
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -15,12 +15,6 @@ public class Hadouken : MonoBehaviour
     [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
-
-    void Awake()
-    {
-        rbHadouken = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -49,8 +43,8 @@ public class Hadouken : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        rbPlayer.AddForce((rbHadouken.position - rbPlayer.position).normalized * -knockback);
+        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        //rbPlayer.AddForce((rbHadouken.position - rbPlayer.position).normalized * -knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -60,10 +54,13 @@ public class Hadouken : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
+                isRight = false;
+                isLeft = false;
                 Destroy(this.gameObject);
             }
             else
-                Destroy(this.gameObject);
+                gameObject.AddComponent<Fade>();
+
         }
     }
 }

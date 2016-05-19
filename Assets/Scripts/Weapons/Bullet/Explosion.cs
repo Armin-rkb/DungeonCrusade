@@ -4,19 +4,13 @@ using System.Collections;
 public class Explosion : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbExplosion;
+    [SerializeField] private Rigidbody2D rbExplosion;
     //Collider of the Gameobject
-    private BoxCollider2D boxCollider;
+    [SerializeField] private BoxCollider2D boxCollider;
     //Amout of damage that the bullet will deal
     [SerializeField] private float damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
-
-    void Awake()
-    {
-        rbExplosion = GetComponent<Rigidbody2D>();
-        boxCollider = GetComponent<BoxCollider2D>();
-    }
 
     void Hit(GameObject player)
     {
@@ -24,8 +18,8 @@ public class Explosion : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        rbPlayer.AddForce((rbExplosion.position - rbPlayer.position).normalized * -knockback, ForceMode2D.Impulse);
+        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        //rbPlayer.AddForce((rbExplosion.position - rbPlayer.position).normalized * -knockback, ForceMode2D.Impulse);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

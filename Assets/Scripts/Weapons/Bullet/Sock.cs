@@ -4,9 +4,9 @@ using System.Collections;
 public class Sock : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbSock;
+    [SerializeField] private Rigidbody2D rbSock;
     //Sprite of this bullet
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -20,12 +20,6 @@ public class Sock : MonoBehaviour
     private bool isRight;
     private bool isLeft;
     private bool bounce;
-
-    void Awake()
-    {
-        rbSock = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
 
     //Sets the place the player is facing
     public void ShootLeft()

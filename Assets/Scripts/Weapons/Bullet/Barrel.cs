@@ -4,9 +4,9 @@ using System.Collections;
 public class Barrel : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbBarrel;
+    [SerializeField] private Rigidbody2D rbBarrel;
     //Sprite of this bullet
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -15,12 +15,6 @@ public class Barrel : MonoBehaviour
     [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
-
-    void Awake()
-    {
-        rbBarrel = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -41,28 +35,7 @@ public class Barrel : MonoBehaviour
             rbBarrel.velocity = new Vector2(speed, rbBarrel.velocity.y);
         else if (isLeft)
             rbBarrel.velocity = new Vector2(-speed, rbBarrel.velocity.y);
-
-        //CheckWall();
     }
-
-    //Test remover
-    /*
-    void CheckWall()
-    {
-        float XDirection = (rbBarrel.position.x) - (transform.position.x);
-        float YDirection = (rbBarrel.position.y) - (transform.position.y);
-        Ray position = new Ray(transform.position, new Vector2(XDirection, YDirection));
-        RaycastHit2D hit = Physics2D.Raycast(position.origin, position.direction, 0.5f);
-
-        Debug.DrawRay(transform.position, position.direction);
-        
-        if (hit.collider != null)
-        {
-            if (hit.collider.tag != "Ground")
-                Destroy(this.gameObject);
-        }
-    }
-    */
 
     void Hit(GameObject player)
     {
@@ -70,8 +43,8 @@ public class Barrel : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        rbPlayer.AddForce((rbBarrel.position - rbPlayer.position).normalized * -knockback);
+        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        //rbPlayer.AddForce((rbBarrel.position - rbPlayer.position).normalized * -knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

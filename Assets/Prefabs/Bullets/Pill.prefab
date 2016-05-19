@@ -12,6 +12,7 @@ GameObject:
   - 50: {fileID: 5067676}
   - 61: {fileID: 6108838}
   - 114: {fileID: 11409932}
+  - 95: {fileID: 9539764}
   m_Layer: 0
   m_Name: Pill
   m_TagString: Bullet
@@ -56,12 +57,29 @@ BoxCollider2D:
   m_GameObject: {fileID: 109088}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: eda1f6f6b410d3c4a9474cad80a98ba5, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.06, y: 0.1}
+  m_Size: {x: 0.1, y: 0.1}
+--- !u!95 &9539764
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 109088}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4c541cf4c17018d438ec6e668d39b07c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &11409932
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -74,10 +92,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbPill: {fileID: 5067676}
-  speed: 4
-  damage: 3
-  knockback: 450
   sprite: {fileID: 21272338}
+  speed: 2
+  damage: 2
+  knockback: 450
 --- !u!212 &21272338
 SpriteRenderer:
   m_ObjectHideFlags: 1

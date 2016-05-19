@@ -74,11 +74,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbSock: {fileID: 5031174}
+  sprite: {fileID: 21286500}
   speed: 3
   damage: 1
+  knockback: 0
   explodeTime: 150
   explosionObj: {fileID: 123896, guid: c8ab5cad7bdc7cf4abad8d69da00a77c, type: 2}
-  sprite: {fileID: 21286500}
 --- !u!212 &21286500
 SpriteRenderer:
   m_ObjectHideFlags: 1

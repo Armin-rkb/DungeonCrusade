@@ -4,9 +4,9 @@ using System.Collections;
 public class Stone : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    private Rigidbody2D rbStone;
+    [SerializeField] private Rigidbody2D rbStone;
     //Sprite of this bullet
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -15,12 +15,6 @@ public class Stone : MonoBehaviour
     [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
-
-    void Awake()
-    {
-        rbStone = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -50,11 +44,10 @@ public class Stone : MonoBehaviour
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        rbPlayer.isKinematic = true;
-        rbPlayer.AddForce((rbStone.position - rbPlayer.position).normalized * -knockback);
-        rbPlayer.isKinematic = false;
+        //rbPlayer.AddForce((rbStone.position - rbPlayer.position).normalized * -knockback);
+        //rbPlayer.isKinematic = false;
     }
-    
+
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject != null)
@@ -62,11 +55,13 @@ public class Stone : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
+                isRight = false;
+                isLeft = false;
                 Destroy(this.gameObject);
             }
 
             else
-                Destroy(this.gameObject);
+                gameObject.AddComponent<Fade>();
         }
     }
 }

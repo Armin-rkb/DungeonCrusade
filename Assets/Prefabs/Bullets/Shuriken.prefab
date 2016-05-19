@@ -12,6 +12,7 @@ GameObject:
   - 50: {fileID: 5012304}
   - 61: {fileID: 6173126}
   - 114: {fileID: 11466928}
+  - 95: {fileID: 9510276}
   m_Layer: 0
   m_Name: Shuriken
   m_TagString: Bullet
@@ -62,6 +63,23 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.15, y: 0.15}
+--- !u!95 &9510276
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 133024}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b8b74a52045a0c843a54a5d0cc83c0f2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &11466928
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -74,10 +92,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbShuriken: {fileID: 5012304}
+  sprite: {fileID: 21288702}
   speed: 15
   damage: 1
   knockback: 200
-  sprite: {fileID: 21288702}
 --- !u!212 &21288702
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f7e4f7bbdcc60446a3b154746316e70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pizza: {fileID: 11406038, guid: f4caa93bfd0e3414099de6dc4ba1ecc2, type: 2}
+  pizza: {fileID: 11479922, guid: f4caa93bfd0e3414099de6dc4ba1ecc2, type: 2}
 --- !u!114 &11431492
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -269,7 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e4092579c8ab44f8358c19c785334d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hadouken: {fileID: 11410440, guid: 71d6aaf3b906e7849bf66d3560244af5, type: 2}
+  hadouken: {fileID: 11424806, guid: 71d6aaf3b906e7849bf66d3560244af5, type: 2}
 --- !u!114 &11451334
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -304,7 +304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 0
+  currNumber: 1
 --- !u!114 &11480410
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -357,7 +357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb70dd8ca173acb468a2288481673729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barrel: {fileID: 11420664, guid: 8bbcac6be53421243a1b17bfcb378ab8, type: 2}
+  barrel: {fileID: 11430042, guid: 8bbcac6be53421243a1b17bfcb378ab8, type: 2}
 --- !u!212 &21256092
 SpriteRenderer:
   m_ObjectHideFlags: 1
