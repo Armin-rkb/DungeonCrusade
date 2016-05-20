@@ -11,8 +11,6 @@ public class Pizza : MonoBehaviour
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
     [SerializeField] private float damage;
-    //Amount of Knockback the bullet will give
-    [SerializeField] private float knockback;
     private bool isRight;
     private bool isLeft;
 
@@ -21,12 +19,14 @@ public class Pizza : MonoBehaviour
     {
         isLeft = true;
         sprite.flipX = true;
+        SoundManager.PlayAudioClip(AudioData.Pizza);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
+        SoundManager.PlayAudioClip(AudioData.Pizza);
     }
 
     void FixedUpdate()
@@ -42,9 +42,6 @@ public class Pizza : MonoBehaviour
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
-        //Give the player knockback
-        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        //rbPlayer.AddForce((rbPizza.position - rbPlayer.position).normalized * -knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

@@ -6,7 +6,7 @@ public class PickupSpawner : MonoBehaviour
     [SerializeField] private Pickup pickup;
     private Pickup spawnedPickup;
     private int spawnChance;
-
+    [SerializeField] private FXManager fxManager;
     private bool isSpawned;
 
     void Start()
@@ -41,6 +41,7 @@ public class PickupSpawner : MonoBehaviour
             if (i == 0)
             {
                 Pickup currPickup = Instantiate(pickup, transform.position, transform.rotation) as Pickup;
+                fxManager.PlayFX(0, currPickup.transform.position);
                 spawnedPickup = currPickup;
                 isSpawned = true;
             }

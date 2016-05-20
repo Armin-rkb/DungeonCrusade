@@ -11,6 +11,13 @@ public class Explosion : MonoBehaviour
     [SerializeField] private float damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    [SerializeField] private CameraShake cameraShake;
+
+    void Start()
+    {
+        cameraShake.Shake(1f);
+        SoundManager.PlayAudioClip(AudioData.Explosion);
+    }
 
     void Hit(GameObject player)
     {
@@ -18,8 +25,11 @@ public class Explosion : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        //rbPlayer.AddForce((rbExplosion.position - rbPlayer.position).normalized * -knockback, ForceMode2D.Impulse);
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        Vector2 currPosition = (rbExplosion.position - rbPlayer.position).normalized;
+        float xPos = currPosition.x * knockback;
+        playerMovement.ApplyKnockback(xPos);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

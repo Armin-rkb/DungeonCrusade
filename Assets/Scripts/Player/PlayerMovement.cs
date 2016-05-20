@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour {
     private bool _spacePressed;
     private bool _canJump;
     private bool _onWall;
-
+    private bool _isHit;
     private bool _joystickEnabled;
     //Bool
 
@@ -35,6 +35,9 @@ public class PlayerMovement : MonoBehaviour {
     }
     //int
 
+    //Script
+    private PlayerWeapon playerweapon;
+    //Script
     
     //RigidBody2D
     private Rigidbody2D _playerRigidBody2D;
@@ -43,17 +46,37 @@ public class PlayerMovement : MonoBehaviour {
 	void Start ()
     {
         _playerRigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
+        playerweapon = this.gameObject.GetComponent<PlayerWeapon>();
 	}
 	
 	void FixedUpdate ()
     {
-        RigidBodyMove();
-        Jump();
+        if (!_isHit)
+        {
+            RigidBodyMove();
+            Jump();
+        }
 	}
 
     void Update ()
     {
         JumpBool();
+    }
+
+    public void ApplyKnockback(float xPos)
+    {
+        _isHit = true;
+        _playerRigidBody2D.velocity = new Vector2(-xPos, _playerRigidBody2D.velocity.y);
+        StartCoroutine(Recover());
+    }
+
+    IEnumerator Recover()
+    {
+        playerweapon.enabled = false;
+        yield return new WaitForSeconds(0.25f);
+        playerweapon.enabled = true;
+        _isHit = false;
+        _canJump = false;
     }
 
     void RigidBodyMove()
@@ -81,6 +104,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             if (!_spacePressed && _amountJumps < 2)
             {
+                SoundManager.PlayAudioClip(AudioData.Jump);
                 _playerRigidBody2D.velocity = new Vector2(0, _jumpSpeed);
 
                 _spacePressed = true;

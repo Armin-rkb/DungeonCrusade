@@ -21,12 +21,14 @@ public class Shuriken : MonoBehaviour
     {
         isLeft = true;
         sprite.flipX = true;
+        SoundManager.PlayAudioClip(AudioData.Shuriken);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
+        SoundManager.PlayAudioClip(AudioData.Shuriken);
     }
 
     void FixedUpdate()

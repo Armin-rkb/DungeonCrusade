@@ -10,4 +10,9 @@ public class AudioData
     public const int Pizza = 4;
     public const int Sock = 5;
     public const int Barrel = 6;
+    public const int Explosion = 7;
+    public const int Chest = 8;
+    public const int Jump = 9;
+
 }
+    

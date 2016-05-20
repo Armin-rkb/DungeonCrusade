@@ -26,12 +26,14 @@ public class Sock : MonoBehaviour
     {
         isLeft = true;
         sprite.flipX = true;
+        SoundManager.PlayAudioClip(AudioData.Sock);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
+        SoundManager.PlayAudioClip(AudioData.Sock);
     }
 
     void FixedUpdate()

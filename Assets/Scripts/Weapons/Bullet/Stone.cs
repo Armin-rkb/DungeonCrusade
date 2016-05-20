@@ -21,12 +21,14 @@ public class Stone : MonoBehaviour
     {
         isLeft = true;
         sprite.flipX = true;
+        SoundManager.PlayAudioClip(AudioData.stone);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
+        SoundManager.PlayAudioClip(AudioData.stone);
     }
 
     void FixedUpdate()
@@ -43,9 +45,11 @@ public class Stone : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        //rbPlayer.AddForce((rbStone.position - rbPlayer.position).normalized * -knockback);
-        //rbPlayer.isKinematic = false;
+        Vector2 currPosition = (rbStone.position - rbPlayer.position).normalized;
+        float xPos = currPosition.x * knockback;
+        playerMovement.ApplyKnockback(xPos);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

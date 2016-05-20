@@ -89,7 +89,8 @@ MonoBehaviour:
   rbExplosion: {fileID: 5099182}
   boxCollider: {fileID: 6133146}
   damage: 3
-  knockback: 300
+  knockback: 6
+  cameraShake: {fileID: 11480856, guid: c90f0292480499a40a033ff0241fd43b, type: 2}
 --- !u!212 &21286284
 SpriteRenderer:
   m_ObjectHideFlags: 1

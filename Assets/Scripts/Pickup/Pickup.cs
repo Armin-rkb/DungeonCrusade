@@ -14,6 +14,9 @@ public class Pickup : MonoBehaviour
 
     void GiveWeapon(GameObject player)
     {
+        //Play chest open sound
+        SoundManager.PlayAudioClip(AudioData.Chest);
+
         //Get a random number to put in our player weaponlist
         int randomWeapon = Random.Range(1, 7);
         PlayerWeapon playerWeapon = player.GetComponent<PlayerWeapon>();

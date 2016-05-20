@@ -66,8 +66,11 @@ public class Pill : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        //rbPlayer.AddForce((rbPill.position - rbPlayer.position).normalized * -knockback);
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        Vector2 currPosition = (rbPill.position - rbPlayer.position).normalized;
+        float xPos = currPosition.x * knockback;
+        playerMovement.ApplyKnockback(xPos);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

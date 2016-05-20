@@ -21,12 +21,14 @@ public class Hadouken : MonoBehaviour
     {
         isLeft = true;
         sprite.flipX = true;
+        SoundManager.PlayAudioClip(AudioData.Hadouken);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
+        SoundManager.PlayAudioClip(AudioData.Hadouken);
     }
 
     void FixedUpdate()
@@ -43,8 +45,11 @@ public class Hadouken : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage);
         //Give the player knockback
-        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        //rbPlayer.AddForce((rbHadouken.position - rbPlayer.position).normalized * -knockback);
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        Vector2 currPosition = (rbHadouken.position - rbPlayer.position).normalized;
+        float xPos = currPosition.x * knockback;
+        playerMovement.ApplyKnockback(xPos);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
