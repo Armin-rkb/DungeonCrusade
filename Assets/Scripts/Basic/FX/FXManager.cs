@@ -35,14 +35,14 @@ public class FXManager : MonoBehaviour {
 	public void PlayFX(int fx, Vector2 fxposition)
     {
         Instantiate(_FXObj[fx], fxposition, Quaternion.identity);
-       // StartCoroutine(DestroyFX(fx));
+      //  StartCoroutine(DestroyFX(fx));
     }
 
     
     private IEnumerator DestroyFX(int fx)
     {
         yield return new WaitForSeconds(3);
-        Destroy(_FXObj[fx].gameObject);
+        Destroy(this.gameObject);
     }
      
 }

@@ -15,7 +15,7 @@ public class PlayerFX : MonoBehaviour {
         _fxManager.PlayFX(0, transform.position);
 
        // HealthPlayer.OnP1Death += DeathFX;
-        //HealthPlayer.OnP2Death += DeathFX;
+       // HealthPlayer.OnP2Death += DeathFX;
 	}
 	
 

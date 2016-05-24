@@ -10,7 +10,7 @@ public class Pill : MonoBehaviour
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
-    [SerializeField] private float damage;
+    [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
     //How long the bullet will stay

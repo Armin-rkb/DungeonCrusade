@@ -10,7 +10,7 @@ public class Pizza : MonoBehaviour
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
-    [SerializeField] private float damage;
+    [SerializeField] private int damage;
     private bool isRight;
     private bool isLeft;
 

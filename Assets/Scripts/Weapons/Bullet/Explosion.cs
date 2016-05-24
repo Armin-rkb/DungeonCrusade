@@ -8,7 +8,7 @@ public class Explosion : MonoBehaviour
     //Collider of the Gameobject
     [SerializeField] private BoxCollider2D boxCollider;
     //Amout of damage that the bullet will deal
-    [SerializeField] private float damage;
+    [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
     [SerializeField] private CameraShake cameraShake;

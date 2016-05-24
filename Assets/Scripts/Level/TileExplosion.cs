@@ -14,10 +14,10 @@ public class TileExplosion : MonoBehaviour {
     {
 
         print(coll.gameObject);
-        if (coll.gameObject.tag == GameTags.player)
+        if (coll.gameObject.name == "NewExplosion(Clone)")
         {
 
-            print("GOT EEM");
+            SoundManager.PlayAudioClip(7);
             _fxManager.PlayFX(0, transform.position);
             Destroy(this.gameObject);
            

@@ -19,10 +19,12 @@ public class MainMenu : MonoBehaviour {
 
     //Bool
     private bool _runOnce;
+    [SerializeField] bool _adjustRound;
     //Bool
 
     void Start ()
     {
+        if (_loadingObject != null)
         _loadingObject.SetActive(false);
     }
 
@@ -31,8 +33,14 @@ public class MainMenu : MonoBehaviour {
         StartCoroutine("PlayButton");
     }
 
+    public void GoToMenu()
+    {
+        Application.LoadLevel("Menu");
+    }
+
     void Update()
     {
+        if (_adjustRound)
         AdjustRound();    
     }
 
@@ -68,12 +76,14 @@ public class MainMenu : MonoBehaviour {
     private IEnumerator PlayButton()
     {
         foreach (GameObject falseobject in _falseObjects)
+            if (falseobject != null)
             falseobject.SetActive(false);
 
+        if (_loadingObject != null)
         _loadingObject.SetActive(true);
 
 
-        AsyncOperation async = Application.LoadLevelAsync("SceneFerry");
+        AsyncOperation async = Application.LoadLevelAsync("SceneFerry2");
 
 
         while (!async.isDone)

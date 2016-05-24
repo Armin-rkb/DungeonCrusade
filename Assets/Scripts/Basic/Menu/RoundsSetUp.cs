@@ -55,8 +55,11 @@ public class RoundsSetUp : MonoBehaviour
 
     void CheckRound()
     {
+        if (_roundText != null)
+        {
             _roundText = _roundObj.GetComponent<Text>();
             _roundText.text = "Rounds: " + Round;
+        }
     }
 
     public void SaveResource()
@@ -89,8 +92,12 @@ public class RoundsSetUp : MonoBehaviour
 
             file.Close();
 
-            _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Rounds: " + saveData.round;
+            if (_roundObj != null)
+            {
+                _roundText = _roundObj.GetComponent<Text>();
+                _roundText.text = "Rounds: " + saveData.round;
+            }
+            
         }
 
         else

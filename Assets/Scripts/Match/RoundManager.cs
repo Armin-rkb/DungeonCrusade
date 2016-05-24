@@ -37,6 +37,9 @@ public class RoundManager : MonoBehaviour {
     //GameObject
     [SerializeField]
     private GameObject _winText;
+
+    [SerializeField]
+    private GameObject[] _buttonObjects;
     //GameObject
 
     //GameObject
@@ -50,6 +53,11 @@ public class RoundManager : MonoBehaviour {
     private RoundsSetUp _roundSetUp;
     //Scripts
 
+    [SerializeField]
+    private AudioSource levelOST;
+
+    bool runOnce;
+
 	void Start () 
     {
         _winText.SetActive(false);
@@ -60,6 +68,9 @@ public class RoundManager : MonoBehaviour {
 
         foreach (GameObject roundobj in _roundObjects)
             _roundText = roundobj.GetComponent<Text>();
+
+        foreach (GameObject button in _buttonObjects)
+            button.SetActive(false);
 
         _roundText.text = "Round " + _amountOfRounds;
 
@@ -76,7 +87,7 @@ public class RoundManager : MonoBehaviour {
     private void StopMatch()
     {
         if (_amountOfRounds > _roundSetUp.Round)
-            StartCoroutine("StopGame");
+            StopGame();
     }
 
     private void ExtendMatch()
@@ -89,6 +100,9 @@ public class RoundManager : MonoBehaviour {
                 _roundSetUp.AddRound += 1;
                 _scoreText.color = new Color(255, 0, 0);
             }
+            else
+                _scoreText.color = new Color(255, 255, 255);
+
         }
             
     }
@@ -98,8 +112,7 @@ public class RoundManager : MonoBehaviour {
         
 
         _amountOfRounds++;
-
-       
+        _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
             foreach (GameObject roundobj in _roundObjects)
                 _roundText = roundobj.GetComponent<Text>();
@@ -120,6 +133,8 @@ public class RoundManager : MonoBehaviour {
             _roundObjects[1].SetActive(true);
 
             _matchStart.StartCoroutine("StartNewRound");
+
+            ExtendMatch();
             }
 
 
@@ -127,23 +142,33 @@ public class RoundManager : MonoBehaviour {
             _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
 
-            ExtendMatch();
+           
             yield return new WaitForSeconds(1);
             _extendedText.SetActive(false);
     }
 
-    private IEnumerator StopGame()
+    private void StopGame()
     {
-        _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
+      
 
-        _winText.SetActive(true);
+        if (!runOnce)
+        {
+            levelOST.Stop();
+            SoundManager.PlayAudioClip(11);
 
-        if (_checkScore.P1Score > _checkScore.P2Score)
-            _winText.GetComponent<Text>().text = "P1 WINS \n \n" + "KILLS: " + _checkScore.P1Score + "\n DEATHS: " + _checkScore.P2Score;
-        else
-            _winText.GetComponent<Text>().text = "P2 WINS \n \n" + "KILLS: " + _checkScore.P2Score + "\n DEATHS: " + _checkScore.P1Score;
+            foreach (GameObject button in _buttonObjects)
+                button.SetActive(true);
 
-        yield return new WaitForSeconds(3);
-        Application.LoadLevel("Menu");
+            _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
+
+            _winText.SetActive(true);
+
+            if (_checkScore.P1Score > _checkScore.P2Score)
+                _winText.GetComponent<Text>().text = "P1 WINS \n \n" + "KILLS: " + _checkScore.P1Score + "\n DEATHS: " + _checkScore.P2Score;
+            else
+                _winText.GetComponent<Text>().text = "P2 WINS \n \n" + "KILLS: " + _checkScore.P2Score + "\n DEATHS: " + _checkScore.P1Score;
+
+            runOnce = true;
+        }
     }
 }
