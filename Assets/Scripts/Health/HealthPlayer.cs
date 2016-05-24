@@ -9,7 +9,8 @@ public class HealthPlayer : MonoBehaviour, IHealth
     public delegate void PlayerDeath(HealthPlayer player);
     public delegate void PlayerHeart(HealthPlayer player);
 
-    public static event PlayerHeart ReduceHeart;
+    public static event PlayerHeart ReduceP1Heart;
+    public static event PlayerHeart ReduceP2Heart;
 
     public static event PlayerDeath OnP1Death;
     public static event PlayerDeath OnP2Death;
@@ -19,6 +20,9 @@ public class HealthPlayer : MonoBehaviour, IHealth
     //GameObjects
     [SerializeField]
     private GameObject _roundObject;
+
+    [SerializeField]
+    private GameObject _sparkleFX;
 
     [SerializeField]
     private List<GameObject> _pointObjects;
@@ -36,6 +40,7 @@ public class HealthPlayer : MonoBehaviour, IHealth
     public int PlayerHealth
     {
         get { return playerHealth; }
+        set { playerHealth += playerHealth; }
     }
 
     private int playerPoint = 1;
@@ -44,9 +49,12 @@ public class HealthPlayer : MonoBehaviour, IHealth
     {
         get { return playerPoint; }
     }
+
+ 
    
     void Start()
     {
+        
         _roundObject = GameObject.Find("RoundManager");
         _roundManager = _roundObject.GetComponent<RoundManager>();
         _checkPort = this.GetComponent<PlayerMovement>();
@@ -57,13 +65,28 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
     void Update()
     {
+
+        Armour();
         if (playerHealth <= 0)
             playerHealth = 0;
+
+
     }
 
-    public void ChangeHealth(int damage)
+    void Armour()
     {
-        playerHealth -= damage;
+        if (playerHealth > 5)
+            _sparkleFX.SetActive(true);
+        else
+            _sparkleFX.SetActive(false);
+    }
+
+    public void ChangeHealth(int damage, bool hurt)
+    {
+        if (hurt)
+            playerHealth -= damage;
+        else
+            playerHealth += damage;
 
         if (playerHealth <= 0)
             Death();
@@ -72,8 +95,17 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
         SoundManager.PlayAudioClip(12);
 
-        if (ReduceHeart != null)
-            ReduceHeart(this);
+        if(_checkPort.PlayerNumber == 1)
+        {
+            if (ReduceP1Heart != null)
+                ReduceP1Heart(this);
+        }
+        else
+        {
+            if (ReduceP2Heart != null)
+                ReduceP2Heart(this);
+        }
+        
     }
 
     private void Death()
@@ -94,7 +126,7 @@ public class HealthPlayer : MonoBehaviour, IHealth
         {
             if (_checkPort.PlayerNumber == 2)
             {
-                GameObject newpointP2 = Instantiate(_pointObjects[1], transform.position, Quaternion.identity) as GameObject;
+                Instantiate(_pointObjects[1], transform.position, Quaternion.identity);
                 OnP1Death(this);
             }    
         }
@@ -103,8 +135,8 @@ public class HealthPlayer : MonoBehaviour, IHealth
         {
             if (_checkPort.PlayerNumber == 1)
             {
-                GameObject newpointP1 = Instantiate(_pointObjects[0], transform.position, Quaternion.identity) as GameObject;
-                OnP2Death(this);     
+                Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
+                OnP2Death(this);
             }    
         }
     }

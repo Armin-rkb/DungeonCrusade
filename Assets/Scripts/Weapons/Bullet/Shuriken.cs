@@ -43,7 +43,7 @@ public class Shuriken : MonoBehaviour
     {
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage);
+        healthPlayer.ChangeHealth(damage, true);
         //Give the player knockback
         //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
         //rbPlayer.isKinematic = true;

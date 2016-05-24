@@ -80,8 +80,6 @@ public class RoundManager : MonoBehaviour {
     void Update ()
     {
         StopMatch();
-
-        print(_roundSetUp.Round);
     }
 
     private void StopMatch()
@@ -109,8 +107,6 @@ public class RoundManager : MonoBehaviour {
 
     public IEnumerator AddRound()
     {
-        
-
         _amountOfRounds++;
         _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
@@ -132,9 +128,9 @@ public class RoundManager : MonoBehaviour {
             _roundObjects[0].SetActive(false);
             _roundObjects[1].SetActive(true);
 
-            _matchStart.StartCoroutine("StartNewRound");
-
             ExtendMatch();
+
+            _matchStart.StartCoroutine("StartNewRound");
             }
 
 

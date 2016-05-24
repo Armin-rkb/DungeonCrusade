@@ -41,7 +41,7 @@ public class Pizza : MonoBehaviour
     {
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage);
+        healthPlayer.ChangeHealth(damage, true);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
