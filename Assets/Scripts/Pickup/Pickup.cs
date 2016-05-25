@@ -18,20 +18,24 @@ public class Pickup : MonoBehaviour
         SoundManager.PlayAudioClip(AudioData.Chest);
 
         //Get a random number to put in our player weaponlist
-        int randomWeapon = Random.Range(1, 7);
         PlayerWeapon playerWeapon = player.GetComponent<PlayerWeapon>();
-
-        //When we get the same number in the list we will choose the default weapon: 0
-        if (playerWeapon.currNumber == randomWeapon)
-            randomWeapon = 0;
+        int randWeapon = playerWeapon.weaponList.GetRandomIndexExcluding(playerWeapon.currNumber);
         
-        playerWeapon.SetNewWeapon(randomWeapon);
+        playerWeapon.SetNewWeapon(randWeapon);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject != null)
         {
+            /* Kill player on landing (May be used for testing)
+            if (coll.gameObject.CompareTag(GameTags.player))
+            {
+                HealthPlayer playerHealth = coll.gameObject.GetComponent<HealthPlayer>();
+                playerHealth.ChangeHealth(5);
+            }
+            */
+
             if (coll.gameObject.CompareTag(GameTags.ground))
             {
                 rbPickup.gravityScale = 0;

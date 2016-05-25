@@ -95,7 +95,7 @@ MonoBehaviour:
   sprite: {fileID: 21272338}
   speed: 2
   damage: 2
-  knockback: 2
+  knockback: 4
 --- !u!212 &21272338
 SpriteRenderer:
   m_ObjectHideFlags: 1

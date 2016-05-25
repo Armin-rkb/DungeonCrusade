@@ -5,8 +5,6 @@ public class Hadouken : MonoBehaviour
 {
     //Rigidbody of the Gameobject
     [SerializeField] private Rigidbody2D rbHadouken;
-    //Sprite of this bullet
-    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -20,7 +18,6 @@ public class Hadouken : MonoBehaviour
     public void ShootLeft()
     {
         isLeft = true;
-        sprite.flipX = true;
         SoundManager.PlayAudioClip(AudioData.Hadouken);
     }
 

@@ -22,7 +22,7 @@ public class HadoukenHolder : MonoBehaviour, IWeapon
         }
         else
         {
-            Hadouken currHadouken = Instantiate(hadouken, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(hadouken.transform.rotation)) as Hadouken;
+            Hadouken currHadouken = Instantiate(hadouken, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Euler(0,0,180)) as Hadouken;
             Physics2D.IgnoreCollision(currHadouken.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             currHadouken.GetComponent<Hadouken>().ShootLeft();
         }

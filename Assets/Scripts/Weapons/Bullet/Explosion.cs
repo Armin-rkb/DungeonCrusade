@@ -17,6 +17,12 @@ public class Explosion : MonoBehaviour
     {
         cameraShake.Shake(1f);
         SoundManager.PlayAudioClip(AudioData.Explosion);
+        Invoke("DisableCollider", .5f);
+    }
+
+    void DisableCollider()
+    {
+        boxCollider.enabled = false;
     }
 
     void Hit(GameObject player)
@@ -39,7 +45,6 @@ public class Explosion : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
-                boxCollider.enabled = false;
                 rbExplosion.isKinematic = true;
             }
         }
