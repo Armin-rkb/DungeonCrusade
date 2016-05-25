@@ -76,7 +76,7 @@ public class MatchStart : MonoBehaviour {
 
             yield return new WaitForSeconds(_countDownTimer);
 
-            _countDownTimer = 5;
+            _countDownTimer = 3;
             _countDownObj.SetActive(false);
 
             _inGameCharacters[0] = GameObject.Find("Player(Clone)");
@@ -97,10 +97,19 @@ public class MatchStart : MonoBehaviour {
     private void InstantiateNewCharacters()
     {
         if (_inGameCharacters[0] == null)
-                Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
-                //P1
+        {
+            Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
+            //P1
+            _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
+            
+        }
+              
         else if (_inGameCharacters[1] == null)
-                Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
-                //P2           
+        {
+            Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
+            //P2     
+            _inGameCharacters[0].transform.position = _transformPoints[0].transform.position;
+        }
+                     
     }
 }
