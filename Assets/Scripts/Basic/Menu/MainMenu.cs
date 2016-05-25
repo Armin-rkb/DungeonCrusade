@@ -33,10 +33,20 @@ public class MainMenu : MonoBehaviour {
         StartCoroutine("PlayButton");
     }
 
+    /*
+     * Button to use for the Main Menu's play button.
+     * Starts the IEnumerator PlayButton.
+     */
+
     public void GoToMenu()
     {
         Application.LoadLevel("Menu");
     }
+
+    /*
+     * Button to use for the game's Menu button.
+     * Simply loads the Menu's scene.
+     */
 
     void Update()
     {
@@ -86,7 +96,7 @@ public class MainMenu : MonoBehaviour {
         AsyncOperation async = Application.LoadLevelAsync("SceneFerry2");
 
 
-        while (!async.isDone)
+        while (!async.isDone && _roundsSetUp != null)
         {
             _roundsSetUp.SaveResource();
             yield return null;

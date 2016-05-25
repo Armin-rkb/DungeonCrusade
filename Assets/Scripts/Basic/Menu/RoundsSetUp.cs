@@ -9,8 +9,8 @@ public class RoundsSetUp : MonoBehaviour
 
     //Int
     [SerializeField]
-    private int round;
-    private int one = 1;
+    private int round; // The round that the game will play in.
+    private int one = 1; // This is the value we will be using to change the rounds.
     //Int
 
     //Text
@@ -26,8 +26,12 @@ public class RoundsSetUp : MonoBehaviour
     {
         LoadResource();
         
-           _roundText = _roundObj.GetComponent<Text>();
-           _roundText.text = "Rounds: " + Round;
+        if (_roundText != null)
+        {
+            _roundText = _roundObj.GetComponent<Text>();
+            _roundText.text = "Rounds: " + Round;
+        }
+           
     }
 
 

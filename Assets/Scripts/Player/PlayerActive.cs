@@ -10,28 +10,37 @@ public class PlayerActive : MonoBehaviour {
 
     public delegate void IsPlayerActive(PlayerActive player);
 
-    public static event IsPlayerActive ResetHearts;
+
     public static event IsPlayerActive CheckP1Active;
     public static event IsPlayerActive CheckP2Active;
+
+    public static event IsPlayerActive ResetP1Heart;
+    public static event IsPlayerActive ResetP2Heart;
 
 
 	void Start () 
     {
-        if (ResetHearts != null)
-            ResetHearts(this);
 
 	if (CheckP1Active != null)
     {
         if (_checkPort.PlayerNumber == 1)
-        CheckP1Active(this);
+        {
+            CheckP1Active(this);
+
+            if (ResetP1Heart != null)
+                ResetP1Heart(this);
+        }     
     }
 
     if (CheckP2Active != null)
     {
         if (_checkPort.PlayerNumber == 2)
+        {
             CheckP2Active(this);
+
+            if (ResetP2Heart != null)
+                ResetP2Heart(this);
+        }        
     }
 	}
-	
-
 }

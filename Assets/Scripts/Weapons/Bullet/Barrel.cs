@@ -50,7 +50,7 @@ public class Barrel : MonoBehaviour
     {
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage);
+        healthPlayer.ChangeHealth(damage, true);
         //Give the player knockback
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
