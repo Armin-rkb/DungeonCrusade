@@ -7,6 +7,13 @@ public class PlayerMovement : MonoBehaviour {
     //Float
     [SerializeField]
     private float _movementSpeed = 2f;
+
+    public float MovementSpeed
+    {
+        get { return _movementSpeed; }
+        set { _movementSpeed += 0; }
+    }
+
     private float _jumpSpeed;
     private float _amountJumps = 0;
     //Float
@@ -134,24 +141,20 @@ public class PlayerMovement : MonoBehaviour {
             _movementSpeed = 7f;
             _jumpSpeed = 10f;
         }
-        else if (coll.gameObject.tag == GameTags.wallleft || coll.gameObject.tag == GameTags.wallright)
-        {
-            _onWall = true;
-            _amountJumps = 2f;
-        }
-
-        if (coll.gameObject.tag == GameTags.wall)
+        else if (coll.gameObject.CompareTag(GameTags.wallleft) || coll.gameObject.CompareTag(GameTags.wallright))
         {
             _isGrounded = false;
-            _movementSpeed = 0;
-            _jumpSpeed = 6f;
+            _amountJumps = 2f;
             _playerRigidBody2D.gravityScale = 0.5f;
+            _jumpSpeed = 6f;
+            _movementSpeed = 0;
         }
+
     }
 
     void OnCollisionExit2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == GameTags.wall)
+        if (coll.gameObject.CompareTag(GameTags.wallleft) || coll.gameObject.CompareTag(GameTags.wallright))
         {
             _movementSpeed = 7f;
             _amountJumps = 1f;

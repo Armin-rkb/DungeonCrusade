@@ -12,8 +12,6 @@ public class TileExplosion : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D coll)
     {
-
-        print(coll.gameObject);
         if (coll.gameObject.name == "NewExplosion(Clone)")
         {
 
