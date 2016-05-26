@@ -49,7 +49,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &6161932
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -95,7 +95,7 @@ MonoBehaviour:
   rbExplosion: {fileID: 5030354}
   boxCollider: {fileID: 6161932}
   damage: 4
-  knockback: 6
+  knockback: 8
   cameraShake: {fileID: 11480856, guid: c90f0292480499a40a033ff0241fd43b, type: 2}
 --- !u!114 &11447364
 MonoBehaviour:

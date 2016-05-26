@@ -73,6 +73,7 @@ public class PlayerMovement : MonoBehaviour {
     public void ApplyKnockback(float xPos)
     {
         _isHit = true;
+        SoundManager.PlayAudioClip(AudioData.Hit);
         _playerRigidBody2D.velocity = new Vector2(-xPos, _playerRigidBody2D.velocity.y);
         StartCoroutine(Recover());
     }

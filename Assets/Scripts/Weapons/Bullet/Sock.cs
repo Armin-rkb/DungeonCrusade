@@ -41,9 +41,15 @@ public class Sock : MonoBehaviour
         explodeTime--;
 
         if (isRight)
-            rbSock.velocity = new Vector2(speed, rbSock.velocity.y);
+        {
+            rbSock.AddForce(Vector2.right * speed, ForceMode2D.Impulse);
+            isRight = false;
+        }
         else if (isLeft)
-            rbSock.velocity = new Vector2(-speed, rbSock.velocity.y);
+        {
+            rbSock.AddForce(Vector2.right * -speed, ForceMode2D.Impulse);
+            isLeft = false;
+        }
 
         if (bounce)
         {

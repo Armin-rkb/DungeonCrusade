@@ -3,9 +3,9 @@ using System.Collections;
 
 public class PillHolder : MonoBehaviour, IWeapon
 {
-    [SerializeField]
-    private Pill pill;
-    private PlayerFlip flip;
+    [SerializeField] private Pill pill;
+    [SerializeField] private PlayerCollision playerCollision;
+    [SerializeField] private PlayerFlip flip;
 
 
     void Awake()
@@ -17,14 +17,20 @@ public class PillHolder : MonoBehaviour, IWeapon
     {
         if (flip.facingRight)
         {
-            Pill currPill = Instantiate(pill, new Vector2(transform.position.x + 1, transform.position.y), pill.transform.rotation) as Pill;
-            Physics2D.IgnoreCollision(currPill.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            Pill currPill = Instantiate(pill, new Vector2(transform.position.x + .5f, transform.position.y), pill.transform.rotation) as Pill;
+            for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
+            {
+                Physics2D.IgnoreCollision(currPill.GetComponent<Collider2D>(), playerCollision._ignoredColl[i]);
+            }
             currPill.GetComponent<Pill>().ShootRight();
         }
         else
         {
-            Pill currPill = Instantiate(pill, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(pill.transform.rotation)) as Pill;
-            Physics2D.IgnoreCollision(currPill.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            Pill currPill = Instantiate(pill, new Vector2(transform.position.x - .5f, transform.position.y), Quaternion.Inverse(pill.transform.rotation)) as Pill;
+            for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
+            {
+                Physics2D.IgnoreCollision(currPill.GetComponent<Collider2D>(), playerCollision._ignoredColl[i]);
+            }
             currPill.GetComponent<Pill>().ShootLeft();
         }
     }

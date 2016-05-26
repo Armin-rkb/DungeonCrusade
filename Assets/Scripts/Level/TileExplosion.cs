@@ -14,11 +14,9 @@ public class TileExplosion : MonoBehaviour {
     {
         if (coll.gameObject.name == "NewExplosion(Clone)")
         {
-
             SoundManager.PlayAudioClip(7);
             _fxManager.PlayFX(0, transform.position);
             Destroy(this.gameObject);
-           
         }
     }
 }

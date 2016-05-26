@@ -13,6 +13,9 @@ public class AudioData
     public const int Explosion = 7;
     public const int Chest = 8;
     public const int Jump = 9;
+    public const int ScoreUp = 10;
+    public const int Win = 11;
+    public const int Hit = 12;
 
 }
     

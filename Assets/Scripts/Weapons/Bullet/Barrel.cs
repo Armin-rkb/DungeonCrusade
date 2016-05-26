@@ -13,6 +13,8 @@ public class Barrel : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    //How long the bullet will stay
+    private float lifeTime = 150f;
     private bool isRight;
     private bool isLeft;
 
@@ -33,10 +35,15 @@ public class Barrel : MonoBehaviour
 
     void FixedUpdate()
     {
+        lifeTime--;
+
         if (isRight)
             rbBarrel.velocity = new Vector2(speed, rbBarrel.velocity.y);
         else if (isLeft)
             rbBarrel.velocity = new Vector2(-speed, rbBarrel.velocity.y);
+
+        if (lifeTime < 0)
+            gameObject.AddComponent<Fade>();
     }
 
     void Hit(GameObject player)

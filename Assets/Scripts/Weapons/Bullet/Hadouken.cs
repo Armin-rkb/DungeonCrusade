@@ -5,8 +5,6 @@ public class Hadouken : MonoBehaviour
 {
     //Rigidbody of the Gameobject
     [SerializeField] private Rigidbody2D rbHadouken;
-    //Sprite of this bullet
-    [SerializeField] private SpriteRenderer sprite;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -16,11 +14,11 @@ public class Hadouken : MonoBehaviour
     private bool isRight;
     private bool isLeft;
 
+
     //Sets the place the player is facing
     public void ShootLeft()
     {
         isLeft = true;
-        sprite.flipX = true;
         SoundManager.PlayAudioClip(AudioData.Hadouken);
     }
 
@@ -64,8 +62,11 @@ public class Hadouken : MonoBehaviour
                 Destroy(this.gameObject);
             }
             else
+            {
+                rbHadouken.isKinematic = true;
+                rbHadouken.velocity = new Vector2(0,0);
                 gameObject.AddComponent<Fade>();
-
+            }
         }
     }
 }

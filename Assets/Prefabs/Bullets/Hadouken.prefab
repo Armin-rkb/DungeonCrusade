@@ -92,10 +92,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbHadouken: {fileID: 5096370}
-  sprite: {fileID: 21265280}
   speed: 3
   damage: 2
-  knockback: 5
+  knockback: 7
 --- !u!212 &21265280
 SpriteRenderer:
   m_ObjectHideFlags: 1
