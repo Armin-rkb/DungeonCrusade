@@ -4,26 +4,27 @@ using System.Collections;
 public class PizzaHolder : MonoBehaviour, IWeapon
 {
     [SerializeField] private Pizza pizza;
-    private PlayerFlip flip;
-
-
-    void Awake()
-    {
-        flip = GetComponent<PlayerFlip>();
-    }
+    [SerializeField] private PlayerCollision playerCollision;
+    [SerializeField] private PlayerFlip flip;
 
     public void Shoot()
     {
         if (flip.facingRight)
         {
-            Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x + 1, transform.position.y), pizza.transform.rotation) as Pizza;
-            Physics2D.IgnoreCollision(currPizza.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x + .5f, transform.position.y), pizza.transform.rotation) as Pizza;
+            for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
+            {
+                Physics2D.IgnoreCollision(currPizza.GetComponent<Collider2D>(), playerCollision._ignoredColl[i]);
+            }
             currPizza.GetComponent<Pizza>().ShootRight();
         }
         else
         {
-            Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x - 1, transform.position.y), Quaternion.Inverse(pizza.transform.rotation)) as Pizza;
-            Physics2D.IgnoreCollision(currPizza.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x - .5f, transform.position.y), Quaternion.Inverse(pizza.transform.rotation)) as Pizza;
+            for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
+            {
+                Physics2D.IgnoreCollision(currPizza.GetComponent<Collider2D>(), playerCollision._ignoredColl[i]);
+            }
             currPizza.GetComponent<Pizza>().ShootLeft();
         }
     }

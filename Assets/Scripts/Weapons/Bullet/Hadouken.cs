@@ -14,6 +14,7 @@ public class Hadouken : MonoBehaviour
     private bool isRight;
     private bool isLeft;
 
+
     //Sets the place the player is facing
     public void ShootLeft()
     {
@@ -61,8 +62,11 @@ public class Hadouken : MonoBehaviour
                 Destroy(this.gameObject);
             }
             else
+            {
+                rbHadouken.isKinematic = true;
+                rbHadouken.velocity = new Vector2(0,0);
                 gameObject.AddComponent<Fade>();
-
+            }
         }
     }
 }

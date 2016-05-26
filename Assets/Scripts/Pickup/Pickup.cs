@@ -11,6 +11,7 @@ public class Pickup : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     //Our new sprite
     [SerializeField] private Sprite chestOpen;
+    //playercollision script
 
     void GiveWeapon(GameObject player)
     {
@@ -28,14 +29,6 @@ public class Pickup : MonoBehaviour
     {
         if (coll.gameObject != null)
         {
-            /* Kill player on landing (May be used for testing)
-            if (coll.gameObject.CompareTag(GameTags.player))
-            {
-                HealthPlayer playerHealth = coll.gameObject.GetComponent<HealthPlayer>();
-                playerHealth.ChangeHealth(5);
-            }
-            */
-
             if (coll.gameObject.CompareTag(GameTags.ground))
             {
                 rbPickup.gravityScale = 0;

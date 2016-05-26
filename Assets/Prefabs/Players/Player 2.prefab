@@ -458,6 +458,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pizza: {fileID: 11479922, guid: f4caa93bfd0e3414099de6dc4ba1ecc2, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11419258
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -470,6 +472,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stone: {fileID: 11434972, guid: f059b90933debd24087f7bc86db99104, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11426748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -482,6 +486,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barrel: {fileID: 11430042, guid: 8bbcac6be53421243a1b17bfcb378ab8, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11427156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -519,6 +525,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pill: {fileID: 11409932, guid: 1d01d18dab326b74c98ef48f2d3f1c5a, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11458092
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -531,6 +539,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sock: {fileID: 11491612, guid: 4326c6f3beab7fc4f9878e77c18108bc, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11460266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -543,6 +553,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hadouken: {fileID: 11424806, guid: 71d6aaf3b906e7849bf66d3560244af5, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11460504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -555,6 +567,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shuriken: {fileID: 11466928, guid: 9464fabf7a0b4e94a98db6b64fd9a407, type: 2}
+  playerCollision: {fileID: 0}
+  flip: {fileID: 0}
 --- !u!114 &11477508
 MonoBehaviour:
   m_ObjectHideFlags: 1
