@@ -50,6 +50,7 @@ public class PlayerMovement : MonoBehaviour {
     private Rigidbody2D _playerRigidBody2D;
     //RigidBody2D
 
+
 	void Start ()
     {
         _playerRigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
@@ -90,8 +91,19 @@ public class PlayerMovement : MonoBehaviour {
     void RigidBodyMove()
     {
 
-
         float x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
+
+        /*
+        float x;
+
+        if (Input.GetJoystickNames().Length > 0)
+         x = Input.GetAxis(ControllerInputs.horizontalcp + _playerNumber);
+        else
+            
+
+        print("Horizontal Axis: " + x);
+        */
+
 
         if (!_onWall)
         _playerRigidBody2D.velocity = new Vector2(x * _movementSpeed, _playerRigidBody2D.velocity.y);

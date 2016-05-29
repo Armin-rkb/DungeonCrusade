@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 public class RoundManager : MonoBehaviour {
 
+    public delegate void OnNewRoundEventHandler();
+
+    public OnNewRoundEventHandler ResetPlayer;
 
     //int
     private int _amountOfRounds = 1;
@@ -29,10 +32,6 @@ public class RoundManager : MonoBehaviour {
 
     //Text
     private Text _roundText;
-
-  
-  [SerializeField]
-    private Text _scoreText;
     //Text
 
     //GameObject
@@ -65,7 +64,6 @@ public class RoundManager : MonoBehaviour {
         _extendedText.SetActive(false);
 
         _roundSetUp = this.GetComponent<RoundsSetUp>();
-        _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
         foreach (GameObject roundobj in _roundObjects)
             _roundText = roundobj.GetComponent<Text>();
@@ -85,7 +83,7 @@ public class RoundManager : MonoBehaviour {
 
     private void StopMatch()
     {
-        if (_amountOfRounds > _roundSetUp.Round)
+        if (_checkScore.P1Score >= _roundSetUp.Round || _checkScore.P2Score >= _roundSetUp.Round)
             StopGame();
     }
 
@@ -97,19 +95,18 @@ public class RoundManager : MonoBehaviour {
             {
                 _extendedText.SetActive(true);
                 _roundSetUp.AddRound += 1;
-                _scoreText.color = new Color(255, 0, 0);
             }
-            else
-                _scoreText.color = new Color(255, 255, 255);
-
         }
             
     }
 
     public IEnumerator AddRound()
     {
+
+        if (ResetPlayer != null)
+            ResetPlayer();
+
         _amountOfRounds++;
-        _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
             foreach (GameObject roundobj in _roundObjects)
                 _roundText = roundobj.GetComponent<Text>();
@@ -136,10 +133,7 @@ public class RoundManager : MonoBehaviour {
 
 
             _roundText.text = "Round " + _amountOfRounds;
-            _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
-
-
-           
+    
             yield return new WaitForSeconds(1);
             _extendedText.SetActive(false);
     }
@@ -156,13 +150,12 @@ public class RoundManager : MonoBehaviour {
             foreach (GameObject button in _buttonObjects)
                 button.SetActive(true);
 
-            _scoreText.text = _checkScore.P1Score + " - " + _checkScore.P2Score;
 
             _winText.SetActive(true);
 
             if (_checkScore.P1Score > _checkScore.P2Score)
                 _winText.GetComponent<Text>().text = "P1 WINS \n \n" + "KILLS: " + _checkScore.P1Score + "\n DEATHS: " + _checkScore.P2Score;
-            else
+            else if (_checkScore.P2Score > _checkScore.P1Score)
                 _winText.GetComponent<Text>().text = "P2 WINS \n \n" + "KILLS: " + _checkScore.P2Score + "\n DEATHS: " + _checkScore.P1Score;
 
             runOnce = true;

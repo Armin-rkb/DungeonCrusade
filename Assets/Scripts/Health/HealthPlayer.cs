@@ -12,8 +12,14 @@ public class HealthPlayer : MonoBehaviour, IHealth
     public static event PlayerHeart ReduceP1Heart;
     public static event PlayerHeart ReduceP2Heart;
 
+    public static event PlayerHeart ReduceP3Heart;
+    public static event PlayerHeart ReduceP4Heart;
+
     public static event PlayerDeath OnP1Death;
     public static event PlayerDeath OnP2Death;
+
+    public static event PlayerDeath OnP3Death;
+    public static event PlayerDeath OnP4Death;
 
     //Delegates
 
@@ -100,12 +106,23 @@ public class HealthPlayer : MonoBehaviour, IHealth
             if (ReduceP1Heart != null)
                 ReduceP1Heart(this);
         }
-        else
+        else if (_checkPort.PlayerNumber == 2)
         {
             if (ReduceP2Heart != null)
                 ReduceP2Heart(this);
         }
-        
+
+        else if (_checkPort.PlayerNumber == 3)
+        {
+            if (ReduceP3Heart != null)
+                ReduceP3Heart(this);
+        }
+        else
+        {
+            if (ReduceP4Heart != null)
+                ReduceP4Heart(this);
+        }
+
     }
 
     private void Death()
@@ -138,6 +155,24 @@ public class HealthPlayer : MonoBehaviour, IHealth
                 Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
                 OnP2Death(this);
             }    
+        }
+
+        if (OnP3Death != null)
+        {
+            if (_checkPort.PlayerNumber == 3)
+            {
+                Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
+                OnP3Death(this);
+            }
+        }
+
+        if (OnP4Death != null)
+        {
+            if (_checkPort.PlayerNumber == 4)
+            {
+                Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
+                OnP4Death(this);
+            }
         }
     }
 }

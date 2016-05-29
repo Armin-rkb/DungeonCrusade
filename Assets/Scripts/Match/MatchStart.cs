@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class MatchStart : MonoBehaviour {
 
+    [SerializeField]
+    private RoundManager _roundManager;
+
+    [SerializeField]
+    private JoinManager _joinManager;
+
     //GameObjects
     [SerializeField]
     private GameObject _countDownObj;
@@ -31,11 +37,13 @@ public class MatchStart : MonoBehaviour {
     //Transform
 
     bool _runOnce;
+    
 
 	void Start ()
     {
         _countDownText = _countDownObj.GetComponent<Text>();
         StartCoroutine("StartRound");
+        _roundManager.ResetPlayer += ReturnPositions;
 	}
 	
 
@@ -65,13 +73,14 @@ public class MatchStart : MonoBehaviour {
         _countDownTimer = 3;
         _countDownObj.SetActive(false);
 
-        InstantiateCharacters();
+        InstantiateTwoCharacters();
 
         _inGameCharacters = GameObject.FindGameObjectsWithTag(GameTags.player);      
     }
 
     public IEnumerator StartNewRound()
     {
+        ReturnPositions();
             _countDownObj.SetActive(true);
 
             yield return new WaitForSeconds(_countDownTimer);
@@ -81,17 +90,51 @@ public class MatchStart : MonoBehaviour {
 
             _inGameCharacters[0] = GameObject.Find("Player(Clone)");
             _inGameCharacters[1] = GameObject.Find("Player 2(Clone)");
+            if (GameObject.Find("Player 3(Clone)") != null)
+            _inGameCharacters[2] = GameObject.Find("Player 3(Clone)");
+            if (GameObject.Find("Player 4(Clone)") != null)
+            _inGameCharacters[3] = GameObject.Find("Player 4(Clone)");
 
             InstantiateNewCharacters();
     }
 
+     void ReturnPositions()
+    {
+        if (_inGameCharacters[0] == null)
+        {
+            Vector2 velocity = Vector2.zero;
+            _inGameCharacters[1].GetComponent<SpriteRenderer>().enabled = false;
+            _inGameCharacters[1].GetComponent<BoxCollider2D>().enabled = false;
+            _inGameCharacters[1].GetComponent<Rigidbody2D>().isKinematic = true;
+            _inGameCharacters[1].transform.position = Vector2.SmoothDamp(transform.position, _transformPoints[1].transform.position, ref velocity, 0.1f);
+           // _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
+        }
+        else if (_inGameCharacters[1] == null)
+        {
+            Vector2 velocity = Vector2.zero;
+            _inGameCharacters[0].GetComponent<SpriteRenderer>().enabled = false;
+            _inGameCharacters[0].GetComponent<BoxCollider2D>().enabled = false;
+            _inGameCharacters[0].GetComponent<Rigidbody2D>().isKinematic = true;
+            _inGameCharacters[0].transform.position = Vector2.SmoothDamp(transform.position, _transformPoints[0].transform.position, ref velocity, 0.1f);
+        }
 
-    private void InstantiateCharacters()
+    }
+
+    private void InstantiateTwoCharacters()
     {
             Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
         //P1
             Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
         //P2  
+        if (_joinManager.Players == 3 )
+            Instantiate(_amountCharacters[2], _transformPoints[2].position, Quaternion.identity);
+
+        else if (_joinManager.Players > 3)
+        {
+            Instantiate(_amountCharacters[2], _transformPoints[2].position, Quaternion.identity);
+            Instantiate(_amountCharacters[3], _transformPoints[3].position, Quaternion.identity);
+        }
+        
     }
 
     private void InstantiateNewCharacters()
@@ -100,6 +143,9 @@ public class MatchStart : MonoBehaviour {
         {
             Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
             //P1
+            _inGameCharacters[1].GetComponent<SpriteRenderer>().enabled = true;
+            _inGameCharacters[1].GetComponent<BoxCollider2D>().enabled = true;
+            _inGameCharacters[1].GetComponent<Rigidbody2D>().isKinematic = false;
             _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
             
         }
@@ -108,7 +154,23 @@ public class MatchStart : MonoBehaviour {
         {
             Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
             //P2     
+
+            _inGameCharacters[0].GetComponent<SpriteRenderer>().enabled = true;
+            _inGameCharacters[0].GetComponent<BoxCollider2D>().enabled = true;
+            _inGameCharacters[0].GetComponent<Rigidbody2D>().isKinematic = false;
             _inGameCharacters[0].transform.position = _transformPoints[0].transform.position;
+        }
+
+        else if (_inGameCharacters[2] == null)
+        {
+            Instantiate(_amountCharacters[2], _transformPoints[2].position, Quaternion.identity);
+            //P3   
+        }
+
+        else if (_inGameCharacters[3] == null)
+        {
+            Instantiate(_amountCharacters[3], _transformPoints[3].position, Quaternion.identity);
+            //P4   
         }
                      
     }

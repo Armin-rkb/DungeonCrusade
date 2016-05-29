@@ -14,8 +14,14 @@ public class PlayerActive : MonoBehaviour {
     public static event IsPlayerActive CheckP1Active;
     public static event IsPlayerActive CheckP2Active;
 
+    public static event IsPlayerActive CheckP3Active;
+    public static event IsPlayerActive CheckP4Active;
+
     public static event IsPlayerActive ResetP1Heart;
     public static event IsPlayerActive ResetP2Heart;
+
+    public static event IsPlayerActive ResetP3Heart;
+    public static event IsPlayerActive ResetP4Heart;
 
 
 	void Start () 
@@ -41,6 +47,28 @@ public class PlayerActive : MonoBehaviour {
             if (ResetP2Heart != null)
                 ResetP2Heart(this);
         }        
+    }
+
+    if (CheckP3Active != null)
+    {
+        if (_checkPort.PlayerNumber == 3)
+        {
+            CheckP3Active(this);
+
+            if (ResetP3Heart != null)
+                ResetP3Heart(this);
+        }
+    }
+
+    if (CheckP4Active != null)
+    {
+        if (_checkPort.PlayerNumber == 4)
+        {
+            CheckP4Active(this);
+
+            if (ResetP4Heart != null)
+                ResetP4Heart(this);
+        }
     }
 	}
 }
