@@ -13,6 +13,7 @@ public class PlayerWeapon : MonoBehaviour
     private PizzaHolder pizzaHolder;
     private SockHolder sockHolder;
     private BarrelHolder barrelHolder;
+    private DuckHolder duckHolder;
     
     private PlayerMovement playerMovement;
 
@@ -30,7 +31,19 @@ public class PlayerWeapon : MonoBehaviour
         4 = Pizza
         5 = Sock
         6 = Barrel
+        7 = Duck
     */
+    
+    public void SetNewWeapon(int wepNumber)
+    {
+        currentWeapon = weaponList[wepNumber];
+        currNumber = wepNumber;
+    }
+
+    void CheckNewCooldown()
+    {
+        //Hier een Case Switch maken voor cooldown
+    }
 
     void Awake()
     {
@@ -44,7 +57,7 @@ public class PlayerWeapon : MonoBehaviour
         pizzaHolder = GetComponent<PizzaHolder>();
         sockHolder = GetComponent<SockHolder>();
         barrelHolder = GetComponent<BarrelHolder>();
-        
+        duckHolder = GetComponent<DuckHolder>();
     }
 
     void Start()
@@ -58,6 +71,7 @@ public class PlayerWeapon : MonoBehaviour
         weaponList.Add(pizzaHolder);
         weaponList.Add(sockHolder);
         weaponList.Add(barrelHolder);
+        weaponList.Add(duckHolder);
         
         currentWeapon = weaponList[currNumber];
     }
@@ -78,11 +92,4 @@ public class PlayerWeapon : MonoBehaviour
             currentWeapon.Shoot();
         }
     }
-
-    public void SetNewWeapon(int wepNumber)
-    {
-        currentWeapon = weaponList[wepNumber];
-        currNumber = wepNumber;
-    }
-
 }

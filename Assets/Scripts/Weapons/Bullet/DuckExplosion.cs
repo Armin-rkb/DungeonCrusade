@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Explosion : MonoBehaviour
+public class DuckExplosion : MonoBehaviour
 {
     //Rigidbody of the Gameobject
     [SerializeField] private Rigidbody2D rbExplosion;
@@ -11,18 +11,21 @@ public class Explosion : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
-    [SerializeField] private CameraShake cameraShake;
 
     void Start()
     {
-        cameraShake.Shake(1f);
-        SoundManager.PlayAudioClip(AudioData.Explosion);
-        Invoke("DisableCollider", .5f);
+        InvokeRepeating("ExplosionSound", 0, 0.5f);
+        Invoke("RemoveExplosion", 1.5f);
     }
 
-    void DisableCollider()
+    void ExplosionSound()
     {
-        boxCollider.enabled = false;
+        SoundManager.PlayAudioClip(AudioData.Explosion);
+    }
+
+    void RemoveExplosion()
+    {
+        gameObject.AddComponent<Fade>();
     }
 
     void Hit(GameObject player)
@@ -38,7 +41,7 @@ public class Explosion : MonoBehaviour
         playerMovement.ApplyKnockback(xPos);
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void OnTriggerEnter2D(Collider2D coll)
     {
         if (coll.gameObject != null)
         {

@@ -6,7 +6,7 @@ public class Fade : MonoBehaviour
     //Sprite that we will fade
     private SpriteRenderer sprite;
     //The rate at how fast we will fade (Default is 0.03f for bullets)
-    [SerializeField] private float fadeTime = 0.03f;
+    [SerializeField] private float fadeTime = 0.04f;
 
     void Awake()
     {

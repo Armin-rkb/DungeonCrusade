@@ -76,6 +76,7 @@ GameObject:
   - 114: {fileID: 11419786}
   - 114: {fileID: 11484480}
   - 114: {fileID: 11446052}
+  - 114: {fileID: 11488674}
   - 95: {fileID: 9552930}
   - 114: {fileID: 11406526}
   - 114: {fileID: 11434018}
@@ -456,7 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 0
+  currNumber: 7
 --- !u!114 &11438304
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -630,6 +631,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pill: {fileID: 11409932, guid: 1d01d18dab326b74c98ef48f2d3f1c5a, type: 2}
+  playerCollision: {fileID: 11461070}
+  flip: {fileID: 11443586}
+--- !u!114 &11488674
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20ef93a1310fe24b96fe80385ea5e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duck: {fileID: 11433830, guid: e42172f6413013c4f867b02f642fb55c, type: 2}
   playerCollision: {fileID: 11461070}
   flip: {fileID: 11443586}
 --- !u!114 &11499660
