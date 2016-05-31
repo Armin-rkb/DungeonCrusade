@@ -33,17 +33,17 @@ public class ScoreText : MonoBehaviour {
 
     void UpdateP2ScoreText()
     {
-        _playerScoreTexts[0].text = "Score: " + _playerScore.P2Score;
+        _playerScoreTexts[1].text = "Score: " + _playerScore.P2Score;
     }
 
     void UpdateP3ScoreText()
     {
-        _playerScoreTexts[0].text = "Score: " + _playerScore.P3Score;
+        _playerScoreTexts[2].text = "Score: " + _playerScore.P3Score;
     }
 
     void UpdateP4ScoreText()
     {
-        _playerScoreTexts[0].text = "Score: " + _playerScore.P4Score;
+        _playerScoreTexts[3].text = "Score: " + _playerScore.P4Score;
     }
 
 

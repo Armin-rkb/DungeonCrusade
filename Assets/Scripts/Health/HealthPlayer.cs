@@ -6,7 +6,7 @@ public class HealthPlayer : MonoBehaviour, IHealth
 {
 
     //Delegates
-    public delegate void PlayerDeath(HealthPlayer player);
+    public delegate void PlayerPoint(HealthPlayer player);
     public delegate void PlayerHeart(HealthPlayer player);
 
     public static event PlayerHeart ReduceP1Heart;
@@ -14,12 +14,14 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
     public static event PlayerHeart ReduceP3Heart;
     public static event PlayerHeart ReduceP4Heart;
+    
+    public static event PlayerPoint OnNewRound;
 
-    public static event PlayerDeath OnP1Death;
-    public static event PlayerDeath OnP2Death;
+    public PlayerPoint OnP1Point;
+    public PlayerPoint OnP2Point;
 
-    public static event PlayerDeath OnP3Death;
-    public static event PlayerDeath OnP4Death;
+    public PlayerPoint OnP3Point;
+    public PlayerPoint OnP4Point;
 
     //Delegates
 
@@ -51,7 +53,7 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
     private int playerPoint = 1;
 
-    public int PlayerPoint
+    public int GetPlayerPoint
     {
         get { return playerPoint; }
     }
@@ -129,50 +131,22 @@ public class HealthPlayer : MonoBehaviour, IHealth
     {
         SoundManager.PlayAudioClip(10);
 
-        _roundManager = _roundObject.GetComponent<RoundManager>();
-        _roundManager.StartCoroutine("AddRound");
+        if (OnNewRound != null)
+            OnNewRound(this);
 
-        GrantPoint();
+        if (OnP1Point != null)
+            OnP1Point(this);
+
+        if (OnP2Point != null)
+            OnP2Point(this);
+
+        if (OnP3Point != null)
+            OnP3Point(this);
+
+        if (OnP4Point != null)
+            OnP4Point(this);
         
         Destroy(gameObject);
     }
 
-    private void GrantPoint()
-    {
-        if (OnP1Death != null)
-        {
-            if (_checkPort.PlayerNumber == 2)
-            {
-                Instantiate(_pointObjects[1], transform.position, Quaternion.identity);
-                OnP1Death(this);
-            }    
-        }
-
-        if (OnP2Death != null)
-        {
-            if (_checkPort.PlayerNumber == 1)
-            {
-                Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
-                OnP2Death(this);
-            }    
-        }
-
-        if (OnP3Death != null)
-        {
-            if (_checkPort.PlayerNumber == 3)
-            {
-                Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
-                OnP3Death(this);
-            }
-        }
-
-        if (OnP4Death != null)
-        {
-            if (_checkPort.PlayerNumber == 4)
-            {
-                Instantiate(_pointObjects[0], transform.position, Quaternion.identity);
-                OnP4Death(this);
-            }
-        }
-    }
 }

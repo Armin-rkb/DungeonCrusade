@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class PlayerScore : MonoBehaviour {
 
     public delegate void OnPointEventHandler();
+
     public OnPointEventHandler P1ScoreText;
     public OnPointEventHandler P2ScoreText;
     public OnPointEventHandler P3ScoreText;
@@ -51,20 +52,22 @@ public class PlayerScore : MonoBehaviour {
 
     void Start()
     {
-        HealthPlayer.OnP1Death += AddScoreP1;
-        HealthPlayer.OnP2Death += AddScoreP2;
+        PlayerDetectHit.AddP1Score += AddScoreP1;
+        PlayerDetectHit.AddP2Score += AddScoreP2;
 
-        HealthPlayer.OnP3Death += AddScoreP3;
-        HealthPlayer.OnP4Death += AddScoreP4;
+        PlayerDetectHit.AddP3Score += AddScoreP3;
+        PlayerDetectHit.AddP4Score += AddScoreP4;
     }
 
     /*
      * Adding functions to the delegate located in HealthPlayer.
      */
 
-    private void AddScoreP1(HealthPlayer player)
+    private void AddScoreP1(PlayerDetectHit player)
     {
-        p1Score += player.PlayerPoint;
+        p1Score += 1;
+
+        print("P1 SCORE");
 
         if (P1ScoreText != null)
             P1ScoreText();
@@ -72,9 +75,11 @@ public class PlayerScore : MonoBehaviour {
 
     // Adds a point to P1.
 
-    private void AddScoreP2(HealthPlayer player)
+    private void AddScoreP2(PlayerDetectHit player)
     {
-        p2Score += player.PlayerPoint;
+       p2Score += 1;
+
+        print("P2 SCORE");
 
         if (P2ScoreText != null)
             P2ScoreText();
@@ -82,9 +87,11 @@ public class PlayerScore : MonoBehaviour {
 
     // Adds a point to P2.
 
-    private void AddScoreP3(HealthPlayer player)
+    private void AddScoreP3(PlayerDetectHit player)
     {
-        p3Score += player.PlayerPoint;
+        p3Score += 1;
+
+        print("P3 SCORE");
 
         if (P3ScoreText != null)
             P3ScoreText();
@@ -92,9 +99,11 @@ public class PlayerScore : MonoBehaviour {
 
     // Adds a point to P3.
 
-    private void AddScoreP4(HealthPlayer player)
+    private void AddScoreP4(PlayerDetectHit player)
     {
-        p4Score += player.PlayerPoint;
+        p4Score += 1;
+
+        print("P4 SCORE");
 
         if (P4ScoreText != null)
             P4ScoreText();

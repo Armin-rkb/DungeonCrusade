@@ -7,7 +7,6 @@ using System.Collections.Generic;
 public class RoundManager : MonoBehaviour {
 
     public delegate void OnNewRoundEventHandler();
-
     public OnNewRoundEventHandler ResetPlayer;
 
     //int
@@ -22,6 +21,8 @@ public class RoundManager : MonoBehaviour {
     //Scripts
     [SerializeField]
     private PlayerScore _checkScore;
+
+   
     //Scripts
     
 
@@ -58,6 +59,11 @@ public class RoundManager : MonoBehaviour {
 
     bool runOnce;
 
+    void Awake()
+    {
+        HealthPlayer.OnNewRound += AddNewRound;
+    }
+
 	void Start () 
     {
         _winText.SetActive(false);
@@ -83,25 +89,20 @@ public class RoundManager : MonoBehaviour {
 
     private void StopMatch()
     {
-        if (_checkScore.P1Score >= _roundSetUp.Round || _checkScore.P2Score >= _roundSetUp.Round)
+        if (_checkScore.P1Score >= _roundSetUp.Round || _checkScore.P2Score >= _roundSetUp.Round || _checkScore.P3Score >= _roundSetUp.Round || _checkScore.P4Score >= _roundSetUp.Round)
             StopGame();
     }
+   
 
-    private void ExtendMatch()
+    void AddNewRound(HealthPlayer player)
     {
-        if (_amountOfRounds >= 3)
-        {
-            if (_checkScore.P1Score == _checkScore.P2Score || _checkScore.P2Score == _checkScore.P1Score)
-            {
-                _extendedText.SetActive(true);
-                _roundSetUp.AddRound += 1;
-            }
-        }
-            
+        StartCoroutine("AddRound");
     }
 
-    public IEnumerator AddRound()
+     IEnumerator AddRound()
     {
+
+        print("ADD ROUND");
 
         if (ResetPlayer != null)
             ResetPlayer();
@@ -120,13 +121,8 @@ public class RoundManager : MonoBehaviour {
 
             yield return new WaitForSeconds(2);
 
-            
-
-
             _roundObjects[0].SetActive(false);
             _roundObjects[1].SetActive(true);
-
-            ExtendMatch();
 
             _matchStart.StartCoroutine("StartNewRound");
             }
@@ -140,7 +136,6 @@ public class RoundManager : MonoBehaviour {
 
     private void StopGame()
     {
-      
 
         if (!runOnce)
         {
@@ -153,11 +148,14 @@ public class RoundManager : MonoBehaviour {
 
             _winText.SetActive(true);
 
-            if (_checkScore.P1Score > _checkScore.P2Score)
-                _winText.GetComponent<Text>().text = "P1 WINS \n \n" + "KILLS: " + _checkScore.P1Score + "\n DEATHS: " + _checkScore.P2Score;
-            else if (_checkScore.P2Score > _checkScore.P1Score)
-                _winText.GetComponent<Text>().text = "P2 WINS \n \n" + "KILLS: " + _checkScore.P2Score + "\n DEATHS: " + _checkScore.P1Score;
-
+            if (_checkScore.P1Score > _checkScore.P2Score || _checkScore.P1Score > _checkScore.P3Score || _checkScore.P1Score > _checkScore.P4Score)
+                _winText.GetComponent<Text>().text = "P1 WINS \n \n" + "KILLS: " + _checkScore.P1Score + "\n DEATHS: " + (_checkScore.P2Score + _checkScore.P3Score + _checkScore.P4Score);
+            else if (_checkScore.P2Score > _checkScore.P1Score || _checkScore.P2Score > _checkScore.P3Score || _checkScore.P2Score > _checkScore.P4Score)
+                _winText.GetComponent<Text>().text = "P2 WINS \n \n" + "KILLS: " + _checkScore.P2Score + "\n DEATHS: " + (_checkScore.P1Score + _checkScore.P3Score + _checkScore.P4Score);
+            else if (_checkScore.P3Score > _checkScore.P1Score || _checkScore.P3Score > _checkScore.P2Score || _checkScore.P3Score > _checkScore.P4Score)
+                _winText.GetComponent<Text>().text = "P3 WINS \n \n" + "KILLS: " + _checkScore.P3Score + "\n DEATHS: " + (_checkScore.P2Score + _checkScore.P1Score + _checkScore.P4Score);
+            else if (_checkScore.P4Score > _checkScore.P1Score || _checkScore.P4Score > _checkScore.P2Score || _checkScore.P4Score > _checkScore.P3Score)
+                _winText.GetComponent<Text>().text = "P4 WINS \n \n" + "KILLS: " + _checkScore.P4Score + "\n DEATHS: " + (_checkScore.P2Score + _checkScore.P3Score + _checkScore.P1Score);
             runOnce = true;
         }
     }

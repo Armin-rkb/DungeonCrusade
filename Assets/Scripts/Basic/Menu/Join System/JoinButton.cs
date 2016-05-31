@@ -18,7 +18,7 @@ public class JoinButton : MonoBehaviour {
 
     void GoToMenu()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetButtonDown(ControllerInputs.pressabutton))
         {
             if (OnPlayersJoined != null)
                 OnPlayersJoined();

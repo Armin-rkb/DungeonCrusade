@@ -29,7 +29,8 @@ public class PlayerMovement : MonoBehaviour {
     private bool _canJump;
     private bool _onWall;
     private bool _isHit;
-    private bool _joystickEnabled;
+    [SerializeField]
+    private bool _joystickEnabled = false;
     //Bool
 
     //Int
@@ -69,6 +70,7 @@ public class PlayerMovement : MonoBehaviour {
     void Update ()
     {
         JumpBool();
+     //   CheckInput();
     }
 
     public void ApplyKnockback(float xPos)
@@ -88,25 +90,38 @@ public class PlayerMovement : MonoBehaviour {
         _canJump = false;
     }
 
+    void CheckInput()
+    {
+         int i = 1;
+         if (i < PlayerNumber)
+         {
+             if (Input.GetJoystickNames()[i] != null)
+                 _joystickEnabled = true;
+         }
+         else
+             return;
+            
+    }
+
     void RigidBodyMove()
     {
 
-        float x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
+        //float x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
 
-        /*
+        
         float x;
 
-        if (Input.GetJoystickNames().Length > 0)
+        if (_joystickEnabled)
          x = Input.GetAxis(ControllerInputs.horizontalcp + _playerNumber);
         else
-            
+            x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
 
-        print("Horizontal Axis: " + x);
-        */
+       
 
 
         if (!_onWall)
         _playerRigidBody2D.velocity = new Vector2(x * _movementSpeed, _playerRigidBody2D.velocity.y);
+
     }
 
 

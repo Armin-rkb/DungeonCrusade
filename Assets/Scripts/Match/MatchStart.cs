@@ -80,7 +80,6 @@ public class MatchStart : MonoBehaviour {
 
     public IEnumerator StartNewRound()
     {
-        ReturnPositions();
             _countDownObj.SetActive(true);
 
             yield return new WaitForSeconds(_countDownTimer);
@@ -102,20 +101,12 @@ public class MatchStart : MonoBehaviour {
     {
         if (_inGameCharacters[0] == null)
         {
-            Vector2 velocity = Vector2.zero;
-            _inGameCharacters[1].GetComponent<SpriteRenderer>().enabled = false;
-            _inGameCharacters[1].GetComponent<BoxCollider2D>().enabled = false;
-            _inGameCharacters[1].GetComponent<Rigidbody2D>().isKinematic = true;
-            _inGameCharacters[1].transform.position = Vector2.SmoothDamp(transform.position, _transformPoints[1].transform.position, ref velocity, 0.1f);
-           // _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
+          
+            _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
         }
         else if (_inGameCharacters[1] == null)
         {
-            Vector2 velocity = Vector2.zero;
-            _inGameCharacters[0].GetComponent<SpriteRenderer>().enabled = false;
-            _inGameCharacters[0].GetComponent<BoxCollider2D>().enabled = false;
-            _inGameCharacters[0].GetComponent<Rigidbody2D>().isKinematic = true;
-            _inGameCharacters[0].transform.position = Vector2.SmoothDamp(transform.position, _transformPoints[0].transform.position, ref velocity, 0.1f);
+            _inGameCharacters[0].transform.position = _transformPoints[1].transform.position;
         }
 
     }

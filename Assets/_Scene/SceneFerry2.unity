@@ -2923,7 +2923,7 @@ GameObject:
   - 114: {fileID: 433363691}
   m_Layer: 0
   m_Name: Platform (78)
-  m_TagString: LeftWall
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2948,7 +2948,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 433363686}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
@@ -3836,7 +3836,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 539138941}
   - 212: {fileID: 539138943}
-  - 61: {fileID: 539138942}
   m_Layer: 0
   m_Name: Platform (6)
   m_TagString: Ground
@@ -3856,20 +3855,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 258482712}
   m_RootOrder: 20
---- !u!61 &539138942
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 539138940}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0.25}
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.5}
 --- !u!212 &539138943
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4379,9 +4364,9 @@ BoxCollider2D:
   m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -0.14741778, y: 0.14741778}
+  m_Offset: {x: 0.15, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.70516443, y: 0.7051643}
+  m_Size: {x: 0.7, y: 0.75}
 --- !u!212 &580647602
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5635,7 +5620,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 452526, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
       propertyPath: m_RootOrder
-      value: 13
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
@@ -6192,9 +6177,9 @@ BoxCollider2D:
   m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0.25, y: 0}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 2}
+  m_Size: {x: 1, y: 3}
 --- !u!212 &860550292
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6335,7 +6320,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 499974, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 11472372, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
       propertyPath: pickup
@@ -7322,7 +7307,7 @@ GameObject:
   - 114: {fileID: 1026399603}
   m_Layer: 0
   m_Name: Platform (77)
-  m_TagString: LeftWall
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7347,7 +7332,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1026399598}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
@@ -7858,7 +7843,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 456008, guid: cff24de3cfa845744a78a675a23e8865, type: 2}
       propertyPath: m_RootOrder
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 11449104, guid: cff24de3cfa845744a78a675a23e8865, type: 2}
       propertyPath: audioList.Array.data[10]
@@ -10737,7 +10722,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 1421678990}
   - 212: {fileID: 1421678992}
-  - 61: {fileID: 1421678991}
   m_Layer: 0
   m_Name: Platform (5)
   m_TagString: Ground
@@ -10757,20 +10741,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 258482712}
   m_RootOrder: 19
---- !u!61 &1421678991
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1421678989}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0.25}
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.5}
 --- !u!212 &1421678992
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11218,9 +11188,9 @@ BoxCollider2D:
   m_Material: {fileID: 6200000, guid: 059c071c77782a0418757813b1580b55, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -0.25, y: 0}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 2}
+  m_Size: {x: 1, y: 3}
 --- !u!212 &1499445082
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14086,6 +14056,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 111516035}
   m_RootOrder: 2
+--- !u!1 &1772173697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1772173699}
+  - 114: {fileID: 1772173698}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1772173698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1772173697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00bbfeb0e32603642ae512c34c1ec8dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1772173699
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1772173697}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
 --- !u!1 &1789806959
 GameObject:
   m_ObjectHideFlags: 0
@@ -14364,10 +14373,10 @@ MonoBehaviour:
   _joinManager: {fileID: 1750665856}
   _countDownObj: {fileID: 1373168610}
   _amountCharacters:
-  - {fileID: 159812, guid: 3e80d747e593d6f4eb9c15da4c3d8922, type: 2}
-  - {fileID: 127148, guid: b18c08e226001bd4199adfbccbf2f355, type: 2}
-  - {fileID: 138404, guid: 2c42226f6b053fb44ab532faacd95145, type: 2}
-  - {fileID: 106978, guid: 42b28f3a7a1bc274ea9a4ce1b2a3ce0c, type: 2}
+  - {fileID: 157354, guid: 19a057409500865468e8e4199d2540ab, type: 2}
+  - {fileID: 140618, guid: 8427cb82a655abe4dbe9e1ce0f516b49, type: 2}
+  - {fileID: 114916, guid: 6bc73be28845f7342b3ddb0148422b37, type: 2}
+  - {fileID: 150266, guid: f5222d4f7b067e24d96228ac04cac566, type: 2}
   _inGameCharacters: []
   _countDownTimer: 3
   _transformPoints:
