@@ -7,6 +7,8 @@ public class Duck : MonoBehaviour
     [SerializeField] private Rigidbody2D rbSock;
     //Sprite of this bullet
     [SerializeField] private SpriteRenderer sprite;
+    //Time left for explosion
+    [SerializeField] private float explodeTime;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Explosion object
@@ -20,36 +22,42 @@ public class Duck : MonoBehaviour
     {
         isLeft = true;
         sprite.flipX = true;
-        SoundManager.PlayAudioClip(AudioData.Sock);
+        SoundManager.PlayAudioClip(AudioData.Duck);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
-        SoundManager.PlayAudioClip(AudioData.Sock);
-    }
-    
-    void ExplodeDuck()
-    {
-        //When the time is up instantiate our explosion obj and remove this obj
-        Instantiate(explosionObj, transform.position, transform.rotation);
-        Destroy(this.gameObject);
+        SoundManager.PlayAudioClip(AudioData.Duck);
     }
 
     void FixedUpdate()
     {
+        explodeTime--;
+
         if (isRight)
         {
-            rbSock.AddForce(Vector2.up * (speed * 1.5f), ForceMode2D.Impulse);
             rbSock.AddForce(Vector2.right * speed, ForceMode2D.Impulse);
             isRight = false;
         }
         else if (isLeft)
         {
-            rbSock.AddForce(Vector2.up * (speed * 2), ForceMode2D.Impulse);
             rbSock.AddForce(Vector2.right * -speed, ForceMode2D.Impulse);
             isLeft = false;
+        }
+
+        if (bounce)
+        {
+            speed = 1;
+            bounce = false;
+        }
+
+        if (explodeTime < 0)
+        {
+            //When the time is up instantiate our explosion obj and remove this obj
+            Instantiate(explosionObj, transform.position, transform.rotation);
+            Destroy(this.gameObject);
         }
     }
 
@@ -59,7 +67,7 @@ public class Duck : MonoBehaviour
         {
             if (coll.gameObject.CompareTag(GameTags.ground))
             {
-                ExplodeDuck();
+                bounce = true;
             }
         }
     }

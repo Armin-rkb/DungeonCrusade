@@ -11,11 +11,9 @@ public class SockExplosion : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
-    [SerializeField] private CameraShake cameraShake;
 
     void Start()
     {
-        cameraShake.Shake(1f);
         SoundManager.PlayAudioClip(AudioData.Explosion);
         Invoke("DisableCollider", .5f);
     }

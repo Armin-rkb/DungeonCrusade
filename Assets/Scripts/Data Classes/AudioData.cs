@@ -16,6 +16,7 @@ public class AudioData
     public const int ScoreUp = 10;
     public const int Win = 11;
     public const int Hit = 12;
+    public const int Duck = 13;
 
 }
     

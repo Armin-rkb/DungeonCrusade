@@ -5,21 +5,12 @@ using System.Collections.Generic;
 public class PlayerWeapon : MonoBehaviour 
 {
     public IWeapon currentWeapon;
-    
-    private StoneHolder stoneHolder;
-    private PillHolder pillHolder;
-    private ShurikenHolder shurikenHolder;
-    private HadoukenHolder hadoukenHolder;
-    private PizzaHolder pizzaHolder;
-    private SockHolder sockHolder;
-    private BarrelHolder barrelHolder;
-    private DuckHolder duckHolder;
-    
     private PlayerMovement playerMovement;
 
     public List<IWeapon> weaponList = new List<IWeapon>();
     //Cooldown of our gun
     private float cooldown = 0;
+    private float maxCooldown = 60;
     //The number of our current Weapon
     public int currNumber;
     /*
@@ -29,56 +20,100 @@ public class PlayerWeapon : MonoBehaviour
         2 = Shuriken
         3 = Hadouken
         4 = Pizza
-        5 = Sock
-        6 = Barrel
+        5 = Barrel
+        6 = Sock
         7 = Duck
+        8 = Bom
     */
-    
+
     public void SetNewWeapon(int wepNumber)
     {
         currentWeapon = weaponList[wepNumber];
         currNumber = wepNumber;
+        CheckWeaponCooldown(wepNumber);
+        print(maxCooldown);
     }
 
-    void CheckNewCooldown()
+    void CheckWeaponCooldown(int weaponNum)
     {
-        //Hier een Case Switch maken voor cooldown
+        switch (weaponNum)
+        {
+            //Stone
+            case 0:
+                maxCooldown = 45;
+                break;
+            //Pill
+            case 1:
+                maxCooldown = 50;
+                break;
+            //Shuriken
+            case 2:
+                maxCooldown = 25;
+                break;
+            //Hadouken
+            case 3:
+                maxCooldown = 45;
+                break;
+            //Pizza
+            case 4:
+                maxCooldown = 90;
+                break;
+            //Sock
+            case 5:
+                maxCooldown = 80;
+                break;
+            //Barrel
+            case 6:
+                maxCooldown = 45;
+                break;
+            //Duck
+            case 7:
+                maxCooldown = 80;
+                break;
+            //Bom
+            case 8:
+                maxCooldown = 50;
+                break;
+        }
+    }
+
+    void ScrollWeaponList()
+    {
+        if (currNumber < 0)
+            currNumber = weaponList.Count - 1;
+        else if (currNumber > weaponList.Count - 1)
+            currNumber = 0;
+
+        //Switch with Scroll
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            currNumber++;
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            currNumber--;
+
+        currentWeapon = weaponList[currNumber];
     }
 
     void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
-        //Getting all our weapon components
-        
-        stoneHolder = GetComponent<StoneHolder>();
-        pillHolder = GetComponent<PillHolder>();
-        shurikenHolder = GetComponent<ShurikenHolder>();
-        hadoukenHolder = GetComponent<HadoukenHolder>();
-        pizzaHolder = GetComponent<PizzaHolder>();
-        sockHolder = GetComponent<SockHolder>();
-        barrelHolder = GetComponent<BarrelHolder>();
-        duckHolder = GetComponent<DuckHolder>();
-    }
 
-    void Start()
-    {
+        //Getting all our weapon components
+        IWeapon[] weapons = GetComponents<IWeapon>();
+
         //Adding all weapons to our list
-        
-        weaponList.Add(stoneHolder);
-        weaponList.Add(pillHolder);
-        weaponList.Add(shurikenHolder);
-        weaponList.Add(hadoukenHolder);
-        weaponList.Add(pizzaHolder);
-        weaponList.Add(sockHolder);
-        weaponList.Add(barrelHolder);
-        weaponList.Add(duckHolder);
-        
+        foreach (IWeapon weapon in weapons)
+        {
+            weaponList.Add(weapon);
+        }
+
         currentWeapon = weaponList[currNumber];
     }
 
     void Update()
     {
-        if (cooldown <= 60)
+        ScrollWeaponList();
+
+        if (cooldown <= maxCooldown)
         {
             cooldown--;
 
@@ -88,7 +123,7 @@ public class PlayerWeapon : MonoBehaviour
 
         if (Input.GetButtonDown(ControllerInputs.attackp + playerMovement.PlayerNumber) && cooldown == 0)
         {
-            cooldown = 60;
+            cooldown = maxCooldown;
             currentWeapon.Shoot();
         }
     }
