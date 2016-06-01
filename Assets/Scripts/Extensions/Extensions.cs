@@ -43,6 +43,7 @@ public static class Extensions
         return (gobj.GetComponent<Animation>() != null);
     }
 
+
     public static void SetSpeed(this Animation anim, float newSpeed)
     {
         anim[anim.clip.name].speed = newSpeed;

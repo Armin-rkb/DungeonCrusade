@@ -16,17 +16,11 @@ public class WallCollision : MonoBehaviour {
 
     void OnCollisionStay2D(Collision2D coll)
     {
-      
+
         if (coll.gameObject.tag == GameTags.wallleft || coll.gameObject.tag == GameTags.wallright)
         {
-            _onWall = true;
-         //   _playerMovement.AmountJumps = 2f;
-        }
-
-        if (coll.gameObject.tag == GameTags.wall)
-        {
             _isGrounded = false;
-         //   _playerMovement.MovementSpeed = 0;
+            _playerMovement.MovementSpeed = 0;
       //      _playerMovement.JumpSpeed = 6f;
             _playerRigidBody2D.gravityScale = 0.5f;
         }
@@ -34,9 +28,9 @@ public class WallCollision : MonoBehaviour {
 
     void OnCollisionExit2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == GameTags.wall)
+        if (coll.gameObject.tag == GameTags.wallleft || coll.gameObject.tag == GameTags.wallright)
         {
-         //   _playerMovement.MovementSpeed = 7f;
+            _playerMovement.MovementSpeed = 7f;
         //    _playerMovement.AmountJumps = 1f;
             _playerRigidBody2D.gravityScale = 2f;
         }
