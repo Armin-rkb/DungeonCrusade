@@ -13,6 +13,7 @@ GameObject:
   - 61: {fileID: 6108838}
   - 114: {fileID: 11409932}
   - 95: {fileID: 9539764}
+  - 114: {fileID: 11447478}
   m_Layer: 0
   m_Name: Pill
   m_TagString: Bullet
@@ -96,6 +97,19 @@ MonoBehaviour:
   speed: 3
   damage: 2
   knockback: 4
+  playernum: 0
+--- !u!114 &11447478
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 109088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b3554b00c2a9c41905a7674e653c3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playernum: 4
 --- !u!212 &21272338
 SpriteRenderer:
   m_ObjectHideFlags: 1

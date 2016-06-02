@@ -1,15 +1,15 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &115786
+--- !u!1 &103276
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 456008}
-  - 82: {fileID: 8234914}
-  - 114: {fileID: 11449104}
+  - 4: {fileID: 479924}
+  - 82: {fileID: 8207668}
+  - 114: {fileID: 11486878}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -17,24 +17,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &456008
+--- !u!4 &479924
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 115786}
+  m_GameObject: {fileID: 103276}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.41791353, y: -0.3193839, z: -0.00390625}
+  m_LocalPosition: {x: -0.41791353, y: 0.68, z: -0.00390625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!82 &8234914
+--- !u!82 &8207668
 AudioSource:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 115786}
+  m_GameObject: {fileID: 103276}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
@@ -103,12 +103,12 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &11449104
+--- !u!114 &11486878
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 115786}
+  m_GameObject: {fileID: 103276}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54e94f8a44073034b9ef96da05b30b24, type: 3}
@@ -125,7 +125,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ce33e74865349f642986593d848d684a, type: 3}
   - {fileID: 8300000, guid: 41c7579e9c216ee4290861dd45768eb6, type: 3}
   - {fileID: 8300000, guid: 2ea07db292a527740a973965898d312d, type: 3}
-  audioSource: {fileID: 8234914}
+  - {fileID: 8300000, guid: 001d3109933de6345a4a7d183fe41aac, type: 3}
+  - {fileID: 8300000, guid: 182fcfef8b3f6944d92174cba354802d, type: 3}
+  - {fileID: 8300000, guid: f023857bfa9b67543ac5a1e37ca1a3b4, type: 3}
+  - {fileID: 8300000, guid: d6488ce155f60c2408dec9403e4ae69d, type: 3}
+  audioSource: {fileID: 8207668}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -135,5 +139,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 115786}
+  m_RootGameObject: {fileID: 103276}
   m_IsPrefabParent: 1

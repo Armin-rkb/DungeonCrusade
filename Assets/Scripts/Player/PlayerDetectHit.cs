@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerDetectHit : MonoBehaviour
 {
@@ -37,10 +38,11 @@ public class PlayerDetectHit : MonoBehaviour
     void OnCollisionEnter2D(Collision2D coll)
     {
 
-        if(coll.gameObject.tag == "Bullet")
+        if(coll.gameObject.CompareTag("Bullet"))
         {
-            if (coll.gameObject.GetComponent<Stone>().playernum == _pOne)
+            if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
             {
+                print("P1 CAME THRU");
                 _p1Point = true;
                 _p2Point = false;
                 _p3Point = false;
@@ -48,8 +50,9 @@ public class PlayerDetectHit : MonoBehaviour
 
             }
 
-            else if (coll.gameObject.GetComponent<Stone>().playernum == _pTwo)
+            else if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
             {
+                print("P2 CAME THRU");
                 _p1Point = false;
                 _p2Point = true;
                 _p3Point = false;
@@ -57,8 +60,9 @@ public class PlayerDetectHit : MonoBehaviour
 
             }
 
-            else if (coll.gameObject.GetComponent<Stone>().playernum == _pThree)
+            else if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
             {
+                print("P3 CAME THRU");
                 _p1Point = false;
                 _p2Point = false;
                 _p3Point = true;
@@ -66,8 +70,9 @@ public class PlayerDetectHit : MonoBehaviour
 
             }
 
-            else if (coll.gameObject.GetComponent<Stone>().playernum == _pFour)
+            else
             {
+                print("P4 CAME THRU");
                 _p1Point = false;
                 _p2Point = false;
                 _p3Point = false;

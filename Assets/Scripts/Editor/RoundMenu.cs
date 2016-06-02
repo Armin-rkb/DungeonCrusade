@@ -13,7 +13,7 @@ public class RoundMenu : Editor
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Round: ");
-        GUILayout.Label(saveLoadResource.Round.ToString());
+        GUILayout.Label(saveLoadResource.BestOf.ToString());
         GUILayout.EndHorizontal();
 
 
