@@ -20,7 +20,16 @@ public class RoundsSetUp : MonoBehaviour
     //GameObject
     [SerializeField]
     private GameObject _roundObj;
+
+    [SerializeField]
+    private MainMenuButtons _mainMenuButtons;
     //GameObject
+
+    void Awake()
+    {
+        if (_mainMenuButtons != null)
+        _mainMenuButtons.OnPlayButton += SaveResource;
+    }
 
     void Start()
     {
@@ -29,7 +38,7 @@ public class RoundsSetUp : MonoBehaviour
         if (_roundText != null)
         {
             _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Rounds: " + Round;
+            _roundText.text = "Best Of: " + Round;
         }
            
     }
@@ -62,7 +71,7 @@ public class RoundsSetUp : MonoBehaviour
         if (_roundText != null)
         {
             _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Rounds: " + Round;
+            _roundText.text = "Best Of: " + Round;
         }
     }
 
@@ -99,7 +108,7 @@ public class RoundsSetUp : MonoBehaviour
             if (_roundObj != null)
             {
                 _roundText = _roundObj.GetComponent<Text>();
-                _roundText.text = "Rounds: " + saveData.round;
+                _roundText.text = "Best Of: " + saveData.round;
             }
             
         }
