@@ -66,7 +66,7 @@ public class Hadouken : MonoBehaviour
             else
             {
                 rbHadouken.isKinematic = true;
-                rbHadouken.velocity = new Vector2(0,0);
+                speed = 0;
                 gameObject.AddComponent<Fade>();
             }
         }

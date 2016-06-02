@@ -76,6 +76,7 @@ GameObject:
   - 114: {fileID: 11426748}
   - 114: {fileID: 11458092}
   - 114: {fileID: 11499434}
+  - 114: {fileID: 11410188}
   - 95: {fileID: 9504346}
   - 114: {fileID: 11492112}
   - 114: {fileID: 11411532}
@@ -409,6 +410,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   facingRight: 0
+--- !u!114 &11410188
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 127148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef81c9904ce1f74fbb4fe06a2c5a223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bomb: {fileID: 11463332, guid: 97d05f0938d724649b82a708617c7bf3, type: 2}
+  playerCollision: {fileID: 11461070, guid: 3e80d747e593d6f4eb9c15da4c3d8922, type: 2}
+  flip: {fileID: 11443586, guid: 3e80d747e593d6f4eb9c15da4c3d8922, type: 2}
 --- !u!114 &11410944
 MonoBehaviour:
   m_ObjectHideFlags: 1

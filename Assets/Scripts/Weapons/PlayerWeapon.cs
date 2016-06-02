@@ -31,7 +31,6 @@ public class PlayerWeapon : MonoBehaviour
         currentWeapon = weaponList[wepNumber];
         currNumber = wepNumber;
         CheckWeaponCooldown(wepNumber);
-        print(maxCooldown);
     }
 
     void CheckWeaponCooldown(int weaponNum)
@@ -72,7 +71,7 @@ public class PlayerWeapon : MonoBehaviour
                 break;
             //Bom
             case 8:
-                maxCooldown = 50;
+                maxCooldown = 85;
                 break;
         }
     }
@@ -80,8 +79,8 @@ public class PlayerWeapon : MonoBehaviour
     void ScrollWeaponList()
     {
         if (currNumber < 0)
-            currNumber = weaponList.Count - 1;
-        else if (currNumber > weaponList.Count - 1)
+            currNumber = 8;
+        else if (currNumber > 8)
             currNumber = 0;
 
         //Switch with Scroll
@@ -111,7 +110,7 @@ public class PlayerWeapon : MonoBehaviour
 
     void Update()
     {
-        ScrollWeaponList();
+        //ScrollWeaponList();
 
         if (cooldown <= maxCooldown)
         {

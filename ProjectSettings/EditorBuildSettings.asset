@@ -5,9 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+<<<<<<< HEAD
+  - enabled: 0
+=======
   - enabled: 1
     path: Assets/_Scene/Start.unity
   - enabled: 1
+>>>>>>> master
     path: Assets/_Scene/Menu.unity
   - enabled: 1
     path: Assets/_Scene/SceneFerry2.unity
@@ -17,3 +21,10 @@ EditorBuildSettings:
     path: Assets/_Scene/SceneArmin.unity
   - enabled: 0
     path: Assets/_Scene/ArminScene2.unity
+<<<<<<< HEAD
+  - enabled: 0
+    path: Assets/_Scene/SceneFerry2.unity
+  - enabled: 1
+    path: Assets/_Scene/SceneArmin3.unity
+=======
+>>>>>>> master

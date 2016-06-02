@@ -21,7 +21,6 @@ public class Pickup : MonoBehaviour
         //Get a random number to put in our player weaponlist
         PlayerWeapon playerWeapon = player.GetComponent<PlayerWeapon>();
         int randWeapon = playerWeapon.weaponList.GetRandomIndexExcluding(playerWeapon.currNumber);
-        
         playerWeapon.SetNewWeapon(randWeapon);
     }
 

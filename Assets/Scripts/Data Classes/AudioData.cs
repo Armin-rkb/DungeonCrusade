@@ -17,6 +17,8 @@ public class AudioData
     public const int Win = 11;
     public const int Hit = 12;
     public const int Duck = 13;
+    public const int Confetti = 14;
+    public const int Bomb = 15;
 
 }
     
