@@ -12,6 +12,7 @@ GameObject:
   - 50: {fileID: 5031174}
   - 61: {fileID: 6167838}
   - 114: {fileID: 11491612}
+  - 114: {fileID: 11487100}
   m_Layer: 0
   m_Name: Sock
   m_TagString: Bullet
@@ -62,6 +63,18 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.11, y: 0.12}
+--- !u!114 &11487100
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 166280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b3554b00c2a9c41905a7674e653c3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playernum: 4
 --- !u!114 &11491612
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -77,6 +90,7 @@ MonoBehaviour:
   sprite: {fileID: 21286500}
   speed: 3
   explosionObj: {fileID: 136734, guid: 3e338ccdc4cf58242802ba5de05751c3, type: 2}
+  playernum: 0
 --- !u!212 &21286500
 SpriteRenderer:
   m_ObjectHideFlags: 1

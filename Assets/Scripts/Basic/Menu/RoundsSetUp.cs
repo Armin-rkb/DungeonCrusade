@@ -9,7 +9,7 @@ public class RoundsSetUp : MonoBehaviour
 
     //Int
     [SerializeField]
-    private int round; // The round that the game will play in.
+    private int bestof; // The round that the game will play in.
     private int one = 1; // This is the value we will be using to change the rounds.
     //Int
 
@@ -38,27 +38,27 @@ public class RoundsSetUp : MonoBehaviour
         if (_roundText != null)
         {
             _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Best Of: " + Round;
+            _roundText.text = "Best Of: " + BestOf;
         }
            
     }
 
 
-    public int Round
+    public int BestOf
     {
-        get { return round; }
+        get { return bestof; }
     }
 
-    public int AddRound
+    public int AddBestOf
     {
-        get { return round; }
-        set { round += one; }
+        get { return bestof; }
+        set { bestof += one; }
     }
 
-    public int MinRound
+    public int MinBestOf
     {
-         get { return round; }
-        set { round -= one; }
+        get { return bestof; }
+        set { bestof -= one; }
     }
 
     void Update()
@@ -71,7 +71,7 @@ public class RoundsSetUp : MonoBehaviour
         if (_roundText != null)
         {
             _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Best Of: " + Round;
+            _roundText.text = "Best Of: " + BestOf;
         }
     }
 
@@ -79,36 +79,36 @@ public class RoundsSetUp : MonoBehaviour
     {
         BinaryFormatter bf = new BinaryFormatter();
 
-        FileStream file = File.Create(Application.persistentDataPath + "/AmountOfRounds.dat");
+        FileStream file = File.Create(Application.persistentDataPath + "/BestOfAmount.dat");
 
         SaveData saveData = new SaveData();
-        saveData.round = round;
+        saveData.bestof = bestof;
         bf.Serialize(file, saveData);
 
         file.Close();
 
         _roundText = _roundObj.GetComponent<Text>();
-        _roundText.text = "Rounds: " + saveData.round;
+        _roundText.text = "Best Of: " + saveData.bestof;
     }
 
     public void LoadResource()
     {
         BinaryFormatter bf = new BinaryFormatter();
 
-        if (File.Exists(Application.persistentDataPath + "/AmountOfRounds.dat"))
+        if (File.Exists(Application.persistentDataPath + "/BestOfAmount.dat"))
         {
-            FileStream file = File.Open(Application.persistentDataPath + "/AmountOfRounds.dat", FileMode.Open);
+            FileStream file = File.Open(Application.persistentDataPath + "/BestOfAmount.dat", FileMode.Open);
 
             SaveData saveData = (SaveData)bf.Deserialize(file);
 
-            round = saveData.round;
+            bestof = saveData.bestof;
 
             file.Close();
 
             if (_roundObj != null)
             {
                 _roundText = _roundObj.GetComponent<Text>();
-                _roundText.text = "Best Of: " + saveData.round;
+                _roundText.text = "Best Of: " + saveData.bestof;
             }
             
         }
@@ -121,6 +121,6 @@ public class RoundsSetUp : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
-        public int round;
+        public int bestof;
     }
 }

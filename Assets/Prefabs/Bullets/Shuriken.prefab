@@ -13,6 +13,7 @@ GameObject:
   - 61: {fileID: 6173126}
   - 114: {fileID: 11466928}
   - 95: {fileID: 9510276}
+  - 114: {fileID: 11465778}
   m_Layer: 0
   m_Name: Shuriken
   m_TagString: Bullet
@@ -80,6 +81,18 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11465778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 133024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b3554b00c2a9c41905a7674e653c3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playernum: 4
 --- !u!114 &11466928
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -96,6 +109,7 @@ MonoBehaviour:
   speed: 15
   damage: 1
   knockback: 2.5
+  playernum: 0
 --- !u!212 &21288702
 SpriteRenderer:
   m_ObjectHideFlags: 1

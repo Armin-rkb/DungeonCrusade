@@ -9,6 +9,8 @@ public class RoundManager : MonoBehaviour {
     public delegate void OnNewRoundEventHandler();
     public OnNewRoundEventHandler ResetPlayer;
 
+    
+
     //int
     private int _amountOfRounds = 1;
     //int
@@ -23,14 +25,6 @@ public class RoundManager : MonoBehaviour {
     private PlayerScore _checkScore;
 
    
-    //Scripts
-    
-
-    /*
-     * 0 = Round Object for a new round.
-     * 1 = Standard round object.
-     */
-
     //Text
     private Text _roundText;
     //Text
@@ -43,11 +37,6 @@ public class RoundManager : MonoBehaviour {
     private GameObject[] _buttonObjects;
     //GameObject
 
-    //GameObject
-    [SerializeField]
-    private GameObject _extendedText;
-    //GameObject
-
     //Scripts
     [SerializeField]
     private MatchStart _matchStart;
@@ -57,17 +46,22 @@ public class RoundManager : MonoBehaviour {
     [SerializeField]
     private AudioSource levelOST;
 
+    [SerializeField]
+    bool _endGame;
+
     bool runOnce;
 
     void Awake()
     {
+
+        HealthPlayer.OnNewRound += StopMatch;
         HealthPlayer.OnNewRound += AddNewRound;
+       
     }
 
 	void Start () 
     {
         _winText.SetActive(false);
-        _extendedText.SetActive(false);
 
         _roundSetUp = this.GetComponent<RoundsSetUp>();
 
@@ -84,55 +78,57 @@ public class RoundManager : MonoBehaviour {
 
     void Update ()
     {
-        StopMatch();
+       // StopMatch();
     }
 
-    private void StopMatch()
-    {
-        if (_checkScore.P1Score >= _roundSetUp.Round || _checkScore.P2Score >= _roundSetUp.Round || _checkScore.P3Score >= _roundSetUp.Round || _checkScore.P4Score >= _roundSetUp.Round)
-            StopGame();
-    }
+    
    
 
     void AddNewRound(HealthPlayer player)
     {
+        if (!_endGame)
         StartCoroutine("AddRound");
     }
 
      IEnumerator AddRound()
     {
+         if (!_endGame)
+         {
+             print("ADD ROUND");
 
-        print("ADD ROUND");
+             if (ResetPlayer != null)
+                 ResetPlayer();
 
-        if (ResetPlayer != null)
-            ResetPlayer();
+             _amountOfRounds++;
 
-        _amountOfRounds++;
-
-            foreach (GameObject roundobj in _roundObjects)
-                _roundText = roundobj.GetComponent<Text>();
-
-
-            _roundObjects[1].SetActive(false);
-
-            if (_amountOfRounds <= _roundSetUp.Round)
-            {
-            _roundObjects[0].SetActive(true);
-
-            yield return new WaitForSeconds(2);
-
-            _roundObjects[0].SetActive(false);
-            _roundObjects[1].SetActive(true);
-
-            _matchStart.StartCoroutine("StartNewRound");
-            }
+             foreach (GameObject roundobj in _roundObjects)
+                 _roundText = roundobj.GetComponent<Text>();
 
 
-            _roundText.text = "Round " + _amountOfRounds;
-    
-            yield return new WaitForSeconds(1);
-            _extendedText.SetActive(false);
+             _roundObjects[1].SetActive(false);
+
+                 _roundObjects[0].SetActive(true);
+
+                 yield return new WaitForSeconds(3);
+
+                 _roundObjects[0].SetActive(false);
+                 _roundObjects[1].SetActive(true);
+
+                 _matchStart.StartCoroutine("StartNewRound");
+             _roundText.text = "Round " + _amountOfRounds;
+         }
     }
+
+     void StopMatch(HealthPlayer player)
+     {
+         if (_checkScore.P1Score >= _roundSetUp.BestOf || _checkScore.P2Score >= _roundSetUp.BestOf || _checkScore.P3Score >= _roundSetUp.BestOf || _checkScore.P4Score >= _roundSetUp.BestOf)
+         {
+             _endGame = true;
+             StopGame();
+         }
+
+     }
+
 
     private void StopGame()
     {
@@ -140,7 +136,7 @@ public class RoundManager : MonoBehaviour {
         if (!runOnce)
         {
             levelOST.Stop();
-            SoundManager.PlayAudioClip(11);
+            SoundManager.PlayAudioClip(AudioData.Win);
 
             foreach (GameObject button in _buttonObjects)
                 button.SetActive(true);

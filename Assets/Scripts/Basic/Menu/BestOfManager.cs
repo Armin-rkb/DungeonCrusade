@@ -28,9 +28,9 @@ public class BestOfManager : MonoBehaviour
         {
             if (!_runOnce)
             {
-                if (_roundsSetUp.Round > 1)
+                if (_roundsSetUp.BestOf > 1)
                 {
-                    _roundsSetUp.MinRound-= 1;
+                    _roundsSetUp.MinBestOf -= 1;
                     _runOnce = true;
                 }
             }
@@ -40,7 +40,7 @@ public class BestOfManager : MonoBehaviour
         {
             if (!_runOnce)
             {
-                _roundsSetUp.AddRound+= 1;
+                _roundsSetUp.AddBestOf += 1;
                 _runOnce = true;
             }
         }

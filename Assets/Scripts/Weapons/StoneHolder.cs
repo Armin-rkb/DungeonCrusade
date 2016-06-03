@@ -15,7 +15,7 @@ public class StoneHolder : MonoBehaviour, IWeapon
         {
             Stone currStone = Instantiate(stone, new Vector2(transform.position.x + .1f, transform.position.y), stone.transform.rotation) as Stone;
 
-            currStone.playernum = playernumber.PlayerNumber;
+            currStone.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
 
             for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
             {
@@ -27,7 +27,7 @@ public class StoneHolder : MonoBehaviour, IWeapon
         {
             Stone currStone = Instantiate(stone, new Vector2(transform.position.x - .1f, transform.position.y), Quaternion.Inverse(stone.transform.rotation)) as Stone;
 
-            currStone.playernum = playernumber.PlayerNumber;
+            currStone.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
             
             
             for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
