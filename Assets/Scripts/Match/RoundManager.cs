@@ -6,62 +6,48 @@ using System.Collections.Generic;
 
 public class RoundManager : MonoBehaviour {
 
-    public delegate void OnNewRoundEventHandler();
-    public OnNewRoundEventHandler ResetPlayer;
 
-    
+    public delegate void EndRoundEventHandler();
+    public EndRoundEventHandler OnRoundEnd;
 
-    //int
+    //Int
     private int _amountOfRounds = 1;
-    //int
+    //Int
 
     //List
     [SerializeField]
     private List<GameObject> _roundObjects;
     //List
 
-    //Scripts
-    [SerializeField]
-    private PlayerScore _checkScore;
-
-   
     //Text
     private Text _roundText;
     //Text
 
     //GameObject
-    [SerializeField]
-    private GameObject _winText;
-
-    [SerializeField]
-    private GameObject[] _buttonObjects;
+    [SerializeField] private GameObject[] _buttonObjects;
     //GameObject
 
     //Scripts
-    [SerializeField]
-    private MatchStart _matchStart;
+    [SerializeField] private PlayerScore _checkScore;
+    [SerializeField] private MatchStart _matchStart;
     private RoundsSetUp _roundSetUp;
     //Scripts
 
-    [SerializeField]
-    private AudioSource levelOST;
+    [SerializeField] private AudioSource levelOST;
 
-    [SerializeField]
-    bool _endGame;
+    [SerializeField] bool _endGame;
 
     bool runOnce;
 
     void Awake()
     {
-
-        HealthPlayer.OnNewRound += StopMatch;
-        HealthPlayer.OnNewRound += AddNewRound;
-       
+       _checkScore.OnPlayerScore += StopMatch;
+        HealthPlayer.OnNewRound += AddNewRound;      
     }
 
 	void Start () 
     {
-        _winText.SetActive(false);
+       
 
         _roundSetUp = this.GetComponent<RoundsSetUp>();
 
@@ -76,13 +62,17 @@ public class RoundManager : MonoBehaviour {
         _roundObjects[0].SetActive(false);   
 	}
 
-    void Update ()
+
+    void StopMatch()
     {
-       // StopMatch();
+        if (_checkScore.P1Score >= _roundSetUp.BestOf || _checkScore.P2Score >= _roundSetUp.BestOf || _checkScore.P3Score >= _roundSetUp.BestOf || _checkScore.P4Score >= _roundSetUp.BestOf)
+        {
+            _endGame = true;
+            StopGame();
+        }
+
     }
 
-    
-   
 
     void AddNewRound(HealthPlayer player)
     {
@@ -92,12 +82,12 @@ public class RoundManager : MonoBehaviour {
 
      IEnumerator AddRound()
     {
+
+        yield return new WaitForSeconds(.1f);
          if (!_endGame)
          {
-             print("ADD ROUND");
 
-             if (ResetPlayer != null)
-                 ResetPlayer();
+     
 
              _amountOfRounds++;
 
@@ -106,8 +96,7 @@ public class RoundManager : MonoBehaviour {
 
 
              _roundObjects[1].SetActive(false);
-
-                 _roundObjects[0].SetActive(true);
+             _roundObjects[0].SetActive(true);
 
                  yield return new WaitForSeconds(3);
 
@@ -119,20 +108,10 @@ public class RoundManager : MonoBehaviour {
          }
     }
 
-     void StopMatch(HealthPlayer player)
-     {
-         if (_checkScore.P1Score >= _roundSetUp.BestOf || _checkScore.P2Score >= _roundSetUp.BestOf || _checkScore.P3Score >= _roundSetUp.BestOf || _checkScore.P4Score >= _roundSetUp.BestOf)
-         {
-             _endGame = true;
-             StopGame();
-         }
-
-     }
 
 
     private void StopGame()
     {
-
         if (!runOnce)
         {
             levelOST.Stop();
@@ -140,19 +119,10 @@ public class RoundManager : MonoBehaviour {
 
             foreach (GameObject button in _buttonObjects)
                 button.SetActive(true);
-
-
-            _winText.SetActive(true);
-
-            if (_checkScore.P1Score > _checkScore.P2Score || _checkScore.P1Score > _checkScore.P3Score || _checkScore.P1Score > _checkScore.P4Score)
-                _winText.GetComponent<Text>().text = "P1 WINS \n \n" + "KILLS: " + _checkScore.P1Score + "\n DEATHS: " + (_checkScore.P2Score + _checkScore.P3Score + _checkScore.P4Score);
-            else if (_checkScore.P2Score > _checkScore.P1Score || _checkScore.P2Score > _checkScore.P3Score || _checkScore.P2Score > _checkScore.P4Score)
-                _winText.GetComponent<Text>().text = "P2 WINS \n \n" + "KILLS: " + _checkScore.P2Score + "\n DEATHS: " + (_checkScore.P1Score + _checkScore.P3Score + _checkScore.P4Score);
-            else if (_checkScore.P3Score > _checkScore.P1Score || _checkScore.P3Score > _checkScore.P2Score || _checkScore.P3Score > _checkScore.P4Score)
-                _winText.GetComponent<Text>().text = "P3 WINS \n \n" + "KILLS: " + _checkScore.P3Score + "\n DEATHS: " + (_checkScore.P2Score + _checkScore.P1Score + _checkScore.P4Score);
-            else if (_checkScore.P4Score > _checkScore.P1Score || _checkScore.P4Score > _checkScore.P2Score || _checkScore.P4Score > _checkScore.P3Score)
-                _winText.GetComponent<Text>().text = "P4 WINS \n \n" + "KILLS: " + _checkScore.P4Score + "\n DEATHS: " + (_checkScore.P2Score + _checkScore.P3Score + _checkScore.P1Score);
             runOnce = true;
+
+            if (OnRoundEnd != null)
+                OnRoundEnd();
         }
     }
 }

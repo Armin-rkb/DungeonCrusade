@@ -6,11 +6,14 @@ using System.Collections.Generic;
 public class PlayerScore : MonoBehaviour {
 
     public delegate void OnPointEventHandler();
+    public delegate void OnScoreEventHandler();
 
     public OnPointEventHandler P1ScoreText;
     public OnPointEventHandler P2ScoreText;
     public OnPointEventHandler P3ScoreText;
     public OnPointEventHandler P4ScoreText;
+
+    public OnScoreEventHandler OnPlayerScore;
 
     int p1Score = 0;
     int p2Score = 0;
@@ -67,10 +70,11 @@ public class PlayerScore : MonoBehaviour {
     {
         p1Score += 1;
 
-        print("P1 SCORE");
-
         if (P1ScoreText != null)
             P1ScoreText();
+
+        if (OnPlayerScore != null)
+            OnPlayerScore();
     }
 
     // Adds a point to P1.
@@ -79,10 +83,11 @@ public class PlayerScore : MonoBehaviour {
     {
        p2Score += 1;
 
-        print("P2 SCORE");
-
         if (P2ScoreText != null)
             P2ScoreText();
+
+        if (OnPlayerScore != null)
+            OnPlayerScore();
     }
 
     // Adds a point to P2.
@@ -91,10 +96,11 @@ public class PlayerScore : MonoBehaviour {
     {
         p3Score += 1;
 
-        print("P3 SCORE");
-
         if (P3ScoreText != null)
             P3ScoreText();
+
+        if (OnPlayerScore != null)
+            OnPlayerScore();
     }
 
     // Adds a point to P3.
@@ -103,10 +109,11 @@ public class PlayerScore : MonoBehaviour {
     {
         p4Score += 1;
 
-        print("P4 SCORE");
-
         if (P4ScoreText != null)
             P4ScoreText();
+
+        if (OnPlayerScore != null)
+            OnPlayerScore();
     }
 
     // Adds a point to P4.

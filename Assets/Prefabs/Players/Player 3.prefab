@@ -77,6 +77,7 @@ GameObject:
   - 114: {fileID: 11496208}
   - 114: {fileID: 11474640}
   - 114: {fileID: 11473202}
+  - 114: {fileID: 11419964}
   - 95: {fileID: 9574024}
   - 114: {fileID: 11410106}
   - 114: {fileID: 11476326}
@@ -85,6 +86,7 @@ GameObject:
   - 61: {fileID: 6125236}
   - 114: {fileID: 11427370}
   - 114: {fileID: 11436962}
+  - 114: {fileID: 11459696}
   m_Layer: 0
   m_Name: Player 3
   m_TagString: Player
@@ -413,6 +415,21 @@ MonoBehaviour:
   _FXObj:
   - {fileID: 115472, guid: 106ce3de038ce27439137a3e32212cbe, type: 2}
   _customFXPlay: 0
+--- !u!114 &11419964
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 114916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef81c9904ce1f74fbb4fe06a2c5a223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bomb: {fileID: 11463332, guid: 97d05f0938d724649b82a708617c7bf3, type: 2}
+  playerCollision: {fileID: 11478442}
+  flip: {fileID: 11432102}
+  playernumber: {fileID: 11493822}
 --- !u!114 &11420946
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -530,6 +547,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d473cd8c9e13a64cbdc40b1e658c077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11459696
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 114916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8b67b7e1f52764a8831182851fd841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMovement: {fileID: 11493822}
+  _playerTrail: {fileID: 19894908}
 --- !u!114 &11464536
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -679,7 +709,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 7
   _isGrounded: 0
-  _joystickEnabled: 1
+  _joystickEnabled: 0
   _playerNumber: 3
 --- !u!114 &11496208
 MonoBehaviour:

@@ -25,12 +25,25 @@ public class PlayerMovement : MonoBehaviour {
     //Bool
     [SerializeField]
     private bool _isGrounded;
+
+    public bool GetIsGrounded
+    {
+        get { return _isGrounded; }
+    }
+
     private bool _spacePressed;
     private bool _canJump;
     private bool _onWall;
     private bool _isHit;
+
     [SerializeField]
     private bool _joystickEnabled = false;
+
+    public bool SetJoyStick
+    {
+        get { return _joystickEnabled; }
+        set { _joystickEnabled = true; }
+    }
     //Bool
 
     //Int
@@ -70,7 +83,6 @@ public class PlayerMovement : MonoBehaviour {
     void Update ()
     {
         JumpBool();
-     //   CheckInput();
     }
 
     public void ApplyKnockback(float xPos)
@@ -90,29 +102,13 @@ public class PlayerMovement : MonoBehaviour {
         _canJump = false;
     }
 
-    void CheckInput()
-    {
-         int i = 1;
-         if (i < PlayerNumber)
-         {
-             if (Input.GetJoystickNames()[i] != null)
-                 _joystickEnabled = true;
-         }
-         else
-             return;
-            
-    }
-
     void RigidBodyMove()
     {
 
-        //float x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
-
-        
         float x;
 
         if (_joystickEnabled)
-         x = Input.GetAxis(ControllerInputs.horizontalcp + _playerNumber);
+            x = Input.GetAxis(ControllerInputs.horizontalcp + _playerNumber);
         else
             x = Input.GetAxis(ControllerInputs.horizontalp + _playerNumber);
 

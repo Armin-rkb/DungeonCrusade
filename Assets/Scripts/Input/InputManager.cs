@@ -6,6 +6,9 @@ public class InputManager : MonoBehaviour
     public delegate void JoystickEventHandler();
     public JoystickEventHandler OnControllerConnected;
 
+    [SerializeField]
+    private PlayerMovement[] _playerMovement;
+
 
     void Awake()
     {
@@ -14,25 +17,24 @@ public class InputManager : MonoBehaviour
 
     void CheckControllers()
     {
-        if (Input.GetJoystickNames().Length > 0)
-        {
-            if (OnControllerConnected != null)
-                OnControllerConnected();
-        }
 
-        print(Input.GetJoystickNames().Length);
+        if (OnControllerConnected != null)
+            OnControllerConnected();
+
+        if (Input.GetJoystickNames()[0] != null)
+            _playerMovement[0].SetJoyStick = true;
+
+        else if (Input.GetJoystickNames()[1] != null)
+            _playerMovement[1].SetJoyStick = true;
+
+        else if (Input.GetJoystickNames()[2] != null)
+            _playerMovement[2].SetJoyStick = true;
+
+        else if (Input.GetJoystickNames()[3] != null)
+            _playerMovement[3].SetJoyStick = true;
+
+        else
+            foreach (PlayerMovement player in _playerMovement)
+                player.SetJoyStick = false;
     }
-
-    void Update()
-    {
-        int i = 1;
-        while (i < 4)
-        {
-            if (Mathf.Abs(Input.GetAxis("HorizontalCP" + i)) > 0.2F)
-                Debug.Log(Input.GetJoystickNames()[i] + " is moved");
-
-            i++;
-        }
-    }
-
 }

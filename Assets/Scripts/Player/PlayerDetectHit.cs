@@ -7,14 +7,22 @@ public class PlayerDetectHit : MonoBehaviour
 
     public delegate void DetectEventHandler(PlayerDetectHit player);
 
+    /*
+     * We will need this delegate to make events for.
+     */
+
     public static event DetectEventHandler AddP1Score;
     public static event DetectEventHandler AddP2Score;
     public static event DetectEventHandler AddP3Score;
     public static event DetectEventHandler AddP4Score;
 
+    /*
+     * These will be called whenever one of the players
+     * Score a point.
+     */
 
-    [SerializeField]
-    private HealthPlayer _healthPlayer;
+
+    [SerializeField] private HealthPlayer _healthPlayer;
 
     private int _pOne = 1;
     private int _pTwo = 2;
@@ -42,7 +50,6 @@ public class PlayerDetectHit : MonoBehaviour
         {
             if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
             {
-                print("P1 CAME THRU");
                 _p1Point = true;
                 _p2Point = false;
                 _p3Point = false;
@@ -52,7 +59,6 @@ public class PlayerDetectHit : MonoBehaviour
 
             else if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
             {
-                print("P2 CAME THRU");
                 _p1Point = false;
                 _p2Point = true;
                 _p3Point = false;
@@ -62,17 +68,14 @@ public class PlayerDetectHit : MonoBehaviour
 
             else if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
             {
-                print("P3 CAME THRU");
                 _p1Point = false;
                 _p2Point = false;
                 _p3Point = true;
                 _p4Point = false;
-
             }
 
             else
             {
-                print("P4 CAME THRU");
                 _p1Point = false;
                 _p2Point = false;
                 _p3Point = false;
@@ -80,14 +83,6 @@ public class PlayerDetectHit : MonoBehaviour
 
             }
         }
-        
-
-        /*
-        for (int i = 0; i < _playerCollision._ignoredColl.Length; i++)
-        {
-
-        }
-         */
     }
 
     void P1Point(HealthPlayer player)

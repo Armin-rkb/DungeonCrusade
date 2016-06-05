@@ -72,7 +72,7 @@ public class JoinManager : MonoBehaviour
         file.Close();
 
 
-        print("Player Saved! Amount of players: " + players);
+       // print("Player Saved! Amount of players: " + players);
     }
 
     public void LoadResource()
@@ -89,11 +89,11 @@ public class JoinManager : MonoBehaviour
 
             file.Close();
 
-            print("Players loaded! Amount of players: " + players);
+         //   print("Players loaded! Amount of players: " + players);
         }
 
         else
-            print("Players have not been saved. Please check your ...");
+            print("Saving amount of players failed. Please set your amount of players.");
     }
 
 

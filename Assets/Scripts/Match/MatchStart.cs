@@ -5,21 +5,14 @@ using UnityEngine.UI;
 
 public class MatchStart : MonoBehaviour {
 
-    [SerializeField]
-    private RoundManager _roundManager;
+    [SerializeField] private RoundManager _roundManager;
 
-    [SerializeField]
-    private JoinManager _joinManager;
+    [SerializeField] private JoinManager _joinManager;
 
     //GameObjects
-    [SerializeField]
-    private GameObject _countDownObj;
-    [SerializeField]
-    private List<GameObject> _amountCharacters;
-    [SerializeField]
-    private GameObject[] _inGameCharacters;
-
-    private GameObject[] _playerObject;
+    [SerializeField] private GameObject _countDownObj;
+    [SerializeField] private List<GameObject> _amountCharacters;
+    [SerializeField] private GameObject[] _inGameCharacters;
     //GameObjects
 
     //Text
@@ -43,7 +36,6 @@ public class MatchStart : MonoBehaviour {
     {
         _countDownText = _countDownObj.GetComponent<Text>();
         StartCoroutine("StartRound");
-        _roundManager.ResetPlayer += ReturnPositions;
 	}
 	
 
@@ -56,7 +48,7 @@ public class MatchStart : MonoBehaviour {
 
     private void CountDown()
     {
-        if (_countDownTimer > 1)
+        if (_countDownTimer >= 1)
         {
             _countDownTimer -= 1f * Time.deltaTime;
 
@@ -80,11 +72,12 @@ public class MatchStart : MonoBehaviour {
 
     public IEnumerator StartNewRound()
     {
+        _countDownTimer = 3;
             _countDownObj.SetActive(true);
 
             yield return new WaitForSeconds(_countDownTimer);
 
-            _countDownTimer = 3;
+            
             _countDownObj.SetActive(false);
 
             _inGameCharacters[0] = GameObject.Find("Player(Clone)");
@@ -97,19 +90,6 @@ public class MatchStart : MonoBehaviour {
             InstantiateNewCharacters();
     }
 
-     void ReturnPositions()
-    {
-        if (_inGameCharacters[0] == null)
-        {
-          
-            _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
-        }
-        else if (_inGameCharacters[1] == null)
-        {
-            _inGameCharacters[0].transform.position = _transformPoints[1].transform.position;
-        }
-
-    }
 
     private void InstantiateTwoCharacters()
     {
@@ -133,23 +113,13 @@ public class MatchStart : MonoBehaviour {
         if (_inGameCharacters[0] == null)
         {
             Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
-            //P1
-            _inGameCharacters[1].GetComponent<SpriteRenderer>().enabled = true;
-            _inGameCharacters[1].GetComponent<BoxCollider2D>().enabled = true;
-            _inGameCharacters[1].GetComponent<Rigidbody2D>().isKinematic = false;
-            _inGameCharacters[1].transform.position = _transformPoints[1].transform.position;
-            
+            //P1          
         }
               
         else if (_inGameCharacters[1] == null)
         {
             Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
-            //P2     
-
-            _inGameCharacters[0].GetComponent<SpriteRenderer>().enabled = true;
-            _inGameCharacters[0].GetComponent<BoxCollider2D>().enabled = true;
-            _inGameCharacters[0].GetComponent<Rigidbody2D>().isKinematic = false;
-            _inGameCharacters[0].transform.position = _transformPoints[0].transform.position;
+            //P2
         }
 
         else if (_inGameCharacters[2] == null)

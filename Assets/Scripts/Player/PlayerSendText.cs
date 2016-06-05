@@ -80,6 +80,12 @@ public class PlayerSendText : MonoBehaviour {
                   OnDuckDeath(this);
           }
 
+          else if (projectile.gameObject.GetComponent<Bomb>() != null)
+          {
+              if (OnBombDeath != null)
+                  OnBombDeath(this);
+          }
+
         }
     }
 

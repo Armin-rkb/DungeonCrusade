@@ -4,8 +4,13 @@ using System.Collections;
 public class CameraShake : MonoBehaviour {
 
     //Floats
-    [SerializeField]
-    private float _shakePower = 0.05f;
+    [SerializeField] private float _shakePower = 0.05f;
+
+    public float SetShakePower
+    {
+        get { return _shakePower; }
+        set { _shakePower += 0; }
+    }
     //Floats
 
     //Bool
@@ -48,9 +53,7 @@ public class CameraShake : MonoBehaviour {
         CancelInvoke();
         Invoke("StopShaking", duration);
     }
-
-  
-
+ 
 
     public void StopShaking()
     {

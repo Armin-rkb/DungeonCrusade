@@ -5,9 +5,18 @@ using System.Collections.Generic;
 public class HealthPlayer : MonoBehaviour, IHealth
 {
 
+    /*
+     * This is the class that gets used by all the players regarding health.
+     * This class goes about taking damage, and healing.
+     */
+
+
     //Delegates
     public delegate void PlayerPoint(HealthPlayer player);
     public delegate void PlayerHeart(HealthPlayer player);
+    public delegate void PlayerHit(HealthPlayer player);
+
+    public static event PlayerHit OnPlayerHit;
 
     public static event PlayerHeart ReduceP1Heart;
     public static event PlayerHeart ReduceP2Heart;
@@ -38,9 +47,6 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
     //Scripts
     private PlayerMovement _checkPort;
-    private RoundManager _roundManager;
-
-    private CameraShake _shakeCam; // NEEDS DELEGATE
     //Scripts
 
     private int playerHealth = 5;
@@ -59,26 +65,15 @@ public class HealthPlayer : MonoBehaviour, IHealth
     }
 
  
-   
     void Start()
     {
-        
-        _roundObject = GameObject.Find("RoundManager");
-        _roundManager = _roundObject.GetComponent<RoundManager>();
         _checkPort = this.GetComponent<PlayerMovement>();
-
-        _shakeCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraShake>(); // NEEDS DELEGATE
-
     }
 
     void Update()
     {
-
         Armour();
-        if (playerHealth <= 0)
-            playerHealth = 0;
-
-
+        
     }
 
     void Armour()
@@ -98,8 +93,9 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
         if (playerHealth <= 0)
             Death();
-
-        _shakeCam.Shake(0.25f); // NEEDS DELEGATE
+          
+        if (OnPlayerHit != null)
+            OnPlayerHit(this);
 
         SoundManager.PlayAudioClip(12);
 
@@ -145,7 +141,9 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
         if (OnP4Point != null)
             OnP4Point(this);
-        
+
+        playerHealth = 0;
+
         Destroy(gameObject);
     }
 

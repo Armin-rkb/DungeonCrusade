@@ -12,7 +12,7 @@ public class TileExplosion : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.name == "NewExplosion(Clone)")
+        if (coll.gameObject.name == "Barrel(Clone)")
         {
             SoundManager.PlayAudioClip(7);
             _fxManager.PlayFX(0, transform.position);

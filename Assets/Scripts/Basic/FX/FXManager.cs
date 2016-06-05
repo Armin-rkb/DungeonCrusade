@@ -13,7 +13,6 @@ public class FXManager : MonoBehaviour {
     [SerializeField]
     private GameObject[] _FXObj;
     // GameObject
-    private Animation _animatorFX;
 
     // int
     [SerializeField]

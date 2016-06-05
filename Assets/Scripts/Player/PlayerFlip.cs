@@ -25,8 +25,12 @@ public class PlayerFlip : MonoBehaviour {
     private void CheckMovement()
     {
 
+        float x;
 
-        float x = Input.GetAxis(ControllerInputs.horizontalcp + _playerMovement.PlayerNumber);
+        if (_playerMovement.SetJoyStick)
+        x = Input.GetAxis(ControllerInputs.horizontalcp + _playerMovement.PlayerNumber);
+        else
+            x = Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber);
 
             if (x > 0 && !facingRight)
             {

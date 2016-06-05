@@ -36,7 +36,7 @@ public class DeathText : MonoBehaviour {
 
         PlayerSendText.OnSockDeath += SetSockText;
         PlayerSendText.OnDuckDeath += SetDuckText;
-       // PlayerSendText.OnBombDeath += SetBombText;
+        PlayerSendText.OnBombDeath += SetBombText;
 
     }
 
@@ -80,10 +80,10 @@ public class DeathText : MonoBehaviour {
         _deathText.text = _deathStrings[7];
     }
 
-    /*
+    
     void SetBombText(PlayerSendText player)
     {
         _deathText.text = _deathStrings[8];
     }
-    */
+    
 }
