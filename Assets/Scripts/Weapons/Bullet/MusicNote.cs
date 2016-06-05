@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Stone : MonoBehaviour
+public class MusicNote : MonoBehaviour
 {
+    
     //Rigidbody of the Gameobject
-    [SerializeField] private Rigidbody2D rbStone;
-    //Sprite of this bullet
-    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private Rigidbody2D rbMusicNote;
     //Speed of the bullet
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
@@ -22,23 +21,33 @@ public class Stone : MonoBehaviour
     public void ShootLeft()
     {
         isLeft = true;
-        sprite.flipX = true;
-        SoundManager.PlayAudioClip(AudioData.stone);
+        SoundManager.PlayAudioClip(AudioData.Hadouken);
     }
 
     //Sets the place the player is facing
     public void ShootRight()
     {
         isRight = true;
-        SoundManager.PlayAudioClip(AudioData.stone);
+        SoundManager.PlayAudioClip(AudioData.Hadouken);
     }
 
-    void FixedUpdate()
+    void Start()
     {
         if (isRight)
-            rbStone.velocity = new Vector2(speed, rbStone.velocity.y);
+            StartCoroutine(BulletBehavour(speed));
         else if (isLeft)
-            rbStone.velocity = new Vector2(-speed, rbStone.velocity.y);
+            StartCoroutine(BulletBehavour(-speed));
+    }
+
+    IEnumerator BulletBehavour(float speed)
+    {
+        while (true)
+        {
+            rbMusicNote.velocity = new Vector2(speed, speed / 3);
+            yield return new WaitForSeconds(0.5f);
+            rbMusicNote.velocity = new Vector2(speed, -speed / 3);
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     void Hit(GameObject player)
@@ -49,7 +58,7 @@ public class Stone : MonoBehaviour
         //Give the player knockback
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        Vector2 currPosition = (rbStone.position - rbPlayer.position).normalized;
+        Vector2 currPosition = (rbMusicNote.position - rbPlayer.position).normalized;
         float xPos = currPosition.x * knockback;
         playerMovement.ApplyKnockback(xPos);
     }
@@ -62,13 +71,15 @@ public class Stone : MonoBehaviour
             {
                 Hit(coll.gameObject);
                 speed = 0;
+                isRight = false;
+                isLeft = false;
                 Destroy(this.gameObject);
             }
-
             else
             {
-                gameObject.AddComponent<Fade>();
                 speed = 0;
+                rbMusicNote.isKinematic = true;
+                gameObject.AddComponent<Fade>();
             }
         }
     }

@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16dfa47e582161a4b94b871d4a848877, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sock: {fileID: 11491612, guid: 4326c6f3beab7fc4f9878e77c18108bc, type: 2}
+  sock: {fileID: 11441114, guid: cf855dc9f841ac74d9ed7194a2e1f631, type: 2}
   playerCollision: {fileID: 11469742}
   flip: {fileID: 11433018}
   playernumber: {fileID: 11422414}
