@@ -9,7 +9,7 @@ public class CameraShake : MonoBehaviour {
     public float SetShakePower
     {
         get { return _shakePower; }
-        set { _shakePower += 0; }
+        set { _shakePower = value; }
     }
     //Floats
 

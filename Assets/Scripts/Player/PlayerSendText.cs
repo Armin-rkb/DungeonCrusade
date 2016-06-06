@@ -16,9 +16,6 @@ public class PlayerSendText : MonoBehaviour {
     public static event ProjectileTextEventHandler OnBombDeath;
 
 
-    [SerializeField]
-    private HealthPlayer _healthPlayer;
-
     bool _sendText;
 
 
@@ -29,7 +26,7 @@ public class PlayerSendText : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D projectile)
     {
-        if (projectile.gameObject.tag == "Bullet")
+        if (projectile.gameObject.CompareTag(GameTags.bullet))
         {
           if (projectile.gameObject.GetComponent<Stone>() != null)
           {
@@ -68,13 +65,13 @@ public class PlayerSendText : MonoBehaviour {
                   OnBarrelDeath(this);
           }
 
-          else if (projectile.gameObject.GetComponent<Sock>() != null)
+          else if (projectile.gameObject.GetComponent<SockExplosion>() != null)
           {
               if (OnSockDeath != null)
                   OnSockDeath(this);
           }
 
-          else if (projectile.gameObject.GetComponent<Duck>() != null)
+          else if (projectile.gameObject.GetComponent<DuckExplosion>() != null)
           {
               if (OnDuckDeath != null)
                   OnDuckDeath(this);

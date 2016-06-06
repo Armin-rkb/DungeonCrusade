@@ -1,66 +1,41 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
+
 
 
 public class RoundManager : MonoBehaviour {
 
 
     public delegate void EndRoundEventHandler();
+    public EndRoundEventHandler OnGameEnd;
+
     public EndRoundEventHandler OnRoundEnd;
+    public EndRoundEventHandler OnRoundStart;
 
     //Int
     private int _amountOfRounds = 1;
+
+    public int GetRoundAmount
+    {
+        get { return _amountOfRounds; }
+    }
     //Int
-
-    //List
-    [SerializeField]
-    private List<GameObject> _roundObjects;
-    //List
-
-    //Text
-    private Text _roundText;
-    //Text
-
-    //GameObject
-    [SerializeField] private GameObject[] _buttonObjects;
-    //GameObject
 
     //Scripts
     [SerializeField] private PlayerScore _checkScore;
-    [SerializeField] private MatchStart _matchStart;
-    private RoundsSetUp _roundSetUp;
+     [SerializeField] private RoundsSetUp _roundSetUp;
     //Scripts
 
-    [SerializeField] private AudioSource levelOST;
+   bool _endGame;
 
-    [SerializeField] bool _endGame;
-
-    bool runOnce;
 
     void Awake()
     {
+        HealthPlayer.OnNewRound += AddNewRound;    
        _checkScore.OnPlayerScore += StopMatch;
-        HealthPlayer.OnNewRound += AddNewRound;      
     }
 
-	void Start () 
-    {
-       
-
-        _roundSetUp = this.GetComponent<RoundsSetUp>();
-
-        foreach (GameObject roundobj in _roundObjects)
-            _roundText = roundobj.GetComponent<Text>();
-
-        foreach (GameObject button in _buttonObjects)
-            button.SetActive(false);
-
-        _roundText.text = "Round " + _amountOfRounds;
-
-        _roundObjects[0].SetActive(false);   
-	}
 
 
     void StopMatch()
@@ -86,25 +61,16 @@ public class RoundManager : MonoBehaviour {
         yield return new WaitForSeconds(.1f);
          if (!_endGame)
          {
-
-     
-
              _amountOfRounds++;
 
-             foreach (GameObject roundobj in _roundObjects)
-                 _roundText = roundobj.GetComponent<Text>();
+             if (OnRoundStart != null)
+                 OnRoundStart();
 
+              yield return new WaitForSeconds(2);
+             
 
-             _roundObjects[1].SetActive(false);
-             _roundObjects[0].SetActive(true);
-
-                 yield return new WaitForSeconds(3);
-
-                 _roundObjects[0].SetActive(false);
-                 _roundObjects[1].SetActive(true);
-
-                 _matchStart.StartCoroutine("StartNewRound");
-             _roundText.text = "Round " + _amountOfRounds;
+             if (OnRoundEnd != null)
+                 OnRoundEnd();
          }
     }
 
@@ -112,17 +78,9 @@ public class RoundManager : MonoBehaviour {
 
     private void StopGame()
     {
-        if (!runOnce)
-        {
-            levelOST.Stop();
             SoundManager.PlayAudioClip(AudioData.Win);
 
-            foreach (GameObject button in _buttonObjects)
-                button.SetActive(true);
-            runOnce = true;
-
-            if (OnRoundEnd != null)
-                OnRoundEnd();
-        }
+            if (OnGameEnd != null)
+                OnGameEnd();        
     }
 }

@@ -33,8 +33,11 @@ public class InputManager : MonoBehaviour
         else if (Input.GetJoystickNames()[3] != null)
             _playerMovement[3].SetJoyStick = true;
 
-        else
+        else if (Input.GetJoystickNames().Length == null)
+        {
             foreach (PlayerMovement player in _playerMovement)
                 player.SetJoyStick = false;
+        }
+            
     }
 }

@@ -11,6 +11,8 @@ TagManager:
   - LeftWall
   - RightWall
   - Point
+  - DamageAble
+  - FootStool
   layers:
   - Default
   - TransparentFX

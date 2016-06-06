@@ -12,6 +12,7 @@ public class GameTags
     public const string wallleft = "LeftWall";
     public const string wallright = "RightWall";
 
+    public const string footstool = "FootStool";
 
     
 }

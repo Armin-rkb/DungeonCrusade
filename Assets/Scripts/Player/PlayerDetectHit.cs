@@ -46,7 +46,7 @@ public class PlayerDetectHit : MonoBehaviour
     void OnCollisionEnter2D(Collision2D coll)
     {
 
-        if(coll.gameObject.CompareTag("Bullet"))
+        if(coll.gameObject.CompareTag(GameTags.bullet))
         {
             if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
             {

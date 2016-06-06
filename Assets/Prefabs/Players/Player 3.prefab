@@ -61,12 +61,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 415002}
   - 212: {fileID: 21278482}
+  - 50: {fileID: 5036522}
+  - 61: {fileID: 6125236}
+  - 95: {fileID: 9574024}
   - 114: {fileID: 11493822}
   - 114: {fileID: 11432102}
   - 114: {fileID: 11464536}
-  - 50: {fileID: 5036522}
   - 114: {fileID: 11420946}
-  - 114: {fileID: 11417650}
   - 114: {fileID: 11487192}
   - 114: {fileID: 11487784}
   - 114: {fileID: 11478036}
@@ -78,15 +79,15 @@ GameObject:
   - 114: {fileID: 11474640}
   - 114: {fileID: 11473202}
   - 114: {fileID: 11419964}
-  - 95: {fileID: 9574024}
   - 114: {fileID: 11410106}
   - 114: {fileID: 11476326}
   - 114: {fileID: 11448754}
   - 114: {fileID: 11478442}
-  - 61: {fileID: 6125236}
   - 114: {fileID: 11427370}
   - 114: {fileID: 11436962}
+  - 114: {fileID: 11482692}
   - 114: {fileID: 11459696}
+  - 114: {fileID: 11403138}
   m_Layer: 0
   m_Name: Player 3
   m_TagString: Player
@@ -143,6 +144,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &179648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 451572}
+  - 61: {fileID: 6158980}
+  m_Layer: 0
+  m_Name: FootStoolP3
+  m_TagString: FootStool
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &415002
 Transform:
   m_ObjectHideFlags: 1
@@ -159,8 +176,21 @@ Transform:
   - {fileID: 453030}
   - {fileID: 455118}
   - {fileID: 452496}
+  - {fileID: 451572}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!4 &451572
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179648}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 415002}
+  m_RootOrder: 6
 --- !u!4 &452496
 Transform:
   m_ObjectHideFlags: 1
@@ -332,6 +362,20 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.5}
   serializedVersion: 2
   m_Size: {x: 0.25, y: 0.1}
+--- !u!61 &6158980
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179648}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0.25}
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.1}
 --- !u!95 &9518568
 Animator:
   serializedVersion: 3
@@ -387,6 +431,18 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4278255360
+--- !u!114 &11403138
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 114916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3dd25ca43d67b04b92fc677e05d0cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMovement: {fileID: 11493822}
 --- !u!114 &11410106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -400,21 +456,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _checkPort: {fileID: 0}
---- !u!114 &11417650
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 114916}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7b2f74218884bc408fcd67b3f30a568, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playAtStart: 1
-  _FXObj:
-  - {fileID: 115472, guid: 106ce3de038ce27439137a3e32212cbe, type: 2}
-  _customFXPlay: 0
 --- !u!114 &11419964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -476,7 +517,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de393600b94795d4b9212bad2bfb6414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthPlayer: {fileID: 11487192}
 --- !u!114 &11440582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -655,6 +695,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ignoredColl: []
+--- !u!114 &11482692
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 114916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6938ba5e57dd0164db8d7d4ecc8f2cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11487192
 MonoBehaviour:
   m_ObjectHideFlags: 1

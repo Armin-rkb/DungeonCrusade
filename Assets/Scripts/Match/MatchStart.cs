@@ -32,6 +32,11 @@ public class MatchStart : MonoBehaviour {
     bool _runOnce;
     
 
+    void Awake()
+    {
+        _roundManager.OnRoundEnd += StartAnotherRound;
+    }
+
 	void Start ()
     {
         _countDownText = _countDownObj.GetComponent<Text>();
@@ -69,6 +74,11 @@ public class MatchStart : MonoBehaviour {
 
         _inGameCharacters = GameObject.FindGameObjectsWithTag(GameTags.player);      
     }
+
+    private void StartAnotherRound()
+     {
+         StartCoroutine("StartNewRound");
+     }
 
     public IEnumerator StartNewRound()
     {

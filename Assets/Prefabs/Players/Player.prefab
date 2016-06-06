@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &113130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 438794}
+  - 61: {fileID: 6154926}
+  m_Layer: 0
+  m_Name: FootStool
+  m_TagString: FootStool
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &129870
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,12 +77,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 461574}
   - 212: {fileID: 21296948}
+  - 50: {fileID: 5054240}
+  - 61: {fileID: 6183758}
+  - 95: {fileID: 9546896}
   - 114: {fileID: 11422414}
   - 114: {fileID: 11433018}
   - 114: {fileID: 11409986}
-  - 50: {fileID: 5054240}
   - 114: {fileID: 11425064}
-  - 114: {fileID: 11479440}
   - 114: {fileID: 11408116}
   - 114: {fileID: 11436936}
   - 114: {fileID: 11473432}
@@ -78,15 +95,15 @@ GameObject:
   - 114: {fileID: 11407084}
   - 114: {fileID: 11483476}
   - 114: {fileID: 11432332}
-  - 95: {fileID: 9546896}
   - 114: {fileID: 11486120}
   - 114: {fileID: 11415540}
   - 114: {fileID: 11421184}
   - 114: {fileID: 11469742}
-  - 61: {fileID: 6183758}
   - 114: {fileID: 11435682}
   - 114: {fileID: 11413968}
+  - 114: {fileID: 11430206}
   - 114: {fileID: 11461816}
+  - 114: {fileID: 11434252}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -167,6 +184,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 461574}
   m_RootOrder: 3
+--- !u!4 &438794
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 113130}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 461574}
+  m_RootOrder: 6
 --- !u!4 &443794
 Transform:
   m_ObjectHideFlags: 1
@@ -195,6 +224,7 @@ Transform:
   - {fileID: 438658}
   - {fileID: 443794}
   - {fileID: 434710}
+  - {fileID: 438794}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &483556
@@ -304,6 +334,20 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.5}
   serializedVersion: 2
   m_Size: {x: 0.25, y: 0.1}
+--- !u!61 &6154926
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 113130}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0.25}
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.1}
 --- !u!61 &6183758
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -440,7 +484,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de393600b94795d4b9212bad2bfb6414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthPlayer: {fileID: 11408116}
 --- !u!114 &11415540
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -519,6 +562,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddd4b78ed48c85546b2ea42b93761ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11430206
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6938ba5e57dd0164db8d7d4ecc8f2cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11432332
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -546,6 +600,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   facingRight: 1
+--- !u!114 &11434252
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3dd25ca43d67b04b92fc677e05d0cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMovement: {fileID: 11422414}
 --- !u!114 &11435682
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -569,7 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 0
+  currNumber: 6
 --- !u!114 &11437648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -638,21 +704,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerMovement: {fileID: 11422414}
   _playerRigidBody2D: {fileID: 5054240}
---- !u!114 &11479440
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 157354}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7b2f74218884bc408fcd67b3f30a568, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playAtStart: 1
-  _FXObj:
-  - {fileID: 115472, guid: 106ce3de038ce27439137a3e32212cbe, type: 2}
-  _customFXPlay: 0
 --- !u!114 &11483476
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -42,12 +42,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 492268}
   - 212: {fileID: 21226040}
+  - 50: {fileID: 5067204}
+  - 61: {fileID: 6187622}
+  - 95: {fileID: 9574568}
   - 114: {fileID: 11447472}
   - 114: {fileID: 11447402}
   - 114: {fileID: 11414310}
-  - 50: {fileID: 5067204}
   - 114: {fileID: 11499148}
-  - 114: {fileID: 11493628}
   - 114: {fileID: 11469694}
   - 114: {fileID: 11403274}
   - 114: {fileID: 11433738}
@@ -59,15 +60,15 @@ GameObject:
   - 114: {fileID: 11433114}
   - 114: {fileID: 11483212}
   - 114: {fileID: 11467230}
-  - 95: {fileID: 9574568}
   - 114: {fileID: 11497176}
   - 114: {fileID: 11430258}
   - 114: {fileID: 11494678}
   - 114: {fileID: 11447382}
-  - 61: {fileID: 6187622}
   - 114: {fileID: 11470660}
   - 114: {fileID: 11400764}
+  - 114: {fileID: 11455670}
   - 114: {fileID: 11496544}
+  - 114: {fileID: 11449672}
   m_Layer: 0
   m_Name: Player 4
   m_TagString: Player
@@ -122,6 +123,22 @@ GameObject:
   m_Layer: 0
   m_Name: SideCollisionTwo
   m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &198272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 475200}
+  - 61: {fileID: 6193242}
+  m_Layer: 0
+  m_Name: FootStoolP4
+  m_TagString: FootStool
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -191,6 +208,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 492268}
   m_RootOrder: 2
+--- !u!4 &475200
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 198272}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 492268}
+  m_RootOrder: 6
 --- !u!4 &478268
 Transform:
   m_ObjectHideFlags: 1
@@ -219,6 +248,7 @@ Transform:
   - {fileID: 415458}
   - {fileID: 422178}
   - {fileID: 407788}
+  - {fileID: 475200}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &499280
@@ -332,6 +362,20 @@ BoxCollider2D:
   m_Offset: {x: -0.25, y: -0.25}
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.5}
+--- !u!61 &6193242
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 198272}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0.25}
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.1}
 --- !u!95 &9529352
 Animator:
   serializedVersion: 3
@@ -398,7 +442,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de393600b94795d4b9212bad2bfb6414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthPlayer: {fileID: 11469694}
 --- !u!114 &11403274
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -548,6 +591,18 @@ MonoBehaviour:
   _isGrounded: 0
   _joystickEnabled: 0
   _playerNumber: 4
+--- !u!114 &11449672
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 150266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3dd25ca43d67b04b92fc677e05d0cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMovement: {fileID: 11447472}
 --- !u!114 &11450756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -561,6 +616,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerMovement: {fileID: 11447472}
   _playerRigidBody2D: {fileID: 5067204}
+--- !u!114 &11455670
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 150266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6938ba5e57dd0164db8d7d4ecc8f2cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11467230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -663,21 +729,6 @@ MonoBehaviour:
   playerCollision: {fileID: 11447382}
   flip: {fileID: 11447402}
   playernumber: {fileID: 11447472}
---- !u!114 &11493628
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 150266}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7b2f74218884bc408fcd67b3f30a568, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playAtStart: 1
-  _FXObj:
-  - {fileID: 115472, guid: 106ce3de038ce27439137a3e32212cbe, type: 2}
-  _customFXPlay: 0
 --- !u!114 &11494678
 MonoBehaviour:
   m_ObjectHideFlags: 1

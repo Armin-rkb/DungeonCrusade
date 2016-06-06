@@ -12,7 +12,7 @@ public class WinText : MonoBehaviour {
 
     void Awake()
     {
-        _roundManager.OnRoundEnd += ShowWinText;
+        _roundManager.OnGameEnd += ShowWinText;
     }
 
 	void Start ()
