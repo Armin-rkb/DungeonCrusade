@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour
     private PlayerMovement[] _playerMovement;
 
 
-    void Awake()
+    void Start()
     {
         CheckControllers();
     }
@@ -18,26 +18,31 @@ public class InputManager : MonoBehaviour
     void CheckControllers()
     {
 
-        if (OnControllerConnected != null)
-            OnControllerConnected();
+        if (Input.GetJoystickNames().Length > 0)
+        {
+            if (Input.GetJoystickNames()[0] != null)
+                _playerMovement[0].SetJoyStick = true;
 
-        if (Input.GetJoystickNames()[0] != null)
-            _playerMovement[0].SetJoyStick = true;
+            else if (Input.GetJoystickNames()[1] != null)
+                _playerMovement[1].SetJoyStick = true;
 
-        else if (Input.GetJoystickNames()[1] != null)
-            _playerMovement[1].SetJoyStick = true;
+            else if (Input.GetJoystickNames()[2] != null)
+                _playerMovement[2].SetJoyStick = true;
 
-        else if (Input.GetJoystickNames()[2] != null)
-            _playerMovement[2].SetJoyStick = true;
-
-        else if (Input.GetJoystickNames()[3] != null)
-            _playerMovement[3].SetJoyStick = true;
-
-        else if (Input.GetJoystickNames().Length == null)
+            else if (Input.GetJoystickNames()[3] != null)
+                _playerMovement[3].SetJoyStick = true;
+        }
+        else
         {
             foreach (PlayerMovement player in _playerMovement)
                 player.SetJoyStick = false;
         }
-            
+
+
+        if (OnControllerConnected != null)
+            OnControllerConnected();
+
+
+
     }
 }
