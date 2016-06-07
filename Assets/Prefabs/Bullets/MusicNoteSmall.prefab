@@ -1,45 +1,45 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &199364
+--- !u!1 &187246
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 405908}
-  - 212: {fileID: 21280650}
-  - 95: {fileID: 9527262}
-  - 50: {fileID: 5025236}
-  - 114: {fileID: 11452272}
-  - 114: {fileID: 11478016}
-  - 61: {fileID: 6120038}
+  - 4: {fileID: 498486}
+  - 212: {fileID: 21211250}
+  - 95: {fileID: 9598632}
+  - 50: {fileID: 5023498}
+  - 114: {fileID: 11401294}
+  - 114: {fileID: 11434736}
+  - 61: {fileID: 6155012}
   m_Layer: 0
-  m_Name: MusicNoteTESTMID
+  m_Name: MusicNoteSmall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &405908
+--- !u!4 &498486
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.557369, y: -4.3019466, z: 0}
+  m_LocalPosition: {x: 0.92268234, y: -2.4867587, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!50 &5025236
+--- !u!50 &5023498
 Rigidbody2D:
   serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -50,30 +50,30 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &6120038
+--- !u!61 &6155012
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.01, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.16, y: 0.16}
---- !u!95 &9527262
+  m_Size: {x: 0.12, y: 0.16}
+--- !u!95 &9598632
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 44f0d6446ab298c4a8dc464713ae168c, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7a42fb63225960b41a80a696bae27177, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -81,40 +81,40 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11452272
+--- !u!114 &11401294
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88182569c7b14254c9e9d08b8e842cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbMusicNote: {fileID: 5025236}
-  speed: 5
-  damage: 2
-  knockback: 3
+  rbMusicNote: {fileID: 5023498}
+  speed: 4
+  damage: 1
+  knockback: 2
   playernum: 0
---- !u!114 &11478016
+--- !u!114 &11434736
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6b3554b00c2a9c41905a7674e653c3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playernum: 0
---- !u!212 &21280650
+--- !u!212 &21211250
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199364}
+  m_GameObject: {fileID: 187246}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -135,7 +135,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0d6b0dad5e0839c49968219cda4d52df, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1b7d5e8a8fbb2c24aa7b045446405ecf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -148,5 +148,5 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 199364}
+  m_RootGameObject: {fileID: 187246}
   m_IsPrefabParent: 1

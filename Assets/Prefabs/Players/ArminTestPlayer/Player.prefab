@@ -494,8 +494,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicnote:
   - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
-  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
-  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
   playerCollision: {fileID: 11469742}
   flip: {fileID: 11433018}
   playernumber: {fileID: 11422414}

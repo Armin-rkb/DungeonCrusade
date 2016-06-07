@@ -13,6 +13,7 @@ public class Stone : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    [SerializeField] private GameObject brokenBullet;
     private bool isRight;
     private bool isLeft;
 
@@ -67,8 +68,8 @@ public class Stone : MonoBehaviour
 
             else
             {
-                gameObject.AddComponent<Fade>();
-                speed = 0;
+                Instantiate(brokenBullet, transform.position, transform.rotation);
+                Destroy(this.gameObject);
             }
         }
     }

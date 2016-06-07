@@ -33,6 +33,8 @@ public class MusicNote : MonoBehaviour
 
     void Start()
     {
+        playernum = this.gameObject.GetComponent<BulletNumber>().playernum;
+
         if (isRight)
             StartCoroutine(BulletBehavour(speed));
         else if (isLeft)
@@ -75,8 +77,27 @@ public class MusicNote : MonoBehaviour
                 isLeft = false;
                 Destroy(this.gameObject);
             }
+
+            else if (coll.gameObject.name == "MusicNoteBig(Clone)" || coll.gameObject.name == "MusicNoteSmall(Clone)")
+            {
+                MusicNote otherNote = coll.gameObject.GetComponent<MusicNote>();
+                if (otherNote.playernum == playernum)
+                    Physics2D.IgnoreCollision(GetComponent<Collider2D>(), otherNote.gameObject.GetComponent<Collider2D>());
+
+                else
+                {
+                    isRight = false;
+                    isLeft = false;
+                    speed = 0;
+                    rbMusicNote.isKinematic = true;
+                    gameObject.AddComponent<Fade>();
+                }
+            }
+
             else
             {
+                isRight = false;
+                isLeft = false;
                 speed = 0;
                 rbMusicNote.isKinematic = true;
                 gameObject.AddComponent<Fade>();

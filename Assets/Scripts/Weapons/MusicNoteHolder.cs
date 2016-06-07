@@ -11,23 +11,17 @@ public class MusicNoteHolder : MonoBehaviour, IWeapon
     public void Shoot()
     {
         if (flip.facingRight)
-        {
-            Vector2 shootPos = transform.position;
-            StartCoroutine(SpawnRight(shootPos));
-        }
+            StartCoroutine(SpawnRight());
 
         else
-        {
-            Vector2 shootPos = transform.position;
-            StartCoroutine(SpawnLeft(shootPos));
-        }
+            StartCoroutine(SpawnLeft());
     }
 
-    IEnumerator SpawnRight(Vector2 shootPos)
+    IEnumerator SpawnRight()
     {
         for (int j = 0; j < musicnote.Length; j++)
         {
-            MusicNote currMusicNote = Instantiate(musicnote[j], new Vector2(shootPos.x + .1f, shootPos.y), musicnote[j].transform.rotation) as MusicNote;
+            MusicNote currMusicNote = Instantiate(musicnote[j], new Vector2(transform.position.x + .1f, transform.position.y), musicnote[j].transform.rotation) as MusicNote;
             Physics2D.IgnoreCollision(currMusicNote.GetComponent<Collider2D>(), musicnote[j].GetComponent<Collider2D>());
             currMusicNote.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
 
@@ -40,7 +34,7 @@ public class MusicNoteHolder : MonoBehaviour, IWeapon
         }
     }
 
-    IEnumerator SpawnLeft(Vector2 shootPos)
+    IEnumerator SpawnLeft()
     {
         for (int j = 0; j < musicnote.Length; j++)
         {
