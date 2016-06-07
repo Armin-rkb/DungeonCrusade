@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 475702}
   - 212: {fileID: 21289558}
   - 50: {fileID: 5017682}
-  - 61: {fileID: 6193346}
+  - 61: {fileID: 6148830}
   - 114: {fileID: 11430042}
   - 95: {fileID: 9567142}
   - 114: {fileID: 11406636}
@@ -28,7 +28,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 163126}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3218391, y: -2.9101214, z: 0}
+  m_LocalPosition: {x: -1.231323, y: -4.1094217, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -50,7 +50,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &6193346
+--- !u!61 &6148830
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -61,7 +61,7 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0.085}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.25, y: 0.17}
 --- !u!95 &9567142
@@ -73,7 +73,7 @@ Animator:
   m_GameObject: {fileID: 163126}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b958cb46d12c67c47930cad0cd73f1b5, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8ff21173127130c479d4c72764d7ebf8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -136,7 +136,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f0b263339e8e3964ba8f6866c148095a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ab870206ca480dc488b57a95da21fa13, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
