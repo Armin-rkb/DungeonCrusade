@@ -10,12 +10,27 @@ public class MainMenuButtons : MonoBehaviour
 
     public BestOfEventHandler OnPlayButton;
 
-    public void PlayGame()
-    {
-        StartCoroutine("PlayButton");
+    public BestOfEventHandler OnDungeonButton;
+    public BestOfEventHandler OnBeachButton;
 
+    public void DungeonLevel()
+    {
         if (OnPlayButton != null)
-            OnPlayButton();
+            OnPlayButton();        
+
+
+        if (OnDungeonButton != null)
+            OnDungeonButton();        
+    }
+
+
+    public void BeachLevel()
+    {
+        if (OnPlayButton != null)
+            OnPlayButton();        
+
+        if (OnBeachButton != null)
+            OnBeachButton();
     }
 
     /*
@@ -23,26 +38,6 @@ public class MainMenuButtons : MonoBehaviour
      * Starts the IEnumerator PlayButton.
      */
 
-    public void GoToMenu()
-    {
-        Application.LoadLevel("Menu");
-    }
-
-    /*
-     * Button to use for the game's Menu button.
-     * Simply loads the Menu's scene.
-     */
 
   
-    
-
-    private IEnumerator PlayButton()
-    {
-
-        AsyncOperation async = Application.LoadLevelAsync("SceneArmin5");
-
-
-        while (!async.isDone)
-            yield return null;
-    }
 }

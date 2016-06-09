@@ -14,7 +14,7 @@ public class PlayerSendText : MonoBehaviour {
     public static event ProjectileTextEventHandler OnSockDeath;
     public static event ProjectileTextEventHandler OnDuckDeath;
     public static event ProjectileTextEventHandler OnBombDeath;
-
+    public static event ProjectileTextEventHandler OnMusicDeath;
 
     bool _sendText;
 
@@ -81,6 +81,12 @@ public class PlayerSendText : MonoBehaviour {
           {
               if (OnBombDeath != null)
                   OnBombDeath(this);
+          }
+
+          else if (projectile.gameObject.GetComponent<MusicNote>() != null)
+          {
+              if (OnMusicDeath != null)
+                  OnMusicDeath(this);
           }
 
         }

@@ -94,6 +94,7 @@ GameObject:
   - 114: {fileID: 11429120}
   - 114: {fileID: 11400176}
   - 114: {fileID: 11466122}
+  - 114: {fileID: 11401542}
   - 114: {fileID: 11433690}
   - 114: {fileID: 11444784}
   - 114: {fileID: 11466778}
@@ -103,6 +104,7 @@ GameObject:
   - 114: {fileID: 11414686}
   - 114: {fileID: 11408246}
   - 114: {fileID: 11458400}
+  - 114: {fileID: 11497240}
   m_Layer: 0
   m_Name: Player 2
   m_TagString: Player
@@ -446,6 +448,24 @@ MonoBehaviour:
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
   playernumber: {fileID: 11473704}
+--- !u!114 &11401542
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e613b3dcd493ffd46b79284a3710bfc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicnote:
+  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  playerCollision: {fileID: 11499356}
+  flip: {fileID: 11423776}
+  playernumber: {fileID: 11473704}
 --- !u!114 &11408246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -765,6 +785,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f808b23827221344a365dda96e66122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerAnimations: {fileID: 9595304}
+  _playerAnimationListener: {fileID: 11497240}
+  _playerMovement: {fileID: 11473704}
+--- !u!114 &11497240
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 241138d9b6c64634186ecbfc972b82cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stoneHolder: {fileID: 11444268}
+  _pillHolder: {fileID: 11415926}
+  _shurikenHolder: {fileID: 11460390}
+  _barrelHolder: {fileID: 11486280}
+  _pizzaHolder: {fileID: 11435244}
+  _sockHolder: {fileID: 11429120}
+  _duckHolder: {fileID: 11400176}
+  _hadoukenHolder: {fileID: 11490170}
+  _musicNoteHolder: {fileID: 11401542}
 --- !u!114 &11499356
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -3,7 +3,10 @@ using System.Collections;
 
 public class PlayerAnimations : MonoBehaviour {
 
+
+
     // Animator
+    [SerializeField]
     Animator _playerAnimations;
     // Animator
 
@@ -12,69 +15,177 @@ public class PlayerAnimations : MonoBehaviour {
     //Bool
 
     //Scripts
+    [SerializeField]
+    private PlayerAnimationListener _playerAnimationListener;
+    [SerializeField]
     private PlayerMovement _playerMovement;
+
+    private PlayerWeapon _playerWeapon;
     //Scripts
 
-
-    void Start()
-    {
-        _playerMovement = this.GetComponent<PlayerMovement>();
-        _playerAnimations = this.GetComponent<Animator>();
-    }
 
 	void Update () 
     {
         WalkAnimation();
         JumpAnimation();
         AttackAnimation();
+        HadoukenAnimation();
+        MicroPhoneAnimation();
+        HitAnimation();
 	}
 
     public void WalkAnimation()
     {
         if (_isGrounded)
         {
-            if (Input.GetAxis(ControllerInputs.horizontalcp + _playerMovement.PlayerNumber) != 0)
+            if (Input.GetAxis(ControllerInputs.horizontalcp + _playerMovement.PlayerNumber) != 0 || Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber) != 0)
             {
                 _playerAnimations.SetBool(AnimationStrings.run, true);
+                _playerAnimations.SetBool(AnimationStrings.doublejump, false);
                 _playerAnimations.SetBool(AnimationStrings.idle, false);
+                _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+                _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
 
                 _playerAnimations.SetBool(AnimationStrings.jump, false);
                 _playerAnimations.SetBool(AnimationStrings.attack, false);
+                _playerAnimations.SetBool(AnimationStrings.hit, false);
+                _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+                _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+
+                
             }
 
-            else if (Input.GetAxis(ControllerInputs.horizontalcp + _playerMovement.PlayerNumber) == 0)
+            else if (Input.GetAxis(ControllerInputs.horizontalcp + _playerMovement.PlayerNumber) == 0 || Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber) == 0)
             {
                 _playerAnimations.SetBool(AnimationStrings.run, false);
+                _playerAnimations.SetBool(AnimationStrings.doublejump, false);
                 _playerAnimations.SetBool(AnimationStrings.idle, true);
+
+                _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+                _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
 
                 _playerAnimations.SetBool(AnimationStrings.jump, false);
                 _playerAnimations.SetBool(AnimationStrings.attack, false);
+                _playerAnimations.SetBool(AnimationStrings.hit, false);
+                _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+                _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+
+                
             }
         }
        
     }
 
+    private void HitAnimation()
+    {
+        if (_playerMovement.GetHitBool)
+        {
+            _playerAnimations.SetBool(AnimationStrings.hit, true);
+
+            _playerAnimations.SetBool(AnimationStrings.run, false);
+            _playerAnimations.SetBool(AnimationStrings.doublejump, false);
+            _playerAnimations.SetBool(AnimationStrings.idle, false);
+
+            _playerAnimations.SetBool(AnimationStrings.jump, false);
+            _playerAnimations.SetBool(AnimationStrings.attack, false);
+
+            _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
+            _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+        }
+    }
+
    private void JumpAnimation()
     {
-        if (!_isGrounded)
+        if (!_isGrounded && _playerMovement.GetAmountJumps < 2)
         {
             _playerAnimations.SetBool(AnimationStrings.jump, true);
             _playerAnimations.SetBool(AnimationStrings.run, false);
             _playerAnimations.SetBool(AnimationStrings.idle, false);
             _playerAnimations.SetBool(AnimationStrings.attack, false);
+            _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+            _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
         }
-           
+        else if (!_isGrounded && _playerMovement.GetAmountJumps == 2)
+        {
+            _playerAnimations.SetBool(AnimationStrings.jump, false);
+            _playerAnimations.SetBool(AnimationStrings.run, false);
+            _playerAnimations.SetBool(AnimationStrings.idle, false);
+            _playerAnimations.SetBool(AnimationStrings.attack, false);
+            _playerAnimations.SetBool(AnimationStrings.doublejump, true);
+
+            _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+
+            _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+            _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+        }
     }
 
     private void AttackAnimation()
    {
-            if (Input.GetButtonDown(ControllerInputs.attackp + _playerMovement.PlayerNumber))
+       if (_playerAnimationListener.GetNormalAttack && _playerMovement.GetAmountJumps == 0 && _isGrounded)
             {
                 _playerAnimations.SetBool(AnimationStrings.attack, true);
+
+                _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+
+                _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+                _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+                _playerAnimations.SetBool(AnimationStrings.run, false);
+                _playerAnimations.SetBool(AnimationStrings.idle, false);
+            }
+
+            if (_playerAnimationListener.GetNormalAttack && _playerMovement.GetAmountJumps == 1)
+            {
+                _playerAnimations.SetBool(AnimationStrings.jumpattack, true);
+                _playerAnimations.SetBool(AnimationStrings.jump, false);
+                _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+                _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+                _playerAnimations.SetBool(AnimationStrings.run, false);
+                _playerAnimations.SetBool(AnimationStrings.idle, false);
+            }
+
+            if (_playerAnimationListener.GetNormalAttack && _playerMovement.GetAmountJumps == 2)
+            {
+                _playerAnimations.SetBool(AnimationStrings.doublejumpattack, true);
+                _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+                _playerAnimations.SetBool(AnimationStrings.doublejump, false);
+                _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+                _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
                 _playerAnimations.SetBool(AnimationStrings.run, false);
                 _playerAnimations.SetBool(AnimationStrings.idle, false);
             }
    }
+
+    private void HadoukenAnimation()
+    {
+        if (_playerAnimationListener.GetHadoukenAttack)
+        {
+            print("HADOUKEN ANIMATION");
+
+            _playerAnimations.SetBool(AnimationStrings.hadoukenattack, true);
+            _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+            _playerAnimations.SetBool(AnimationStrings.attack, false);
+            _playerAnimations.SetBool(AnimationStrings.run, false);
+            _playerAnimations.SetBool(AnimationStrings.idle, false);
+            _playerAnimations.SetBool(AnimationStrings.jump, false);
+            _playerAnimations.SetBool(AnimationStrings.doublejump, false);
+        }
+    }
+
+    private void MicroPhoneAnimation()
+    {
+        if (_playerAnimationListener.GetMusicNoteAttack)
+        {
+            print("Microphone ANIMATION");
+
+            _playerAnimations.SetBool(AnimationStrings.microphoneattack, true);
+            _playerAnimations.SetBool(AnimationStrings.attack, false);
+            _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+            _playerAnimations.SetBool(AnimationStrings.run, false);
+            _playerAnimations.SetBool(AnimationStrings.idle, false);
+        }
+    }
+
 
     void OnCollisionStay2D(Collision2D coll)
     {

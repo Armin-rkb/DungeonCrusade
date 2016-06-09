@@ -8,8 +8,17 @@ public class DuckHolder : MonoBehaviour, IWeapon
     [SerializeField] private PlayerFlip flip;
     [SerializeField] private PlayerMovement playernumber;
 
+
+    public delegate void DuckEventHandler();
+    public DuckEventHandler OnDuckThrow;
+
     public void Shoot()
     {
+
+
+        if (OnDuckThrow != null)
+            OnDuckThrow();
+
         if (flip.facingRight)
         {
             Duck currDuck = Instantiate(duck, new Vector2(transform.position.x + .5f, transform.position.y), duck.transform.rotation) as Duck;

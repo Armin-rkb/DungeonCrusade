@@ -16,6 +16,7 @@ public class CameraShakeListener : MonoBehaviour {
         PlayerSendShake.OnSockShake += SockShake;
         PlayerSendShake.OnDuckShake += DuckShake;
         PlayerSendShake.OnBombShake += BombShake;
+        PlayerSendShake.OnMusicShake += MusicShake;
     }
 	
 
@@ -71,5 +72,11 @@ public class CameraShakeListener : MonoBehaviour {
     {
         _cameraShake.Shake(1f);
         _cameraShake.SetShakePower = 0.1f;
+    }
+
+    void MusicShake(PlayerSendShake player)
+    {
+        _cameraShake.Shake(0.10f);
+        _cameraShake.SetShakePower = 0.025f;
     }
 }

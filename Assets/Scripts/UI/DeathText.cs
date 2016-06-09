@@ -22,6 +22,7 @@ public class DeathText : MonoBehaviour {
       6 = Sock
       7 = Duck
       8 = Bom
+      9 = Music
   */
 
     void Awake()
@@ -37,6 +38,8 @@ public class DeathText : MonoBehaviour {
         PlayerSendText.OnSockDeath += SetSockText;
         PlayerSendText.OnDuckDeath += SetDuckText;
         PlayerSendText.OnBombDeath += SetBombText;
+
+        PlayerSendText.OnMusicDeath += SetMusicText;
 
     }
 
@@ -85,5 +88,11 @@ public class DeathText : MonoBehaviour {
     {
         _deathText.text = _deathStrings[8];
     }
+
+    void SetMusicText(PlayerSendText player)
+    {
+        _deathText.text = _deathStrings[9];
+    }
+    
     
 }
