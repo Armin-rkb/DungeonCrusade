@@ -29,12 +29,14 @@ public class MatchStart : MonoBehaviour {
     private Transform[] _transformPoints;
     //Transform
 
+    bool _endGame;
     bool _runOnce;
     
 
     void Awake()
     {
         _roundManager.OnRoundEnd += StartAnotherRound;
+        _roundManager.OnGameEnd += CheckEnd;
     }
 
 	void Start ()
@@ -82,22 +84,27 @@ public class MatchStart : MonoBehaviour {
 
     public IEnumerator StartNewRound()
     {
-        _countDownTimer = 3;
+        
+            _countDownTimer = 3;
             _countDownObj.SetActive(true);
 
             yield return new WaitForSeconds(_countDownTimer);
 
-            
+
             _countDownObj.SetActive(false);
 
             _inGameCharacters[0] = GameObject.Find("Player(Clone)");
             _inGameCharacters[1] = GameObject.Find("Player 2(Clone)");
             if (GameObject.Find("Player 3(Clone)") != null)
-            _inGameCharacters[2] = GameObject.Find("Player 3(Clone)");
+                _inGameCharacters[2] = GameObject.Find("Player 3(Clone)");
             if (GameObject.Find("Player 4(Clone)") != null)
-            _inGameCharacters[3] = GameObject.Find("Player 4(Clone)");
-
-            InstantiateNewCharacters();
+                _inGameCharacters[3] = GameObject.Find("Player 4(Clone)");
+           
+        if (!_endGame)
+            {
+                InstantiateNewCharacters();
+            }
+        
     }
 
 
@@ -144,5 +151,17 @@ public class MatchStart : MonoBehaviour {
             //P4   
         }
                      
+    }
+
+    void CheckEnd()
+    {
+        _endGame = true;
+
+        if (_endGame)
+        {
+            StopCoroutine("AddNewRound");
+            _countDownObj.SetActive(false);
+        }
+           
     }
 }

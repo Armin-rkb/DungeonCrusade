@@ -8,10 +8,17 @@ public class ShurikenHolder : MonoBehaviour, IWeapon
     [SerializeField] private PlayerFlip flip;
     [SerializeField] private PlayerMovement playernumber;
 
+    public delegate void ShurikenEventHandler();
+    public ShurikenEventHandler OnShurikenThrow;
+
     public void Shoot()
     {
         if (flip.facingRight)
         {
+
+            if (OnShurikenThrow != null)
+                OnShurikenThrow();
+
             Shuriken currShuriken = Instantiate(shuriken, new Vector2(transform.position.x + .5f, transform.position.y), shuriken.transform.rotation) as Shuriken;
 
             currShuriken.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
@@ -24,6 +31,10 @@ public class ShurikenHolder : MonoBehaviour, IWeapon
         }
         else
         {
+
+            if (OnShurikenThrow != null)
+                OnShurikenThrow();
+
             Shuriken currShuriken = Instantiate(shuriken, new Vector2(transform.position.x - .5f, transform.position.y), Quaternion.Inverse(shuriken.transform.rotation)) as Shuriken;
 
             currShuriken.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;

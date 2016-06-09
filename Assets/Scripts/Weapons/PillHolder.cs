@@ -8,6 +8,8 @@ public class PillHolder : MonoBehaviour, IWeapon
     [SerializeField] private PlayerFlip flip;
     [SerializeField] private PlayerMovement playernumber;
 
+    public delegate void PillEventHandler();
+    public PillEventHandler OnPillThrow;
 
     void Awake()
     {
@@ -18,6 +20,11 @@ public class PillHolder : MonoBehaviour, IWeapon
     {
         if (flip.facingRight)
         {
+
+            if (OnPillThrow != null)
+                OnPillThrow();
+
+
             Pill currPill = Instantiate(pill, new Vector2(transform.position.x + .5f, transform.position.y), pill.transform.rotation) as Pill;
 
             currPill.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
@@ -31,6 +38,10 @@ public class PillHolder : MonoBehaviour, IWeapon
         }
         else
         {
+            if (OnPillThrow != null)
+                OnPillThrow();
+
+
             Pill currPill = Instantiate(pill, new Vector2(transform.position.x - .5f, transform.position.y), Quaternion.Inverse(pill.transform.rotation)) as Pill;
 
             currPill.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;

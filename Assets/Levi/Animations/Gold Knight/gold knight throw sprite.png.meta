@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 1dd332a630ad1d64b991d46e3852edef
-timeCreated: 1463518382
+timeCreated: 1465493752
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -61,7 +61,7 @@ TextureImporter:
         width: 25
         height: 36
       alignment: 9
-      pivot: {x: 0.5732144, y: 0.675}
+      pivot: {x: 0.5, y: 0.675}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: gold knight throw sprite_1
@@ -72,7 +72,7 @@ TextureImporter:
         width: 29
         height: 34
       alignment: 9
-      pivot: {x: 0.39254946, y: 0.675}
+      pivot: {x: 0.5, y: 0.675}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: gold knight throw sprite_2
@@ -83,7 +83,7 @@ TextureImporter:
         width: 29
         height: 34
       alignment: 9
-      pivot: {x: 0.39716733, y: 0.675}
+      pivot: {x: 0.5, y: 0.675}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     outline: []

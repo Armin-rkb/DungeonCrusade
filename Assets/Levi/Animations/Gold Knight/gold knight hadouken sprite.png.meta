@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 14c8bb41e32da9443918387d04df3402
-timeCreated: 1463506297
+timeCreated: 1465424380
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -60,7 +60,7 @@ TextureImporter:
         width: 31
         height: 35
       alignment: 9
-      pivot: {x: 0.4695157, y: 0.002559212}
+      pivot: {x: 0.5, y: 0.675}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: gold knight hadouken sprite_1
@@ -71,7 +71,7 @@ TextureImporter:
         width: 22
         height: 36
       alignment: 9
-      pivot: {x: 0.5359719, y: 0.0025592116}
+      pivot: {x: 0.5, y: 0.675}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     outline: []

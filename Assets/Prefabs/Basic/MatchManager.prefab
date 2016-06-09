@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &176304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 453752}
+  - 114: {fileID: 11445356}
+  - 114: {fileID: 11488900}
+  - 114: {fileID: 11406098}
+  m_Layer: 0
+  m_Name: MatchManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &453752
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 176304}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11406098
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 176304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe08d72ff81cad44b8df0d0505a55f71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  _roundManager: {fileID: 0}
+--- !u!114 &11445356
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 176304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc20d097193b8cc4491169d75987e711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roundManager: {fileID: 0}
+  _joinManager: {fileID: 0}
+  _countDownObj: {fileID: 0}
+  _amountCharacters:
+  - {fileID: 157354, guid: 19a057409500865468e8e4199d2540ab, type: 2}
+  - {fileID: 140618, guid: 8427cb82a655abe4dbe9e1ce0f516b49, type: 2}
+  - {fileID: 114916, guid: 6bc73be28845f7342b3ddb0148422b37, type: 2}
+  - {fileID: 150266, guid: f5222d4f7b067e24d96228ac04cac566, type: 2}
+  _inGameCharacters: []
+  _countDownTimer: 3
+  _transformPoints:
+  - {fileID: 455326, guid: 4344468ee7b25a34788cfe1267046957, type: 2}
+  - {fileID: 457672, guid: a439094ae02f15c4aa3fb10c39c66731, type: 2}
+  - {fileID: 441852, guid: 50b75b91f4123954dac01183fa7f6c62, type: 2}
+  - {fileID: 483672, guid: 6f62cda127803b74492c923ec41ddbb2, type: 2}
+--- !u!114 &11488900
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 176304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a82eeca4cb5e4a24bacd501ce3aa4707, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roundManager: {fileID: 0}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 176304}
+  m_IsPrefabParent: 1

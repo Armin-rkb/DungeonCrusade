@@ -7,11 +7,18 @@ public class PizzaHolder : MonoBehaviour, IWeapon
     [SerializeField] private PlayerCollision playerCollision;
     [SerializeField] private PlayerFlip flip;
     [SerializeField] private PlayerMovement playernumber;
-   
+
+    public delegate void PizzaEventHandler();
+    public PizzaEventHandler OnPizzaThrow;
+
     public void Shoot()
     {
         if (flip.facingRight)
         {
+
+            if (OnPizzaThrow != null)
+                OnPizzaThrow();
+
             Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x + .5f, transform.position.y), pizza.transform.rotation) as Pizza;
 
             currPizza.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
@@ -25,6 +32,9 @@ public class PizzaHolder : MonoBehaviour, IWeapon
         }
         else
         {
+            if (OnPizzaThrow != null)
+                OnPizzaThrow();
+
             Pizza currPizza = Instantiate(pizza, new Vector2(transform.position.x - .5f, transform.position.y), Quaternion.Inverse(pizza.transform.rotation)) as Pizza;
 
             currPizza.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;

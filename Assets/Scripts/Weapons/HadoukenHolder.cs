@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public class HadoukenHolder : MonoBehaviour, IWeapon
 {
+
+    public delegate void HadoukenEventHandler();
+    public HadoukenEventHandler OnHadoukenShoot;
+
+
     [SerializeField] private Hadouken hadouken;
     [SerializeField] private PlayerCollision playerCollision;
     [SerializeField] private PlayerFlip flip;
@@ -13,6 +18,10 @@ public class HadoukenHolder : MonoBehaviour, IWeapon
     {
         if (flip.facingRight)
         {
+
+            if (OnHadoukenShoot != null)
+                OnHadoukenShoot();
+
             Hadouken currHadouken = Instantiate(hadouken, new Vector2(transform.position.x + .1f, transform.position.y), hadouken.transform.rotation) as Hadouken;
 
             currHadouken.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
@@ -25,6 +34,9 @@ public class HadoukenHolder : MonoBehaviour, IWeapon
         }
         else
         {
+            if (OnHadoukenShoot != null)
+                OnHadoukenShoot();
+
             Hadouken currHadouken = Instantiate(hadouken, new Vector2(transform.position.x - .1f, transform.position.y), Quaternion.Euler(0,0,180)) as Hadouken;
 
             currHadouken.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;

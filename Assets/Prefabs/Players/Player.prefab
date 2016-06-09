@@ -95,6 +95,7 @@ GameObject:
   - 114: {fileID: 11407084}
   - 114: {fileID: 11483476}
   - 114: {fileID: 11432332}
+  - 114: {fileID: 11461230}
   - 114: {fileID: 11486120}
   - 114: {fileID: 11415540}
   - 114: {fileID: 11421184}
@@ -104,6 +105,8 @@ GameObject:
   - 114: {fileID: 11430206}
   - 114: {fileID: 11461816}
   - 114: {fileID: 11434252}
+  - 114: {fileID: 11482678}
+  - 114: {fileID: 11449978}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -473,6 +476,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f808b23827221344a365dda96e66122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerAnimations: {fileID: 9546896}
+  _playerAnimationListener: {fileID: 11482678}
+  _playerMovement: {fileID: 11422414}
 --- !u!114 &11413968
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -635,7 +641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 6
+  currNumber: 3
 --- !u!114 &11437648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -648,6 +654,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pill: {fileID: 11409932, guid: 1d01d18dab326b74c98ef48f2d3f1c5a, type: 2}
+  playerCollision: {fileID: 11469742}
+  flip: {fileID: 11433018}
+  playernumber: {fileID: 11422414}
+--- !u!114 &11449978
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157354}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef91cc15b61f8c4c9ccd4cca66067d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lerpedColor: {r: 1, g: 1, b: 1, a: 1}
+  _speedMultiplier: 1
+--- !u!114 &11461230
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e613b3dcd493ffd46b79284a3710bfc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicnote:
+  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
   playerCollision: {fileID: 11469742}
   flip: {fileID: 11433018}
   playernumber: {fileID: 11422414}
@@ -704,6 +741,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerMovement: {fileID: 11422414}
   _playerRigidBody2D: {fileID: 5054240}
+--- !u!114 &11482678
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 241138d9b6c64634186ecbfc972b82cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stoneHolder: {fileID: 11473432}
+  _pillHolder: {fileID: 11437648}
+  _shurikenHolder: {fileID: 11485824}
+  _barrelHolder: {fileID: 11483614}
+  _pizzaHolder: {fileID: 11415964}
+  _sockHolder: {fileID: 11407084}
+  _duckHolder: {fileID: 11483476}
+  _hadoukenHolder: {fileID: 11489888}
+  _musicNoteHolder: {fileID: 11461230}
 --- !u!114 &11483476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2374,7 +2431,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b39da03839482b345b30e42e87fc565e, type: 3}
-  m_Color: {r: 0.534, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &100100000

@@ -8,10 +8,17 @@ public class BarrelHolder : MonoBehaviour, IWeapon
     [SerializeField] private PlayerFlip flip;
     [SerializeField] private PlayerMovement playernumber;
 
+    public delegate void BarrelEventHandler();
+    public BarrelEventHandler OnBarrelThrow;
+
     public void Shoot()
     {
         if (flip.facingRight)
         {
+
+            if (OnBarrelThrow != null)
+                OnBarrelThrow();
+
             Barrel currbarrel = Instantiate(barrel, new Vector2(transform.position.x + .5f, transform.position.y), barrel.transform.rotation) as Barrel;
 
             currbarrel.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
@@ -24,6 +31,9 @@ public class BarrelHolder : MonoBehaviour, IWeapon
         }
         else
         {
+            if (OnBarrelThrow != null)
+                OnBarrelThrow();
+
             Barrel currbarrel = Instantiate(barrel, new Vector2(transform.position.x - .5f, transform.position.y), Quaternion.Inverse(barrel.transform.rotation)) as Barrel;
 
             currbarrel.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;

@@ -15,6 +15,7 @@ public class PlayerSendShake: MonoBehaviour
     public static event ProjectileShakeHandler OnSockShake;
     public static event ProjectileShakeHandler OnDuckShake;
     public static event ProjectileShakeHandler OnBombShake;
+    public static event ProjectileShakeHandler OnMusicShake;
 
 
     void OnCollisionEnter2D(Collision2D projectile)
@@ -74,6 +75,12 @@ public class PlayerSendShake: MonoBehaviour
             {
                 if (OnBombShake != null)
                     OnBombShake(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<MusicNote>() != null)
+            {
+                if (OnMusicShake != null)
+                    OnMusicShake(this);
             }
 
         }

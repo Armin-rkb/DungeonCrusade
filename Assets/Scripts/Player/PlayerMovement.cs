@@ -11,11 +11,16 @@ public class PlayerMovement : MonoBehaviour {
     public float MovementSpeed
     {
         get { return _movementSpeed; }
-        set { _movementSpeed += 0; }
+        set { _movementSpeed = value; }
     }
 
     private float _jumpSpeed;
     private float _amountJumps = 0;
+
+    public float GetAmountJumps
+    {
+        get { return _amountJumps; }
+    }
     //Float
 
     //Vector2
@@ -36,13 +41,18 @@ public class PlayerMovement : MonoBehaviour {
     private bool _onWall;
     private bool _isHit;
 
+    public bool GetHitBool
+    {
+        get { return _isHit; }
+    }
+
     [SerializeField]
     private bool _joystickEnabled = false;
 
     public bool SetJoyStick
     {
         get { return _joystickEnabled; }
-        set { _joystickEnabled = true; }
+        set { _joystickEnabled = value; }
     }
     //Bool
 
@@ -89,13 +99,14 @@ public class PlayerMovement : MonoBehaviour {
     {
         _isHit = true;
         SoundManager.PlayAudioClip(AudioData.Hit);
-        _playerRigidBody2D.velocity = new Vector2(-xPos, _playerRigidBody2D.velocity.y);
+        _playerRigidBody2D.velocity = new Vector2(-xPos, 2);
         StartCoroutine(Recover());
     }
 
     IEnumerator Recover()
     {
         playerweapon.enabled = false;
+        _movementSpeed = 0;
         yield return new WaitForSeconds(0.25f);
         playerweapon.enabled = true;
         _isHit = false;

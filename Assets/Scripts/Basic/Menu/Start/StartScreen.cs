@@ -23,7 +23,7 @@ public class StartScreen : MonoBehaviour {
 
     void CheckInput()
     {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             StartCoroutine("LeaveMenu");
         }

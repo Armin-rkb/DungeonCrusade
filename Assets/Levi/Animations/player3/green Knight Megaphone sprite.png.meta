@@ -1,0 +1,115 @@
+fileFormatVersion: 2
+guid: cfccbc86f07699542be23031dff236b3
+timeCreated: 1465494120
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: green Knight Megaphone sprite_0
+    21300002: green Knight Megaphone sprite_1
+    21300004: green Knight Megaphone sprite_2
+    21300006: green Knight Megaphone sprite_3
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 42
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: green Knight Megaphone sprite_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 5
+        width: 40
+        height: 38
+      alignment: 9
+      pivot: {x: 0.35, y: 0.675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8, y: 12.35}
+        - {x: -14, y: -6.6499996}
+        - {x: -14, y: -25.65}
+        - {x: 16, y: -25.65}
+        - {x: 26, y: -14.65}
+        - {x: 26, y: 1.3500004}
+        - {x: 9, y: 12.35}
+    - name: green Knight Megaphone sprite_1
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 5
+        width: 42
+        height: 36
+      alignment: 9
+      pivot: {x: 0.3, y: 0.675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -10.599998, y: 11.699999}
+        - {x: -12.599998, y: -1.3000011}
+        - {x: -12.599998, y: -24.300001}
+        - {x: 12.400002, y: -24.300001}
+        - {x: 29.400002, y: -14.300001}
+        - {x: 29.400002, y: 8.699999}
+        - {x: 19.400002, y: 11.699999}
+    - name: green Knight Megaphone sprite_2
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 5
+        width: 53
+        height: 36
+      alignment: 9
+      pivot: {x: 0.25, y: 0.675}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 26.75, y: 11.699999}
+        - {x: -8.25, y: 11.699999}
+        - {x: -13.25, y: -5.300001}
+        - {x: -13.25, y: -24.300001}
+        - {x: 39.75, y: -24.300001}
+        - {x: 39.75, y: 4.699999}
+        - {x: 34.75, y: 10.699999}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

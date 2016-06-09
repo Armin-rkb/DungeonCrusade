@@ -79,6 +79,7 @@ GameObject:
   - 114: {fileID: 11474640}
   - 114: {fileID: 11473202}
   - 114: {fileID: 11419964}
+  - 114: {fileID: 11444396}
   - 114: {fileID: 11410106}
   - 114: {fileID: 11476326}
   - 114: {fileID: 11448754}
@@ -88,6 +89,7 @@ GameObject:
   - 114: {fileID: 11482692}
   - 114: {fileID: 11459696}
   - 114: {fileID: 11403138}
+  - 114: {fileID: 11429638}
   m_Layer: 0
   m_Name: Player 3
   m_TagString: Player
@@ -167,7 +169,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 114916}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 2, z: 0}
+  m_LocalPosition: {x: -11, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 476830}
@@ -402,7 +404,7 @@ Animator:
   m_GameObject: {fileID: 114916}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c1773dbcf5eb29a48afa0b0b259b2bbf, type: 2}
+  m_Controller: {fileID: 9100000, guid: d2a10e4f4bb06cc4981f61b1eb960f94, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -494,6 +496,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthPlayer: {fileID: 11487192}
+--- !u!114 &11429638
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 114916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 241138d9b6c64634186ecbfc972b82cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stoneHolder: {fileID: 11478036}
+  _pillHolder: {fileID: 11444670}
+  _shurikenHolder: {fileID: 11442470}
+  _barrelHolder: {fileID: 11496208}
+  _pizzaHolder: {fileID: 11440582}
+  _sockHolder: {fileID: 11474640}
+  _duckHolder: {fileID: 11473202}
+  _hadoukenHolder: {fileID: 11475096}
+  _musicNoteHolder: {fileID: 11444396}
 --- !u!114 &11432102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -544,6 +566,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shuriken: {fileID: 11466928, guid: 9464fabf7a0b4e94a98db6b64fd9a407, type: 2}
+  playerCollision: {fileID: 11478442}
+  flip: {fileID: 11432102}
+  playernumber: {fileID: 11493822}
+--- !u!114 &11444396
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 114916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e613b3dcd493ffd46b79284a3710bfc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicnote:
+  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
   playerCollision: {fileID: 11478442}
   flip: {fileID: 11432102}
   playernumber: {fileID: 11493822}
@@ -611,6 +651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f808b23827221344a365dda96e66122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerAnimations: {fileID: 9574024}
+  _playerAnimationListener: {fileID: 11429638}
+  _playerMovement: {fileID: 11493822}
 --- !u!114 &11473202
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2373,8 +2416,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b39da03839482b345b30e42e87fc565e, type: 3}
-  m_Color: {r: 0.24137926, g: 1, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 547009a6a93d50f46b2b2e6cfd973c50, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!1001 &100100000

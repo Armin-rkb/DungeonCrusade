@@ -38,7 +38,7 @@ public class RoundsSetUp : MonoBehaviour
         if (_roundText != null)
         {
             _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Best Of: " + BestOf;
+            _roundText.text = "" + BestOf;
         }
            
     }
@@ -71,7 +71,7 @@ public class RoundsSetUp : MonoBehaviour
         if (_roundText != null)
         {
             _roundText = _roundObj.GetComponent<Text>();
-            _roundText.text = "Best Of: " + BestOf;
+            _roundText.text = "" + BestOf;
         }
     }
 
@@ -108,7 +108,7 @@ public class RoundsSetUp : MonoBehaviour
             if (_roundObj != null)
             {
                 _roundText = _roundObj.GetComponent<Text>();
-                _roundText.text = "Best Of: " + saveData.bestof;
+                _roundText.text = "" + saveData.bestof;
             }
             
         }
