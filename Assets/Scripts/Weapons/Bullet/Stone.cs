@@ -13,6 +13,7 @@ public class Stone : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    //The broken sprite.
     [SerializeField] private GameObject brokenBullet;
     private bool isRight;
     private bool isLeft;

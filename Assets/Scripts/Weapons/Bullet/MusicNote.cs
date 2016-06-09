@@ -72,9 +72,6 @@ public class MusicNote : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
-                speed = 0;
-                isRight = false;
-                isLeft = false;
                 Destroy(this.gameObject);
             }
 

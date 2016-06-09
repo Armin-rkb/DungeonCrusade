@@ -108,6 +108,7 @@ MonoBehaviour:
   sprite: {fileID: 21289542}
   speed: 9
   damage: 5
+  pizzaExplosion: {fileID: 191096, guid: 1b7b555f387b7b04cab98c79ff7b1de3, type: 2}
   playernum: 0
 --- !u!212 &21289542
 SpriteRenderer:

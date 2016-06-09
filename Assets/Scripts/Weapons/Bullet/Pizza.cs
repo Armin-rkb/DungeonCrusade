@@ -11,6 +11,7 @@ public class Pizza : MonoBehaviour
     [SerializeField] private float speed;
     //Amout of damage that the bullet will deal
     [SerializeField] private int damage;
+    [SerializeField] private GameObject pizzaExplosion;
     private bool isRight;
     private bool isLeft;
 
@@ -44,6 +45,7 @@ public class Pizza : MonoBehaviour
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage, true);
+        Instantiate(pizzaExplosion, player.transform.position, player.transform.rotation);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

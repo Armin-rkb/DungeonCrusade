@@ -39,7 +39,7 @@ public class MainMenuButtons : MonoBehaviour
     private IEnumerator PlayButton()
     {
 
-        AsyncOperation async = Application.LoadLevelAsync("SceneFerry2");
+        AsyncOperation async = Application.LoadLevelAsync("SceneArmin5");
 
 
         while (!async.isDone)

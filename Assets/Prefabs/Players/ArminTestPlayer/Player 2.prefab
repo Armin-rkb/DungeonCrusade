@@ -76,15 +76,17 @@ GameObject:
   - 114: {fileID: 11486280}
   - 114: {fileID: 11429120}
   - 114: {fileID: 11400176}
+  - 114: {fileID: 11442924}
+  - 114: {fileID: 11458134}
   - 95: {fileID: 9595304}
   - 114: {fileID: 11433690}
   - 114: {fileID: 11444784}
   - 114: {fileID: 11466778}
   - 114: {fileID: 11499356}
-  - 114: {fileID: 11458134}
   - 61: {fileID: 6172080}
   - 114: {fileID: 11456450}
   - 114: {fileID: 11424340}
+  - 114: {fileID: 11488376}
   m_Layer: 0
   m_Name: Player 2
   m_TagString: Player
@@ -427,7 +429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 8
+  currNumber: 0
 --- !u!114 &11423776
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -451,7 +453,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de393600b94795d4b9212bad2bfb6414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthPlayer: {fileID: 11428396}
 --- !u!114 &11428396
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -511,6 +512,21 @@ MonoBehaviour:
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
   playernumber: {fileID: 11473704}
+--- !u!114 &11442924
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef81c9904ce1f74fbb4fe06a2c5a223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bomb: {fileID: 11463332, guid: 97d05f0938d724649b82a708617c7bf3, type: 2}
+  playerCollision: {fileID: 11499356}
+  flip: {fileID: 11423776}
+  playernumber: {fileID: 11473704}
 --- !u!114 &11444268
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -563,8 +579,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicnote:
   - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
-  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
-  - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
+  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: de9b905c46bd38a439c79391680b3c55, type: 2}
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
   playernumber: {fileID: 11473704}
@@ -622,7 +638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 7
   _isGrounded: 0
-  _joystickEnabled: 1
+  _joystickEnabled: 0
   _playerNumber: 2
 --- !u!114 &11480850
 MonoBehaviour:
@@ -677,6 +693,19 @@ MonoBehaviour:
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
   playernumber: {fileID: 11473704}
+--- !u!114 &11488376
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8b67b7e1f52764a8831182851fd841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMovement: {fileID: 11473704}
+  _playerTrail: {fileID: 19854998}
 --- !u!114 &11490170
 MonoBehaviour:
   m_ObjectHideFlags: 1

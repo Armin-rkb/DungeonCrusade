@@ -7,11 +7,12 @@ public class Pickup : MonoBehaviour
     [SerializeField] private Rigidbody2D rbPickup;
     //Collider of the Gameobject
     [SerializeField] private BoxCollider2D boxCollider;
+    //PickupIcon script attachted to this object
+    [SerializeField] private PickupIcon pickupIcon;
     //SpriteRenderer of the Gameobject
     [SerializeField] private SpriteRenderer spriteRenderer;
     //Our new sprite
     [SerializeField] private Sprite chestOpen;
-    //playercollision script
 
     void GiveWeapon(GameObject player)
     {
@@ -22,6 +23,9 @@ public class Pickup : MonoBehaviour
         PlayerWeapon playerWeapon = player.GetComponent<PlayerWeapon>();
         int randWeapon = playerWeapon.weaponList.GetRandomIndexExcluding(playerWeapon.currNumber);
         playerWeapon.SetNewWeapon(randWeapon);
+
+        //Set our weapon icon for our chest to visualize
+        pickupIcon.SetWeaponIcon(randWeapon);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

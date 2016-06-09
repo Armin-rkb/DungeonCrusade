@@ -38,7 +38,7 @@ public class SockExplosion : MonoBehaviour
         playerMovement.ApplyKnockback(xPos);
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void OnTriggerEnter2D(Collider2D coll)
     {
         if (coll.gameObject != null)
         {

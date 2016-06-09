@@ -13,6 +13,8 @@ public class Barrel : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    //The broken sprite.
+    [SerializeField] private GameObject brokenBullet;
     //How long the bullet will stay
     private float lifeTime = 150f;
     private bool isRight;
@@ -46,7 +48,10 @@ public class Barrel : MonoBehaviour
             rbBarrel.velocity = new Vector2(-speed, rbBarrel.velocity.y);
 
         if (lifeTime < 0)
-            gameObject.AddComponent<Fade>();
+        {
+            Instantiate(brokenBullet, transform.position, transform.rotation);
+            Destroy(this.gameObject);
+        }
     }
 
     void Hit(GameObject player)
@@ -69,15 +74,14 @@ public class Barrel : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
+                Instantiate(brokenBullet, transform.position, transform.rotation);
                 Destroy(this.gameObject);
             }
 
             else if (!coll.gameObject.CompareTag(GameTags.ground))
             {
-                isRight = false;
-                isLeft = false;
-                rbBarrel.isKinematic = true;
-                gameObject.AddComponent<Fade>();
+                Instantiate(brokenBullet, transform.position, transform.rotation);
+                Destroy(this.gameObject);
             }
         }
     }
