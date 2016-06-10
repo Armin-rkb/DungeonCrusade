@@ -11,6 +11,8 @@ public class Hadouken : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    //The broken sprite.
+    [SerializeField] private GameObject brokenBullet;
     private bool isRight;
     private bool isLeft;
 
@@ -59,15 +61,13 @@ public class Hadouken : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
-                isRight = false;
-                isLeft = false;
+                Instantiate(brokenBullet, transform.position, transform.rotation);
                 Destroy(this.gameObject);
             }
             else
             {
-                rbHadouken.isKinematic = true;
-                speed = 0;
-                gameObject.AddComponent<Fade>();
+                Instantiate(brokenBullet, new Vector2(transform.position.x + .75f, transform.position.y), transform.rotation);
+                Destroy(this.gameObject);
             }
         }
     }
