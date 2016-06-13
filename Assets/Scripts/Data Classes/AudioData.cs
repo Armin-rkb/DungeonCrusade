@@ -19,6 +19,7 @@ public class AudioData
     public const int Duck = 13;
     public const int Confetti = 14;
     public const int Bomb = 15;
+    public const int DuckExplosion = 16;
 
 }
     

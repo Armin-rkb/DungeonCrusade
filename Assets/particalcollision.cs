@@ -18,8 +18,7 @@ public class particalcollision : MonoBehaviour
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
         Vector2 currPosition = (transform.position - rbPlayer.transform.position).normalized;
-        float xPos = currPosition.x * 10;
-        playerMovement.ApplyKnockback(xPos);
+        playerMovement.ApplyKnockback(currPosition * 5);
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(1, true);

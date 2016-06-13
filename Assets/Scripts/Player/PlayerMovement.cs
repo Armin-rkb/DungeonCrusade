@@ -95,11 +95,11 @@ public class PlayerMovement : MonoBehaviour {
         JumpBool();
     }
 
-    public void ApplyKnockback(float xPos)
+    public void ApplyKnockback(Vector2 knockbackPos)
     {
         _isHit = true;
         SoundManager.PlayAudioClip(AudioData.Hit);
-        _playerRigidBody2D.velocity = new Vector2(-xPos, 2);
+        _playerRigidBody2D.velocity = -knockbackPos;
         StartCoroutine(Recover());
     }
 

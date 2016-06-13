@@ -14,7 +14,7 @@ GameObject:
   - 212: {fileID: 21213434}
   - 114: {fileID: 11443606}
   m_Layer: 0
-  m_Name: DuckExplosion 1
+  m_Name: OldDuckExplosion 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -274,8 +274,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334f235997140ef40a881479f4ed0a07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbExplosion: {fileID: 5064966}
-  boxCollider: {fileID: 6136328}
   damage: 1
   knockback: 6
   playernum: 0

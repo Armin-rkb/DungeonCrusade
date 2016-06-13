@@ -10,10 +10,10 @@ GameObject:
   - 4: {fileID: 426762}
   - 212: {fileID: 21265280}
   - 50: {fileID: 5096370}
-  - 61: {fileID: 6123050}
   - 114: {fileID: 11424806}
   - 95: {fileID: 9516680}
   - 114: {fileID: 11468382}
+  - 61: {fileID: 6167840}
   m_Layer: 0
   m_Name: Hadouken
   m_TagString: Bullet
@@ -50,7 +50,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &6123050
+--- !u!61 &6167840
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -61,7 +61,7 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0.14923471, y: 0.00389456}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.3, y: 0.16}
 --- !u!95 &9516680

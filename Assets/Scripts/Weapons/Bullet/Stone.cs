@@ -52,8 +52,8 @@ public class Stone : MonoBehaviour
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
         Vector2 currPosition = (rbStone.position - rbPlayer.position).normalized;
-        float xPos = currPosition.x * knockback;
-        playerMovement.ApplyKnockback(xPos);
+        //float xPos = currPosition.x * knockback;
+        playerMovement.ApplyKnockback(currPosition * knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

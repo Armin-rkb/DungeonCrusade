@@ -78,7 +78,7 @@ MonoBehaviour:
   sprite: {fileID: 21288218}
   explodeTime: 150
   speed: 5
-  explosionObj: {fileID: 116174, guid: f72f1ec2bf9a2144fb97eacab8666501, type: 2}
+  explosionObj: {fileID: 158162, guid: 01fd1aca2ba22db40b22e793a7107495, type: 2}
   playernum: 0
 --- !u!114 &11442614
 MonoBehaviour:

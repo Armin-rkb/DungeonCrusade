@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: a895d97e7d819a845b931bd1642e1d78
-timeCreated: 1463522401
+timeCreated: 1465830068
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -59,8 +59,8 @@ TextureImporter:
         y: 0
         width: 30
         height: 16
-      alignment: 9
-      pivot: {x: 0.002550952, y: 0.475659}
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: projectile fire_1
@@ -70,8 +70,8 @@ TextureImporter:
         y: 0
         width: 30
         height: 16
-      alignment: 9
-      pivot: {x: 0.0025509517, y: 0.475659}
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     outline: []

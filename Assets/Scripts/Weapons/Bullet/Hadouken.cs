@@ -50,8 +50,7 @@ public class Hadouken : MonoBehaviour
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
         Vector2 currPosition = (rbHadouken.position - rbPlayer.position).normalized;
-        float xPos = currPosition.x * knockback;
-        playerMovement.ApplyKnockback(xPos);
+        playerMovement.ApplyKnockback(currPosition * knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -66,7 +65,7 @@ public class Hadouken : MonoBehaviour
             }
             else
             {
-                Instantiate(brokenBullet, new Vector2(transform.position.x + .75f, transform.position.y), transform.rotation);
+                Instantiate(brokenBullet, new Vector2(transform.position.x * 1.075f, transform.position.y), transform.rotation);
                 Destroy(this.gameObject);
             }
         }

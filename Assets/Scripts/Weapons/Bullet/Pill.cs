@@ -71,8 +71,8 @@ public class Pill : MonoBehaviour
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
         Vector2 currPosition = (rbPill.position - rbPlayer.position).normalized;
-        float xPos = currPosition.x * knockback;
-        playerMovement.ApplyKnockback(xPos);
+        //float xPos = currPosition.x * knockback;
+        playerMovement.ApplyKnockback(currPosition);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

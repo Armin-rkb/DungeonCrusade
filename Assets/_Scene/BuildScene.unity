@@ -3930,6 +3930,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 658688945}
     m_Modifications:
+    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
+      propertyPath: audioList.Array.size
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 479924, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
       propertyPath: m_LocalPosition.x
       value: -0.41791353
@@ -3970,6 +3974,10 @@ Prefab:
       propertyPath: Priority
       value: 55
       objectReference: {fileID: 0}
+    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
+      propertyPath: audioList.Array.data[16]
+      value: 
+      objectReference: {fileID: 8300000, guid: cbb5dd7ced2b58e47a89c09cdf7f62be, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
   m_IsPrefabParent: 0
@@ -6760,6 +6768,10 @@ Prefab:
       propertyPath: fxManager
       value: 
       objectReference: {fileID: 1239118775}
+    - target: {fileID: 453964, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
   m_IsPrefabParent: 0
@@ -12617,7 +12629,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!114 &1606514098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15442,7 +15454,7 @@ MonoBehaviour:
   m_Text: 'WASD / ARROW KEYS TO MOVE
 
 
-    CTRL To Shoot!'
+    C / L To Shoot!'
 --- !u!222 &1943734153
 CanvasRenderer:
   m_ObjectHideFlags: 0

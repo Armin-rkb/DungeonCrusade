@@ -31,6 +31,7 @@ public class PlayerWeapon : MonoBehaviour
         currentWeapon = weaponList[wepNumber];
         currNumber = wepNumber;
         CheckWeaponCooldown(wepNumber);
+        cooldown = 20;
     }
 
     void CheckWeaponCooldown(int weaponNum)
@@ -72,6 +73,10 @@ public class PlayerWeapon : MonoBehaviour
             //Bom
             case 8:
                 maxCooldown = 85;
+                break;
+            //Music Note
+            case 9:
+                maxCooldown = 65;
                 break;
         }
     }
