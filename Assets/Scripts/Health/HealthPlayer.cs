@@ -15,8 +15,10 @@ public class HealthPlayer : MonoBehaviour, IHealth
     public delegate void PlayerPoint(HealthPlayer player);
     public delegate void PlayerHeart(HealthPlayer player);
     public delegate void PlayerHit(HealthPlayer player);
+    public delegate void PlayerDeath();
 
     public static event PlayerHit OnPlayerHit;
+    public PlayerDeath OnPlayerDeath;
 
     public static event PlayerHeart ReduceP1Heart;
     public static event PlayerHeart ReduceP2Heart;
@@ -144,7 +146,11 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
         playerHealth = 0;
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
+
+        if (OnPlayerDeath != null)
+            OnPlayerDeath();
+
     }
 
 }

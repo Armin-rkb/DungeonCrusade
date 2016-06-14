@@ -131,6 +131,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d6488ce155f60c2408dec9403e4ae69d, type: 3}
   - {fileID: 8300000, guid: 6b909b0714ddb4d448c5fd9f389df03c, type: 3}
   - {fileID: 8300000, guid: 9d4d33a183e7a31419322ca9b53835d3, type: 3}
+  - {fileID: 8300000, guid: cbb5dd7ced2b58e47a89c09cdf7f62be, type: 3}
   audioSource: {fileID: 8207668}
 --- !u!1001 &100100000
 Prefab:

@@ -69,7 +69,7 @@ public class MainMenuLoader : MonoBehaviour {
 
         if(_dungeonLevel)
         {
-            AsyncOperation async = Application.LoadLevelAsync("BuildScene");
+            AsyncOperation async = Application.LoadLevelAsync("SceneFerry3");
   
         while (!async.isDone)
             yield return null;

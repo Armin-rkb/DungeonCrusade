@@ -9,6 +9,16 @@ public class DeathText : MonoBehaviour {
     private Text _deathText;
 
     [SerializeField]
+    private Color[] _colorText;
+
+    /*
+     * 0 = RED P1
+     * 1 = BLUE P2
+     * 2 = GREEN P3
+     * 3 = YELLOW P4
+     */
+
+    [SerializeField]
     private List<string> _deathStrings;
 
     /*
@@ -21,78 +31,106 @@ public class DeathText : MonoBehaviour {
       5 = Barrel
       6 = Sock
       7 = Duck
-      8 = Bom
+      8 = Bomb
       9 = Music
   */
 
     void Awake()
     {
-        PlayerSendText.OnStoneDeath += SetStoneText;
-        PlayerSendText.OnPillDeath += SetPillText;
-        PlayerSendText.OnShurikenDeath += SetShurikenText;
+        PlayerDetectHit.OnStoneDeath += SetStoneText;
+        PlayerDetectHit.OnPillDeath += SetPillText;
+        PlayerDetectHit.OnShurikenDeath += SetShurikenText;
 
-        PlayerSendText.OnHadoukenDeath += SetHadoukenText;
-        PlayerSendText.OnPizzaDeath += SetPizzaText;
-        PlayerSendText.OnBarrelDeath += SetBarrelText;
+        PlayerDetectHit.OnHadoukenDeath += SetHadoukenText;
+        PlayerDetectHit.OnPizzaDeath += SetPizzaText;
+        PlayerDetectHit.OnBarrelDeath += SetBarrelText;
 
-        PlayerSendText.OnSockDeath += SetSockText;
-        PlayerSendText.OnDuckDeath += SetDuckText;
-        PlayerSendText.OnBombDeath += SetBombText;
+        PlayerDetectHit.OnSockDeath += SetSockText;
+        PlayerDetectHit.OnDuckDeath += SetDuckText;
+        PlayerDetectHit.OnBombDeath += SetBombText;
 
-        PlayerSendText.OnMusicDeath += SetMusicText;
+        PlayerDetectHit.OnMusicDeath += SetMusicText;
+
+        PlayerDetectHit.AddP1Score += ColorP1Text;
+        PlayerDetectHit.AddP2Score += ColorP2Text;
+        PlayerDetectHit.AddP3Score += ColorP3Text;
+        PlayerDetectHit.AddP4Score += ColorP4Text;
 
     }
 
-    void SetStoneText(PlayerSendText player)
+    void SetStoneText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[0];
     }
 
-    void SetPillText(PlayerSendText player)
+    void SetPillText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[1];
     }
 
-    void SetShurikenText(PlayerSendText player)
+    void SetShurikenText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[2];
     }
 
-    void SetHadoukenText(PlayerSendText player)
+    void SetHadoukenText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[3];
     }
 
-    void SetPizzaText(PlayerSendText player)
+    void SetPizzaText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[4];
     }
 
-    void SetBarrelText(PlayerSendText player)
+    void SetBarrelText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[5];
     }
 
-    void SetSockText(PlayerSendText player)
+    void SetSockText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[6];
     }
 
-    void SetDuckText(PlayerSendText player)
+    void SetDuckText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[7];
     }
 
-    
-    void SetBombText(PlayerSendText player)
+
+    void SetBombText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[8];
     }
 
-    void SetMusicText(PlayerSendText player)
+    void SetMusicText(PlayerDetectHit player)
     {
         _deathText.text = _deathStrings[9];
     }
-    
-    
+
+    /*
+     * Decides which text pops up with each weapon.
+     * Pops up whenever a player dies.
+     */
+
+    void ColorP1Text(PlayerDetectHit player)
+    {
+        _deathText.color = _colorText[0];
+    }
+
+    void ColorP2Text(PlayerDetectHit player)
+    {
+        _deathText.color = _colorText[1];
+    }
+
+    void ColorP3Text(PlayerDetectHit player)
+    {
+        _deathText.color = _colorText[2];
+    }
+
+    void ColorP4Text(PlayerDetectHit player)
+    {
+        _deathText.color = _colorText[3];
+    }
 }

@@ -10,14 +10,38 @@ public class MatchStart : MonoBehaviour {
     [SerializeField] private JoinManager _joinManager;
 
     //GameObjects
-    [SerializeField] private GameObject _countDownObj;
+
+    [SerializeField]
+    private GameObject _mainCountDown;
+    [SerializeField]
+    private GameObject[] _countDownObj;
+
+    /*
+     * 0 = P1
+     * 1 = P2
+     * 2 = P3
+     * 3 = P4
+     */
+
+
     [SerializeField] private List<GameObject> _amountCharacters;
     [SerializeField] private GameObject[] _inGameCharacters;
     //GameObjects
 
     //Text
-    private Text _countDownText;
-    //Text
+
+    [SerializeField]
+    private Text _mainCountdownText;
+
+    [SerializeField]
+    private Text[] _countDownText;
+
+    /*
+   * 0 = P1
+   * 1 = P2
+   * 2 = P3
+   * 3 = P4
+   */
 
     //Float
     [SerializeField]
@@ -29,8 +53,16 @@ public class MatchStart : MonoBehaviour {
     private Transform[] _transformPoints;
     //Transform
 
+
+    private bool _P1dead;
+    private bool _P2dead;
+    private bool _P3dead;
+    private bool _P4dead;
+
     bool _endGame;
     bool _runOnce;
+
+    
     
 
     void Awake()
@@ -41,15 +73,14 @@ public class MatchStart : MonoBehaviour {
 
 	void Start ()
     {
-        _countDownText = _countDownObj.GetComponent<Text>();
         StartCoroutine("StartRound");
 	}
 	
 
     void Update()
     {
-        if (_countDownObj != null)
-        CountDown();
+        //foreach (GameObject countdown in _countDownObj)
+            CountDown();
     }
 
 
@@ -59,18 +90,29 @@ public class MatchStart : MonoBehaviour {
         {
             _countDownTimer -= 1f * Time.deltaTime;
 
-            _countDownText.text = _countDownTimer.ToString("0");
+            _mainCountdownText.text = _countDownTimer.ToString("0");
+
+            foreach (GameObject countdown in _countDownObj)
+            {
+                if (countdown != null)
+                {
+                    foreach (Text countdowntext in _countDownText)
+                        countdowntext.text = _countDownTimer.ToString("0");
+                }
+            }
+            
         }
     }
 
      IEnumerator StartRound()
     {
-        _countDownObj.SetActive(true);
+        foreach (GameObject countdown in _countDownObj)
+            countdown.SetActive(false);
 
         yield return new WaitForSeconds(_countDownTimer);
 
         _countDownTimer = 3;
-        _countDownObj.SetActive(false);
+        _mainCountDown.SetActive(false);
 
         InstantiateTwoCharacters();
 
@@ -85,26 +127,81 @@ public class MatchStart : MonoBehaviour {
     public IEnumerator StartNewRound()
     {
         
-            _countDownTimer = 3;
-            _countDownObj.SetActive(true);
 
-            yield return new WaitForSeconds(_countDownTimer);
+        _inGameCharacters[0] = GameObject.Find("Player(Clone)");
+        _inGameCharacters[1] = GameObject.Find("Player 2(Clone)");
+        if (GameObject.Find("Player 3(Clone)") != null)
+            _inGameCharacters[2] = GameObject.Find("Player 3(Clone)");
+        if (GameObject.Find("Player 4(Clone)") != null)
+            _inGameCharacters[3] = GameObject.Find("Player 4(Clone)");
+
+        yield return new WaitForSeconds(.1f);
+
+        _countDownTimer = 3;
+
+        
+        if (_inGameCharacters[0] == null)
+        {
+            _P1dead = true;
+            _countDownObj[0].SetActive(true);
+            
+            //P1          
+        }
 
 
-            _countDownObj.SetActive(false);
+        if (_inGameCharacters[1] == null)
+        {
+            _P2dead = true;
+            _countDownObj[1].SetActive(true);
 
-            _inGameCharacters[0] = GameObject.Find("Player(Clone)");
-            _inGameCharacters[1] = GameObject.Find("Player 2(Clone)");
-            if (GameObject.Find("Player 3(Clone)") != null)
-                _inGameCharacters[2] = GameObject.Find("Player 3(Clone)");
-            if (GameObject.Find("Player 4(Clone)") != null)
-                _inGameCharacters[3] = GameObject.Find("Player 4(Clone)");
-           
+            //P1          
+        }
+
+        if (_joinManager.Players == 3)
+        {
+            if (_inGameCharacters[2] == null)
+            {
+                _P3dead = true;
+                _countDownObj[2].SetActive(true);
+
+                //P1          
+            }
+        }
+
+
+        if (_joinManager.Players == 4)
+        {
+            if (_inGameCharacters[2] == null)
+            {
+                _P3dead = true;
+                _countDownObj[2].SetActive(true);
+
+                //P1          
+            }
+
+
+            if (_inGameCharacters[3] == null)
+            {
+                _P4dead = true;
+                _countDownObj[3].SetActive(true);
+
+                //P1          
+            }
+
+        }
+
+
+        yield return new WaitForSeconds(_countDownTimer);
+
+
+            foreach (GameObject countdown in _countDownObj)
+                countdown.SetActive(false);
+       
+
         if (!_endGame)
             {
                 InstantiateNewCharacters();
             }
-        
     }
 
 
@@ -127,27 +224,31 @@ public class MatchStart : MonoBehaviour {
 
     private void InstantiateNewCharacters()
     {
-        if (_inGameCharacters[0] == null)
+        if (_P1dead)
         {
             Instantiate(_amountCharacters[0], _transformPoints[0].position, Quaternion.identity);
+            _P1dead = false;
             //P1          
         }
               
-        else if (_inGameCharacters[1] == null)
+        else if (_P2dead)
         {
             Instantiate(_amountCharacters[1], _transformPoints[1].position, Quaternion.identity);
+            _P2dead = false;
             //P2
         }
 
-        else if (_inGameCharacters[2] == null)
+        else if (_P3dead)
         {
             Instantiate(_amountCharacters[2], _transformPoints[2].position, Quaternion.identity);
+            _P3dead = false;
             //P3   
         }
 
-        else if (_inGameCharacters[3] == null)
+        else if (_P4dead)
         {
             Instantiate(_amountCharacters[3], _transformPoints[3].position, Quaternion.identity);
+            _P4dead = false;
             //P4   
         }
                      
@@ -160,7 +261,7 @@ public class MatchStart : MonoBehaviour {
         if (_endGame)
         {
             StopCoroutine("AddNewRound");
-            _countDownObj.SetActive(false);
+            _mainCountDown.SetActive(false);
         }
            
     }

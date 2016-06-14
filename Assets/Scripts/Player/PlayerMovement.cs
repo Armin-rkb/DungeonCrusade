@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
 
+    public delegate void PlayerSoundEventHandler();
+    public PlayerSoundEventHandler OnPlayerJump;
 
     //Float
     [SerializeField]
@@ -20,6 +22,7 @@ public class PlayerMovement : MonoBehaviour {
     public float GetAmountJumps
     {
         get { return _amountJumps; }
+        set { _amountJumps = value; }
     }
     //Float
 
@@ -146,7 +149,10 @@ public class PlayerMovement : MonoBehaviour {
         {
             if (!_spacePressed && _amountJumps < 2)
             {
-                SoundManager.PlayAudioClip(AudioData.Jump);
+                
+                if (OnPlayerJump != null)
+                    OnPlayerJump();
+
                 _playerRigidBody2D.velocity = new Vector2(0, _jumpSpeed);
 
                 _spacePressed = true;

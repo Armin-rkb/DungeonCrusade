@@ -9,6 +9,8 @@ public class GameTags
     public const string bullet = "Bullet";
     public const string wall = "Wall";
 
+    public const string dead = "Dead";
+
     public const string wallleft = "LeftWall";
     public const string wallright = "RightWall";
 

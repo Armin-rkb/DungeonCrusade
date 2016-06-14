@@ -58,9 +58,9 @@ public class Duck : MonoBehaviour
         if (explodeTime < 0)
         {
             //When the time is up instantiate our explosion obj and remove this obj
-            Instantiate(explosionObj, transform.position, transform.rotation);
+           GameObject duckexplosion = Instantiate(explosionObj, transform.position, transform.rotation) as GameObject;
 
-            GetComponent<BulletNumber>().playernum = playernum;
+            duckexplosion.GetComponent<BulletNumber>().playernum = playernum;
             
             Destroy(this.gameObject);
         }
