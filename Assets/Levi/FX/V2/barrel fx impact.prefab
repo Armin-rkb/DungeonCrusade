@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 450678}
   - 198: {fileID: 19850816}
   - 199: {fileID: 19929504}
-  - 114: {fileID: 11424470}
+  - 114: {fileID: 11490338}
   m_Layer: 0
   m_Name: barrel fx impact
   m_TagString: Untagged
@@ -30,7 +30,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11424470
+--- !u!114 &11490338
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -380,7 +380,7 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 3
     randomizeRotationDirection: 1
-    gravityModifier: 0.4
+    gravityModifier: 0.04
     maxNumParticles: 100
     rotation3D: 0
   ShapeModule:
@@ -586,7 +586,7 @@ ParticleSystem:
       minMaxState: 3
     separateAxes: 0
   ColorModule:
-    enabled: 1
+    enabled: 0
     gradient:
       maxGradient:
         key0:
@@ -594,7 +594,7 @@ ParticleSystem:
           rgba: 4294967295
         key1:
           serializedVersion: 2
-          rgba: 3120562175
+          rgba: 4294967295
         key2:
           serializedVersion: 2
           rgba: 0
@@ -622,15 +622,15 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 36430
-        atime2: 65535
+        atime1: 65535
+        atime2: 0
         atime3: 0
         atime4: 0
         atime5: 0
         atime6: 0
         atime7: 0
         m_NumColorKeys: 2
-        m_NumAlphaKeys: 3
+        m_NumAlphaKeys: 2
       minGradient:
         key0:
           serializedVersion: 2
