@@ -14,7 +14,7 @@ public class BombHolder : MonoBehaviour, IWeapon
         {
             Bomb currbomb = Instantiate(bomb, new Vector2(transform.position.x + .5f, transform.position.y + 0.5f), bomb.transform.rotation) as Bomb;
 
-            currbomb.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
+            currbomb.gameObject.GetComponent<Bomb>().playernum = playernumber.PlayerNumber;
 
             for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
             {

@@ -3944,10 +3944,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 658688945}
     m_Modifications:
-    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: audioList.Array.size
-      value: 17
-      objectReference: {fileID: 0}
     - target: {fileID: 479924, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
       propertyPath: m_LocalPosition.x
       value: -0.41791353
@@ -3980,10 +3976,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: audioList.Array.data[16]
-      value: 
-      objectReference: {fileID: 8300000, guid: cbb5dd7ced2b58e47a89c09cdf7f62be, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
   m_IsPrefabParent: 0
@@ -14636,13 +14628,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _roundManager: {fileID: 1077532976}
   _joinManager: {fileID: 1750665856}
-  _countDownObj: {fileID: 1373168610}
+  _mainCountDown: {fileID: 0}
+  _countDownObj:
+  - {fileID: 0}
   _amountCharacters:
   - {fileID: 157354, guid: 18925f22191bfa54195d2bc7b748768c, type: 2}
   - {fileID: 140618, guid: 3593273f65f4aa240990d9b1226958e2, type: 2}
   - {fileID: 114916, guid: 6bc73be28845f7342b3ddb0148422b37, type: 2}
   - {fileID: 150266, guid: f5222d4f7b067e24d96228ac04cac566, type: 2}
   _inGameCharacters: []
+  _mainCountdownText: {fileID: 0}
+  _countDownText: []
   _countDownTimer: 3
   _transformPoints:
   - {fileID: 455326, guid: 4344468ee7b25a34788cfe1267046957, type: 2}

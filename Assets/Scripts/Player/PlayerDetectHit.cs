@@ -5,24 +5,40 @@ using System.Collections.Generic;
 public class PlayerDetectHit : MonoBehaviour
 {
 
-    public delegate void DetectEventHandler(PlayerDetectHit player);
+    [SerializeField]
+    private HealthPlayer _healthPlayer;
+
+    [SerializeField]
+    private Material[] _hitMaterial;
+
+
+    public delegate void HitDetectEventHandler(PlayerDetectHit player);
+    public delegate void ProjectileTextEventHandler(PlayerDetectHit player);
+
+    public static event ProjectileTextEventHandler OnStoneDeath;
+    public static event ProjectileTextEventHandler OnPillDeath;
+    public static event ProjectileTextEventHandler OnShurikenDeath;
+    public static event ProjectileTextEventHandler OnHadoukenDeath;
+    public static event ProjectileTextEventHandler OnPizzaDeath;
+    public static event ProjectileTextEventHandler OnBarrelDeath;
+    public static event ProjectileTextEventHandler OnSockDeath;
+    public static event ProjectileTextEventHandler OnDuckDeath;
+    public static event ProjectileTextEventHandler OnBombDeath;
+    public static event ProjectileTextEventHandler OnMusicDeath;
 
     /*
      * We will need this delegate to make events for.
      */
 
-    public static event DetectEventHandler AddP1Score;
-    public static event DetectEventHandler AddP2Score;
-    public static event DetectEventHandler AddP3Score;
-    public static event DetectEventHandler AddP4Score;
+    public static event HitDetectEventHandler AddP1Score;
+    public static event HitDetectEventHandler AddP2Score;
+    public static event HitDetectEventHandler AddP3Score;
+    public static event HitDetectEventHandler AddP4Score;
 
     /*
      * These will be called whenever one of the players
      * Score a point.
      */
-
-
-    [SerializeField] private HealthPlayer _healthPlayer;
 
     private int _pOne = 1;
     private int _pTwo = 2;
@@ -34,6 +50,7 @@ public class PlayerDetectHit : MonoBehaviour
     bool _p3Point;
     bool _p4Point;
 
+    bool _sendText;
 
     void Awake()
     {
@@ -41,14 +58,23 @@ public class PlayerDetectHit : MonoBehaviour
         _healthPlayer.OnP2Point += P2Point;
         _healthPlayer.OnP3Point += P3Point;
         _healthPlayer.OnP4Point += P4Point;
+
+        HealthPlayer.OnNewRound += SendText;
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void OnCollisionEnter2D(Collision2D projectile)
     {
 
-        if(coll.gameObject.CompareTag(GameTags.bullet))
+        if(projectile.gameObject.CompareTag(GameTags.bullet))
         {
-            if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
+            if (this.gameObject.CompareTag(GameTags.player))
+            StartCoroutine("Flash");
+          
+            // Hit Feedback
+
+            // POINT HANDLER
+
+            if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
             {
                 _p1Point = true;
                 _p2Point = false;
@@ -57,7 +83,7 @@ public class PlayerDetectHit : MonoBehaviour
 
             }
 
-            else if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
+            else if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
             {
                 _p1Point = false;
                 _p2Point = true;
@@ -66,7 +92,7 @@ public class PlayerDetectHit : MonoBehaviour
 
             }
 
-            else if (coll.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
+            else if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
             {
                 _p1Point = false;
                 _p2Point = false;
@@ -82,6 +108,71 @@ public class PlayerDetectHit : MonoBehaviour
                 _p4Point = true;
 
             }
+
+            // POINT HANDLER
+
+            if (projectile.gameObject.GetComponent<Stone>() != null)
+            {
+                if (OnStoneDeath != null)
+                    OnStoneDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<Pill>() != null)
+            {
+                if (OnPillDeath != null)
+                    OnPillDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<Shuriken>() != null)
+            {
+                if (OnShurikenDeath != null)
+                    OnShurikenDeath(this);
+            }
+
+
+            else if (projectile.gameObject.GetComponent<Hadouken>() != null)
+            {
+                if (OnHadoukenDeath != null)
+                    OnHadoukenDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<Pizza>() != null)
+            {
+                if (OnPizzaDeath != null)
+                    OnPizzaDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<Barrel>() != null)
+            {
+                if (OnBarrelDeath != null)
+                    OnBarrelDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<SockExplosion>() != null)
+            {
+                if (OnSockDeath != null)
+                    OnSockDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<DuckExplosion>() != null)
+            {
+                if (OnDuckDeath != null)
+                    OnDuckDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<Bomb>() != null)
+            {
+                if (OnBombDeath != null)
+                    OnBombDeath(this);
+            }
+
+            else if (projectile.gameObject.GetComponent<MusicNote>() != null)
+            {
+                if (OnMusicDeath != null)
+                    OnMusicDeath(this);
+            }
+
+
         }
     }
 
@@ -135,6 +226,22 @@ public class PlayerDetectHit : MonoBehaviour
 
             _p4Point = false;
         }
+    }
+
+    void SendText(HealthPlayer player)
+    {
+        _sendText = true;
+    }
+
+    IEnumerator Flash()
+    {
+        this.GetComponent<SpriteRenderer>().material = _hitMaterial[1];
+            yield return new WaitForSeconds(.025f);
+            this.GetComponent<SpriteRenderer>().material = _hitMaterial[0];
+            yield return new WaitForSeconds(.05f);
+            this.GetComponent<SpriteRenderer>().material = _hitMaterial[1];
+            yield return new WaitForSeconds(.025f);
+            this.GetComponent<SpriteRenderer>().material = _hitMaterial[0];
     }
 }
 

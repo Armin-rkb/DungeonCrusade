@@ -24,7 +24,7 @@ public class SockHolder : MonoBehaviour, IWeapon
 
             Sock currSock = Instantiate(sock, new Vector2(transform.position.x + .5f, transform.position.y), sock.transform.rotation) as Sock;
 
-            currSock.gameObject.GetComponent<BulletNumber>().playernum = playernumber.PlayerNumber;
+            currSock.gameObject.GetComponent<Sock>().playernum = playernumber.PlayerNumber;
 
             for (int i = 0; i < playerCollision._ignoredColl.Length; i++)
             {

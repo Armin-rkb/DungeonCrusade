@@ -3,9 +3,32 @@ using System.Collections;
 
 public class PlayerSFX : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-        SoundManager.PlayAudioClip(AudioData.Barrel);
+    [SerializeField]
+    private PlayerMovement _playerMovement;
+    [SerializeField]
+    private PlayerFootStool _playerFootStool;
+
+	void Awake () 
+    {
+        _playerMovement.OnPlayerJump += PlayJumpSound;
+        _playerFootStool.OnFootStool += PlayFootStoolSound;
 	}
+
+    void Start()
+    {
+        SoundManager.PlayAudioClip(AudioData.Barrel);
+    }
 	
+    void PlayJumpSound()
+    {
+        if (_playerMovement.GetAmountJumps == 1)
+            SoundManager.PlayAudioClip(AudioData.Jump);
+        else if (_playerMovement.GetAmountJumps == 2)
+            SoundManager.PlayAudioClip(16);
+    }
+
+    void PlayFootStoolSound()
+    {
+        SoundManager.PlayAudioClip(17);
+    }
 }

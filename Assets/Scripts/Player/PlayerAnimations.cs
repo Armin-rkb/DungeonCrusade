@@ -19,19 +19,28 @@ public class PlayerAnimations : MonoBehaviour {
     private PlayerAnimationListener _playerAnimationListener;
     [SerializeField]
     private PlayerMovement _playerMovement;
-
+    [SerializeField]
+    private PlayerDeath _playerDeath;
     private PlayerWeapon _playerWeapon;
     //Scripts
 
+    void Awake()
+    {
+      _playerDeath.OnPlayerDeath += DeathAnimation;
+    }
 
 	void Update () 
     {
-        WalkAnimation();
-        JumpAnimation();
-        AttackAnimation();
-        HadoukenAnimation();
-        MicroPhoneAnimation();
-        HitAnimation();
+        if (!_playerDeath.GetDeath)
+        {
+            WalkAnimation();
+            JumpAnimation();
+            AttackAnimation();
+            HadoukenAnimation();
+            MicroPhoneAnimation();
+            HitAnimation();
+        }
+       
 	}
 
     public void WalkAnimation()
@@ -92,6 +101,24 @@ public class PlayerAnimations : MonoBehaviour {
             _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
             _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
         }
+    }
+
+    private void DeathAnimation()
+    {
+            _playerAnimations.SetBool(AnimationStrings.death, true);
+
+            _playerAnimations.SetBool(AnimationStrings.run, false);
+            _playerAnimations.SetBool(AnimationStrings.doublejump, false);
+            _playerAnimations.SetBool(AnimationStrings.idle, false);
+
+            _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
+            _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
+
+            _playerAnimations.SetBool(AnimationStrings.jump, false);
+            _playerAnimations.SetBool(AnimationStrings.attack, false);
+            _playerAnimations.SetBool(AnimationStrings.hit, false);
+            _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
+            _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
     }
 
    private void JumpAnimation()
@@ -160,8 +187,6 @@ public class PlayerAnimations : MonoBehaviour {
     {
         if (_playerAnimationListener.GetHadoukenAttack)
         {
-            print("HADOUKEN ANIMATION");
-
             _playerAnimations.SetBool(AnimationStrings.hadoukenattack, true);
             _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
             _playerAnimations.SetBool(AnimationStrings.attack, false);
@@ -176,8 +201,6 @@ public class PlayerAnimations : MonoBehaviour {
     {
         if (_playerAnimationListener.GetMusicNoteAttack)
         {
-            print("Microphone ANIMATION");
-
             _playerAnimations.SetBool(AnimationStrings.microphoneattack, true);
             _playerAnimations.SetBool(AnimationStrings.attack, false);
             _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
