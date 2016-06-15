@@ -19,6 +19,9 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField]
     private PlayerDetectHit _detectHit;
 
+    [SerializeField]
+    private FXManager _fxManager;
+
 [SerializeField]
     private PlayerSendShake _sendShake;
 
@@ -56,6 +59,7 @@ private BoxCollider2D[] _thisBoxCollider2D;
         if (OnPlayerDeath != null)
             OnPlayerDeath();
 
+
         yield return new WaitForSeconds(.1f);
 
             _playerMovement.enabled = false;
@@ -70,6 +74,8 @@ private BoxCollider2D[] _thisBoxCollider2D;
             _thisRigidBody2D.constraints = RigidbodyConstraints2D.FreezePositionX;
             
             yield return new WaitForSeconds(2);
+
+            _fxManager.PlayFX(0, transform.position);
 
             _healthPlayer.OnPlayerDeath -= StartDeath;
 

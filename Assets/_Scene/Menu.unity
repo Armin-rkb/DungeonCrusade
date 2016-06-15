@@ -1305,7 +1305,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press 2 for P2 to join
+  m_Text: Press A for P2 to join
 --- !u!222 &809762204
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1379,7 +1379,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press 1 for P1 to join
+  m_Text: Press A for P1 to join
 --- !u!222 &892513385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1953,7 +1953,7 @@ GameObject:
   - 114: {fileID: 1772184295}
   - 114: {fileID: 1772184294}
   m_Layer: 5
-  m_Name: P4StartToJoin
+  m_Name: P3StartToJoin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1970,7 +1970,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2053009244}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 264, y: 271}
@@ -2022,7 +2022,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press 4 for P4 to join
+  m_Text: Press A for P3 to join
 --- !u!222 &1772184296
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2114,7 +2114,7 @@ GameObject:
   - 114: {fileID: 1853494414}
   - 114: {fileID: 1853494413}
   m_Layer: 5
-  m_Name: P3StartToJoin
+  m_Name: P4StartToJoin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2131,7 +2131,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2053009244}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -263, y: 271}
@@ -2183,7 +2183,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press 3 for P3 to join
+  m_Text: Press A for P4 to join
 --- !u!222 &1853494415
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2662,8 +2662,8 @@ RectTransform:
   - {fileID: 568591073}
   - {fileID: 892513383}
   - {fileID: 809762201}
-  - {fileID: 1853494412}
   - {fileID: 1772184293}
+  - {fileID: 1853494412}
   - {fileID: 1796368608}
   m_Father: {fileID: 0}
   m_RootOrder: 1

@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 0
+  currNumber: 4
 --- !u!114 &11437648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -731,6 +731,7 @@ MonoBehaviour:
   _playerMovement: {fileID: 11422414}
   _playerFlip: {fileID: 11433018}
   _detectHit: {fileID: 11435682}
+  _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _sendShake: {fileID: 11430206}
   playernum: 0
   _thisRigidBody2D: {fileID: 5054240}

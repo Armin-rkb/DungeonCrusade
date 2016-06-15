@@ -31,16 +31,12 @@ public class PlayerAnimations : MonoBehaviour {
 
 	void Update () 
     {
-        if (!_playerDeath.GetDeath)
-        {
             WalkAnimation();
             JumpAnimation();
             AttackAnimation();
             HadoukenAnimation();
             MicroPhoneAnimation();
-            HitAnimation();
-        }
-       
+            HitAnimation();   
 	}
 
     public void WalkAnimation()

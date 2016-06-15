@@ -656,6 +656,7 @@ MonoBehaviour:
   _playerMovement: {fileID: 11493822}
   _playerFlip: {fileID: 11432102}
   _detectHit: {fileID: 11427370}
+  _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _sendShake: {fileID: 11482692}
   playernum: 0
   _thisRigidBody2D: {fileID: 5036522}
