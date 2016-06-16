@@ -17,7 +17,7 @@ public class DuckExplosion : MonoBehaviour
 
     void ExplosionSound()
     {
-        SoundManager.PlayAudioClip(AudioData.DuckExplosion);
+        SoundManager.PlayAudioClip(AudioData.Sock);
     }
 
     void Hit(GameObject player)
@@ -29,7 +29,7 @@ public class DuckExplosion : MonoBehaviour
         playerMovement.ApplyKnockback(currPosition * knockback);
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(1, true);
+        healthPlayer.ChangeHealth(damage, true);
     }
 
     void OnParticleCollision(GameObject other)

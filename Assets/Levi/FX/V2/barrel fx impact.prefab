@@ -25,7 +25,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 172668}
   m_LocalRotation: {x: 1, y: 0.00000016292068, z: 0.00000016292068, w: 2.654315e-14}
-  m_LocalPosition: {x: -0.834, y: 0.612, z: -0.01}
+  m_LocalPosition: {x: -0.67700887, y: -3.687474, z: -0.01}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
@@ -121,7 +121,7 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 0
     startSpeed:
-      scalar: 0.6
+      scalar: 0.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -380,14 +380,14 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 3
     randomizeRotationDirection: 1
-    gravityModifier: 0.04
+    gravityModifier: 0.35
     maxNumParticles: 100
     rotation3D: 0
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: 0.1
+    radius: 0.01
     angle: 25
     length: 5
     boxX: 1
@@ -586,15 +586,15 @@ ParticleSystem:
       minMaxState: 3
     separateAxes: 0
   ColorModule:
-    enabled: 0
+    enabled: 1
     gradient:
       maxGradient:
         key0:
           serializedVersion: 2
-          rgba: 4294967295
+          rgba: 4211081215
         key1:
           serializedVersion: 2
-          rgba: 4294967295
+          rgba: 3187671039
         key2:
           serializedVersion: 2
           rgba: 0
@@ -622,15 +622,15 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 65535
-        atime2: 0
-        atime3: 0
-        atime4: 0
+        atime1: 10794
+        atime2: 65535
+        atime3: 65535
+        atime4: 65535
         atime5: 0
         atime6: 0
         atime7: 0
         m_NumColorKeys: 2
-        m_NumAlphaKeys: 2
+        m_NumAlphaKeys: 3
       minGradient:
         key0:
           serializedVersion: 2

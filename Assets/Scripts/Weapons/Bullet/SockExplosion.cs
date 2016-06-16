@@ -3,10 +3,6 @@ using System.Collections;
 
 public class SockExplosion : MonoBehaviour
 {
-    //Rigidbody of the Gameobject
-    [SerializeField] private Rigidbody2D rbExplosion;
-    //Collider of the Gameobject
-    [SerializeField] private BoxCollider2D boxCollider;
     //Amout of damage that the bullet will deal
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
@@ -16,37 +12,34 @@ public class SockExplosion : MonoBehaviour
 
     void Start()
     {
-        SoundManager.PlayAudioClip(AudioData.Explosion);
-        Invoke("DisableCollider", .5f);
+        ExplosionSound();
     }
 
-    void DisableCollider()
+    void ExplosionSound()
     {
-        boxCollider.enabled = false;
+        SoundManager.PlayAudioClip(AudioData.DuckExplosion);
     }
 
     void Hit(GameObject player)
     {
-        //Finds the health script of the hit player 
-        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage, true);
         //Give the player knockback
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        Vector2 currPosition = (rbExplosion.position - rbPlayer.position).normalized;
-        //float xPos = currPosition.x * knockback;
-        playerMovement.ApplyKnockback(currPosition);
+        Vector2 currPosition = (transform.position - rbPlayer.transform.position).normalized;
+        playerMovement.ApplyKnockback(currPosition * knockback);
+        //Finds the health script of the hit player 
+        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
+        healthPlayer.ChangeHealth(damage, true);
+        //IgnorePlayerHit
+        Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
 
-    void OnTriggerEnter2D(Collider2D coll)
+    void OnParticleCollision(GameObject other)
     {
-        if (coll.gameObject != null)
+        if (other != null)
         {
-            if (coll.gameObject.CompareTag(GameTags.player))
-            {
-                Hit(coll.gameObject);
-                rbExplosion.isKinematic = true;
-            }
+            if (other.CompareTag(GameTags.player))
+                Hit(other);
         }
     }
 }
