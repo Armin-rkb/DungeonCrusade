@@ -6,11 +6,8 @@ public class StartScreenListener : MonoBehaviour {
 
     [SerializeField] private StartScreen _startScreen;
 
-    [SerializeField]
-    private List<GameObject> _turnGameObjectFalse;
-
-    [SerializeField]
-    private List<GameObject> _loadingObjects;
+    [SerializeField] private List<GameObject> _turnGameObjectFalse;
+    [SerializeField] private List<GameObject> _loadingObjects;
 
     void Awake()
     {

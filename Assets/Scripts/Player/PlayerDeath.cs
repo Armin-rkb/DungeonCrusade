@@ -72,6 +72,7 @@ private BoxCollider2D[] _thisBoxCollider2D;
                 collider2d.gameObject.tag = GameTags.dead;
 
             _thisRigidBody2D.constraints = RigidbodyConstraints2D.FreezePositionX;
+            _thisRigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
             
             yield return new WaitForSeconds(2);
 

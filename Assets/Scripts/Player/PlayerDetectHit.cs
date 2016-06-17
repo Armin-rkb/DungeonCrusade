@@ -62,9 +62,68 @@ public class PlayerDetectHit : MonoBehaviour
         HealthPlayer.OnNewRound += SendText;
     }
 
+    void OnParticleCollision(GameObject explosion)
+    {
+        if (explosion != null)
+        {
+            if (explosion.CompareTag(GameTags.bullet))
+            {
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
+
+                // POINT HANDLER
+
+                if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
+                {
+                    _p1Point = true;
+                    _p2Point = false;
+                    _p3Point = false;
+                    _p4Point = false;
+
+                }
+
+                else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
+                {
+                    _p1Point = false;
+                    _p2Point = true;
+                    _p3Point = false;
+                    _p4Point = false;
+
+                }
+
+                else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
+                {
+                    _p1Point = false;
+                    _p2Point = false;
+                    _p3Point = true;
+                    _p4Point = false;
+                }
+
+                else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pFour)
+                {
+                    _p1Point = false;
+                    _p2Point = false;
+                    _p3Point = false;
+                    _p4Point = true;
+
+                }
+                // POINT HANDLER
+
+                else if (explosion.gameObject.GetComponent<DuckExplosion>() != null)
+                {
+                    if (OnDuckDeath != null)
+                        OnDuckDeath(this);
+                }
+
+
+
+            }
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D explosion)
     {
-        if(explosion.gameObject.CompareTag(GameTags.bullet))
+        if (explosion.gameObject.CompareTag(GameTags.bullet))
         {
             if (this.gameObject.CompareTag(GameTags.player))
                 StartCoroutine("Flash");
@@ -129,10 +188,14 @@ public class PlayerDetectHit : MonoBehaviour
 
             if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
             {
-                _p1Point = true;
-                _p2Point = false;
-                _p3Point = false;
-                _p4Point = false;
+                if (!_p1Point)
+                {
+                    _p1Point = true;
+                    _p2Point = false;
+                    _p3Point = false;
+                    _p4Point = false;
+                }
+                
 
             }
 
@@ -199,24 +262,13 @@ public class PlayerDetectHit : MonoBehaviour
                 if (OnBarrelDeath != null)
                     OnBarrelDeath(this);
             }
-
-            
-
-            else if (projectile.gameObject.GetComponent<DuckExplosion>() != null)
-            {
-                if (OnDuckDeath != null)
-                    OnDuckDeath(this);
-            }
-
-          
+ 
 
             else if (projectile.gameObject.GetComponent<MusicNote>() != null)
             {
                 if (OnMusicDeath != null)
                     OnMusicDeath(this);
             }
-
-
         }
     }
 

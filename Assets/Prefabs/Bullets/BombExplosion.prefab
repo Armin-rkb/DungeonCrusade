@@ -17,7 +17,7 @@ GameObject:
   - 114: {fileID: 11410790}
   m_Layer: 0
   m_Name: BombExplosion
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60,7 +60,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: -0.035511345, y: -0.000000059604645}
   serializedVersion: 2
@@ -109,7 +109,6 @@ MonoBehaviour:
   boxCollider: {fileID: 6114196}
   damage: 4
   knockback: 8
-  playernum: 0
 --- !u!114 &11459828
 MonoBehaviour:
   m_ObjectHideFlags: 1
