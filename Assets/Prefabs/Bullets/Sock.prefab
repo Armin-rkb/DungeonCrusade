@@ -119,7 +119,7 @@ MonoBehaviour:
   rbSock: {fileID: 5039320}
   sprite: {fileID: 21257710}
   speed: 3
-  explosionObj: {fileID: 144028, guid: bbca8a137d05b114ebd1ed67500dfb40, type: 2}
+  explosionObj: {fileID: 188438, guid: d5448dc7020e47c419645008fb9b141b, type: 2}
   playernum: 0
 --- !u!198 &19868134
 ParticleSystem:

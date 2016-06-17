@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SockExplosion : MonoBehaviour
 {
+    //Explosion Collision circle
+    [SerializeField] private CircleCollider2D collider;
     //Amout of damage that the bullet will deal
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
@@ -13,6 +15,12 @@ public class SockExplosion : MonoBehaviour
     void Start()
     {
         ExplosionSound();
+        Invoke("DestroyCollider", 0.25f);
+    }
+
+    void DestroyCollider()
+    {
+        Destroy(collider);
     }
 
     void ExplosionSound()
@@ -34,12 +42,12 @@ public class SockExplosion : MonoBehaviour
         Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
 
-    void OnParticleCollision(GameObject other)
+    void OnTriggerEnter2D(Collider2D coll)
     {
-        if (other != null)
+        if (coll != null)
         {
-            if (other.CompareTag(GameTags.player))
-                Hit(other);
+            if (coll.CompareTag(GameTags.player))
+                Hit(coll.gameObject);
         }
     }
 }
