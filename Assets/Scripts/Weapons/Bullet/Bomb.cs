@@ -13,6 +13,7 @@ public class Bomb : MonoBehaviour
     [SerializeField] private GameObject explosionConfetti;
     [SerializeField] private GameObject explosionNuke;
 
+
     public int playernum;
 
     //Sets the place the player is facing

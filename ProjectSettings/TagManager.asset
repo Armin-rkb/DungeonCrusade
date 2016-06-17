@@ -23,8 +23,8 @@ TagManager:
   - UI
   - 
   - 
-  - Ground
-  - Player
+  - Wall
+  - 
   - 
   - 
   - 
@@ -48,11 +48,20 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Blank
+    uniqueID: 1650369109
+    locked: 0
   - name: Background
     uniqueID: 2499670113
     locked: 0
+  - name: Middleground
+    uniqueID: 3620507369
+    locked: 0
   - name: Foreground
     uniqueID: 790716239
+    locked: 0
+  - name: SecondMiddleGround
+    uniqueID: 4035638129
     locked: 0
   - name: Player
     uniqueID: 2534311087

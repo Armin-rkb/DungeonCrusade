@@ -100,7 +100,7 @@ public class PlayerDetectHit : MonoBehaviour
                 _p4Point = false;
             }
 
-            else
+            else if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pFour)
             {
                 _p1Point = false;
                 _p2Point = false;
@@ -108,6 +108,11 @@ public class PlayerDetectHit : MonoBehaviour
                 _p4Point = true;
 
             }
+            else
+                _p1Point = false;
+            _p2Point = false;
+            _p3Point = false;
+            _p4Point = false;
 
             // POINT HANDLER
 

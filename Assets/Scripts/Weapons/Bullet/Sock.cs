@@ -35,9 +35,9 @@ public class Sock : MonoBehaviour
     void ExplodeSock()
     {
         //When the time is up instantiate our explosion obj and remove this obj
-        GameObject sockexplosion = Instantiate(explosionObj, transform.position, transform.rotation) as GameObject;
+       GameObject sockexplosion = Instantiate(explosionObj, transform.position, transform.rotation) as GameObject;
 
-        sockexplosion.GetComponentInChildren<BulletNumber>().playernum = playernum;
+        sockexplosion.GetComponent<BulletNumber>().playernum = playernum;
 
         Destroy(this.gameObject);
     }

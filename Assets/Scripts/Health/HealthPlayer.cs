@@ -38,14 +38,9 @@ public class HealthPlayer : MonoBehaviour, IHealth
 
     //GameObjects
     [SerializeField]
-    private GameObject _roundObject;
-
-    [SerializeField]
     private GameObject _sparkleFX;
-
-    [SerializeField]
-    private List<GameObject> _pointObjects;
     //GameObjects
+    /////NEEDS DELEGATE
 
     //Scripts
     private PlayerMovement _checkPort;
@@ -56,7 +51,7 @@ public class HealthPlayer : MonoBehaviour, IHealth
     public int PlayerHealth
     {
         get { return playerHealth; }
-        set { playerHealth += playerHealth; }
+        set { playerHealth += value; }
     }
 
     private int playerPoint = 1;
@@ -145,8 +140,6 @@ public class HealthPlayer : MonoBehaviour, IHealth
             OnP4Point(this);
 
         playerHealth = 0;
-
-        //Destroy(gameObject);
 
         if (OnPlayerDeath != null)
             OnPlayerDeath();

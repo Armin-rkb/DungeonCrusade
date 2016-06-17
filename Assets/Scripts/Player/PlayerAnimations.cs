@@ -22,22 +22,34 @@ public class PlayerAnimations : MonoBehaviour {
     [SerializeField]
     private PlayerDeath _playerDeath;
     private PlayerWeapon _playerWeapon;
+
+    bool death;
     //Scripts
 
     void Awake()
     {
-      _playerDeath.OnPlayerDeath += DeathAnimation;
+      _playerDeath.OnPlayerDeath += TurnDeathOn;
     }
 
 	void Update () 
     {
+        if (!death)
+        {
             WalkAnimation();
             JumpAnimation();
             AttackAnimation();
             HadoukenAnimation();
             MicroPhoneAnimation();
-            HitAnimation();   
+            HitAnimation();
+        }
+           
+            DeathAnimation();
 	}
+
+    public void TurnDeathOn()
+    {
+        death = true;
+    }
 
     public void WalkAnimation()
     {
@@ -50,6 +62,7 @@ public class PlayerAnimations : MonoBehaviour {
                 _playerAnimations.SetBool(AnimationStrings.idle, false);
                 _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
                 _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
+
 
                 _playerAnimations.SetBool(AnimationStrings.jump, false);
                 _playerAnimations.SetBool(AnimationStrings.attack, false);
@@ -64,7 +77,14 @@ public class PlayerAnimations : MonoBehaviour {
             {
                 _playerAnimations.SetBool(AnimationStrings.run, false);
                 _playerAnimations.SetBool(AnimationStrings.doublejump, false);
+
+                if (!_playerDeath.GetDeath)
                 _playerAnimations.SetBool(AnimationStrings.idle, true);
+                else
+                {
+                    _playerAnimations.SetBool(AnimationStrings.idle, false);
+                    _playerAnimations.SetBool(AnimationStrings.death, true);
+                }
 
                 _playerAnimations.SetBool(AnimationStrings.jumpattack, false);
                 _playerAnimations.SetBool(AnimationStrings.doublejumpattack, false);
@@ -101,6 +121,10 @@ public class PlayerAnimations : MonoBehaviour {
 
     private void DeathAnimation()
     {
+
+    
+        if (death)
+        {
             _playerAnimations.SetBool(AnimationStrings.death, true);
 
             _playerAnimations.SetBool(AnimationStrings.run, false);
@@ -115,6 +139,8 @@ public class PlayerAnimations : MonoBehaviour {
             _playerAnimations.SetBool(AnimationStrings.hit, false);
             _playerAnimations.SetBool(AnimationStrings.hadoukenattack, false);
             _playerAnimations.SetBool(AnimationStrings.microphoneattack, false);
+        }
+            
     }
 
    private void JumpAnimation()

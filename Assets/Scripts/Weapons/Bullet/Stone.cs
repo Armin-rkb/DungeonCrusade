@@ -18,6 +18,8 @@ public class Stone : MonoBehaviour
     private bool isRight;
     private bool isLeft;
 
+    public int playernum;
+
     //Sets the place the player is facing
     public void ShootLeft()
     {
