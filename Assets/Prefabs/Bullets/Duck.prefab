@@ -12,6 +12,7 @@ GameObject:
   - 50: {fileID: 5012758}
   - 61: {fileID: 6129284}
   - 114: {fileID: 11433830}
+  - 114: {fileID: 11442614}
   m_Layer: 0
   m_Name: Duck
   m_TagString: Bullet
@@ -79,6 +80,18 @@ MonoBehaviour:
   speed: 5
   explosionObj: {fileID: 158162, guid: 01fd1aca2ba22db40b22e793a7107495, type: 2}
   playernum: 0
+--- !u!114 &11442614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 170846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b3554b00c2a9c41905a7674e653c3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playernum: 4
 --- !u!212 &21288218
 SpriteRenderer:
   m_ObjectHideFlags: 1

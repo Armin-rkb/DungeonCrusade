@@ -13,11 +13,10 @@ public class Shuriken : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    //The broken sprite.
+    [SerializeField] private GameObject brokenBullet;
     private bool isRight;
     private bool isLeft;
-
-    public int playernum;
-
 
     //Sets the place the player is facing
     public void ShootLeft()
@@ -48,10 +47,10 @@ public class Shuriken : MonoBehaviour
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
         healthPlayer.ChangeHealth(damage, true);
         //Give the player knockback
-        //Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        //rbPlayer.isKinematic = true;
-        //rbPlayer.AddForce((rbShuriken.position - rbPlayer.position).normalized * -knockback);
-        //rbPlayer.isKinematic = false;
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
+        Vector2 currPosition = (rbShuriken.position - rbPlayer.position).normalized;
+        playerMovement.ApplyKnockback(currPosition * knockback);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -65,12 +64,9 @@ public class Shuriken : MonoBehaviour
             }
             else
             {
-                isRight = false;
-                isLeft = false;
-                rbShuriken.isKinematic = true;
-                gameObject.AddComponent<Fade>();
+                Instantiate(brokenBullet, transform.position, transform.rotation);
+                Destroy(this.gameObject);
             }
-
         }
     }
 }

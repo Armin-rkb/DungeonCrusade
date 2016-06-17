@@ -8,6 +8,8 @@ public class DuckExplosion : MonoBehaviour
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
 
+    public int playernum;
+
     void Start()
     {
         InvokeRepeating("ExplosionSound", 0, 0.25f);
@@ -15,7 +17,7 @@ public class DuckExplosion : MonoBehaviour
 
     void ExplosionSound()
     {
-        SoundManager.PlayAudioClip(AudioData.DuckExplosion);
+        SoundManager.PlayAudioClip(AudioData.Sock);
     }
 
     void Hit(GameObject player)
@@ -27,7 +29,7 @@ public class DuckExplosion : MonoBehaviour
         playerMovement.ApplyKnockback(currPosition * knockback);
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(1, true);
+        healthPlayer.ChangeHealth(damage, true);
     }
 
     void OnParticleCollision(GameObject other)

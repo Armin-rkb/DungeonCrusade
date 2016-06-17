@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 450678}
   - 198: {fileID: 19850816}
   - 199: {fileID: 19929504}
-  - 114: {fileID: 11424470}
+  - 114: {fileID: 11490338}
   m_Layer: 0
   m_Name: barrel fx impact
   m_TagString: Untagged
@@ -25,12 +25,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 172668}
   m_LocalRotation: {x: 1, y: 0.00000016292068, z: 0.00000016292068, w: 2.654315e-14}
-  m_LocalPosition: {x: -0.834, y: 0.612, z: -0.01}
+  m_LocalPosition: {x: -0.67700887, y: -3.687474, z: -0.01}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11424470
+--- !u!114 &11490338
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -121,7 +121,7 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 0
     startSpeed:
-      scalar: 0.6
+      scalar: 0.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -380,14 +380,14 @@ ParticleSystem:
         m_RotationOrder: 0
       minMaxState: 3
     randomizeRotationDirection: 1
-    gravityModifier: 0.4
+    gravityModifier: 0.35
     maxNumParticles: 100
     rotation3D: 0
   ShapeModule:
     serializedVersion: 2
     enabled: 1
     type: 0
-    radius: 0.1
+    radius: 0.01
     angle: 25
     length: 5
     boxX: 1
@@ -591,10 +591,10 @@ ParticleSystem:
       maxGradient:
         key0:
           serializedVersion: 2
-          rgba: 4294967295
+          rgba: 4211081215
         key1:
           serializedVersion: 2
-          rgba: 3120562175
+          rgba: 3187671039
         key2:
           serializedVersion: 2
           rgba: 0
@@ -622,10 +622,10 @@ ParticleSystem:
         ctime6: 0
         ctime7: 0
         atime0: 0
-        atime1: 36430
+        atime1: 10794
         atime2: 65535
-        atime3: 0
-        atime4: 0
+        atime3: 65535
+        atime4: 65535
         atime5: 0
         atime6: 0
         atime7: 0
