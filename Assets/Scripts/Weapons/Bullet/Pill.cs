@@ -19,8 +19,6 @@ public class Pill : MonoBehaviour
     private bool isLeft;
     private bool bounce;
 
-    public int playernum;
-
     //Sets the place the player is facing
     public void ShootLeft()
     {

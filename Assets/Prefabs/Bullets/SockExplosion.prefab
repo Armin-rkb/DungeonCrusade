@@ -17,7 +17,7 @@ GameObject:
   - 114: {fileID: 11440796}
   m_Layer: 0
   m_Name: SockExplosion
-  m_TagString: Bullet
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,6 +97,7 @@ MonoBehaviour:
   boxCollider: {fileID: 6161932}
   damage: 4
   knockback: 8
+  playernum: 0
 --- !u!114 &11440796
 MonoBehaviour:
   m_ObjectHideFlags: 1

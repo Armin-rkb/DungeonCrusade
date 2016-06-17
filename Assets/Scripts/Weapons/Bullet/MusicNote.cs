@@ -12,6 +12,8 @@ public class MusicNote : MonoBehaviour
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
+    //The broken sprite.
+    [SerializeField] private GameObject brokenBullet;
     private bool isRight;
     private bool isLeft;
 
@@ -72,10 +74,11 @@ public class MusicNote : MonoBehaviour
             if (coll.gameObject.CompareTag(GameTags.player))
             {
                 Hit(coll.gameObject);
+                Instantiate(brokenBullet, transform.position, transform.rotation);
                 Destroy(this.gameObject);
             }
 
-            else if (coll.gameObject.name == "MusicNoteBig(Clone)" || coll.gameObject.name == "MusicNoteSmall(Clone)")
+            else if (coll.gameObject.name == "MusicNoteBig(Clone)" || coll.gameObject.name == "MusicNoteMedium(Clone)" || coll.gameObject.name == "MusicNoteSmall(Clone)")
             {
                 MusicNote otherNote = coll.gameObject.GetComponent<MusicNote>();
                 if (otherNote.playernum == playernum)
@@ -83,21 +86,15 @@ public class MusicNote : MonoBehaviour
 
                 else
                 {
-                    isRight = false;
-                    isLeft = false;
-                    speed = 0;
-                    rbMusicNote.isKinematic = true;
-                    gameObject.AddComponent<Fade>();
+                    Instantiate(brokenBullet, transform.position, transform.rotation);
+                    Destroy(this.gameObject);
                 }
             }
 
             else
             {
-                isRight = false;
-                isLeft = false;
-                speed = 0;
-                rbMusicNote.isKinematic = true;
-                gameObject.AddComponent<Fade>();
+                Instantiate(brokenBullet, transform.position, transform.rotation);
+                Destroy(this.gameObject);
             }
         }
     }

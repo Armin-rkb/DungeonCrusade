@@ -3,19 +3,32 @@ using System.Collections;
 
 public class DuckExplosion : MonoBehaviour
 {
+    //Explosion Collision circle
+    [SerializeField] private CircleCollider2D collider;
     //Amout of damage that the bullet will deal
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
 
+    public int playernum;
+
     void Start()
     {
         InvokeRepeating("ExplosionSound", 0, 0.25f);
+        InvokeRepeating("TriggerCollider", 0.15f, 0.15f);
+    }
+
+    void TriggerCollider()
+    {
+        if (collider.enabled == true)
+            collider.enabled = false;
+        else
+            collider.enabled = true;
     }
 
     void ExplosionSound()
     {
-        SoundManager.PlayAudioClip(AudioData.DuckExplosion);
+        SoundManager.PlayAudioClip(AudioData.Sock);
     }
 
     void Hit(GameObject player)
@@ -27,15 +40,15 @@ public class DuckExplosion : MonoBehaviour
         playerMovement.ApplyKnockback(currPosition * knockback);
         //Finds the health script of the hit player 
         HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(1, true);
+        healthPlayer.ChangeHealth(damage, true);
     }
 
-    void OnParticleCollision(GameObject other)
+    void OnTriggerEnter2D(Collider2D coll)
     {
-        if (other != null)
+        if (coll != null)
         {
-            if (other.CompareTag(GameTags.player))
-                Hit(other);
+            if (coll.CompareTag(GameTags.player))
+                Hit(coll.gameObject);
         }
     }
 }

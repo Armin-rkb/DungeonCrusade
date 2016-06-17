@@ -3,48 +3,51 @@ using System.Collections;
 
 public class SockExplosion : MonoBehaviour
 {
-    //Rigidbody of the Gameobject
-    [SerializeField] private Rigidbody2D rbExplosion;
-    //Collider of the Gameobject
-    [SerializeField] private BoxCollider2D boxCollider;
+    //Explosion Collision circle
+    [SerializeField] private CircleCollider2D collider;
     //Amout of damage that the bullet will deal
     [SerializeField] private int damage;
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
 
+    public int playernum;
+
     void Start()
     {
-        SoundManager.PlayAudioClip(AudioData.Explosion);
-        Invoke("DisableCollider", .5f);
+        ExplosionSound();
+        Invoke("DestroyCollider", 0.25f);
     }
 
-    void DisableCollider()
+    void DestroyCollider()
     {
-        boxCollider.enabled = false;
+        Destroy(collider);
+    }
+
+    void ExplosionSound()
+    {
+        SoundManager.PlayAudioClip(AudioData.DuckExplosion);
     }
 
     void Hit(GameObject player)
     {
-        //Finds the health script of the hit player 
-        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage, true);
         //Give the player knockback
         PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
         Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        Vector2 currPosition = (rbExplosion.position - rbPlayer.position).normalized;
-        //float xPos = currPosition.x * knockback;
-        playerMovement.ApplyKnockback(currPosition);
+        Vector2 currPosition = (transform.position - rbPlayer.transform.position).normalized;
+        playerMovement.ApplyKnockback(currPosition * knockback);
+        //Finds the health script of the hit player 
+        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
+        healthPlayer.ChangeHealth(damage, true);
+        //IgnorePlayerHit
+        Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if (coll.gameObject != null)
+        if (coll != null)
         {
-            if (coll.gameObject.CompareTag(GameTags.player))
-            {
+            if (coll.CompareTag(GameTags.player))
                 Hit(coll.gameObject);
-                rbExplosion.isKinematic = true;
-            }
         }
     }
 }

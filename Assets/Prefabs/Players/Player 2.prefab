@@ -556,7 +556,7 @@ MonoBehaviour:
   sock: {fileID: 11441114, guid: cf855dc9f841ac74d9ed7194a2e1f631, type: 2}
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
-  _playerMovement: {fileID: 11473704}
+  playernumber: {fileID: 11473704}
 --- !u!114 &11433690
 MonoBehaviour:
   m_ObjectHideFlags: 1
