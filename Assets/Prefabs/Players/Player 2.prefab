@@ -541,11 +541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f9bc267dd4ac494fbe206ca17ad609b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roundObject: {fileID: 118860, guid: fa9fd4e272388d04aa26e3e7781d9752, type: 2}
   _sparkleFX: {fileID: 146844}
-  _pointObjects:
-  - {fileID: 110892, guid: a482d05a4abdda249abc1190d1a65b71, type: 2}
-  - {fileID: 100552, guid: 7759fdea76feab44d9c2cab89e18457f, type: 2}
 --- !u!114 &11429120
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -560,7 +556,7 @@ MonoBehaviour:
   sock: {fileID: 11441114, guid: cf855dc9f841ac74d9ed7194a2e1f631, type: 2}
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
-  playernumber: {fileID: 11473704}
+  _playerMovement: {fileID: 11473704}
 --- !u!114 &11433690
 MonoBehaviour:
   m_ObjectHideFlags: 1

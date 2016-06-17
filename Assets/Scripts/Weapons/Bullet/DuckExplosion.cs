@@ -8,8 +8,6 @@ public class DuckExplosion : MonoBehaviour
     //Amount of Knockback the bullet will give
     [SerializeField] private float knockback;
 
-    public int playernum;
-
     void Start()
     {
         InvokeRepeating("ExplosionSound", 0, 0.25f);
