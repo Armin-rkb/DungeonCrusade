@@ -171,7 +171,6 @@ MonoBehaviour:
   speed: 4
   damage: 1
   knockback: 2
-  brokenBullet: {fileID: 108228, guid: 0d67f56127c843344aa1a764c78fbf2d, type: 2}
   playernum: 0
 --- !u!114 &11434736
 MonoBehaviour:

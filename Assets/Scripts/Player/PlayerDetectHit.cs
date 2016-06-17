@@ -62,6 +62,59 @@ public class PlayerDetectHit : MonoBehaviour
         HealthPlayer.OnNewRound += SendText;
     }
 
+    void OnTriggerEnter2D(Collider2D explosion)
+    {
+        if(explosion.gameObject.CompareTag(GameTags.bullet))
+        {
+            if (this.gameObject.CompareTag(GameTags.player))
+                StartCoroutine("Flash");
+
+            // POINT HANDLER
+
+            if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
+            {
+                _p1Point = true;
+                _p2Point = false;
+                _p3Point = false;
+                _p4Point = false;
+
+            }
+
+            else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
+            {
+                _p1Point = false;
+                _p2Point = true;
+                _p3Point = false;
+                _p4Point = false;
+
+            }
+
+            else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
+            {
+                _p1Point = false;
+                _p2Point = false;
+                _p3Point = true;
+                _p4Point = false;
+            }
+
+            else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pFour)
+            {
+                _p1Point = false;
+                _p2Point = false;
+                _p3Point = false;
+                _p4Point = true;
+
+            }
+            // POINT HANDLER
+
+            if (explosion.gameObject.GetComponent<SockExplosion>() != null)
+            {
+                if (OnSockDeath != null)
+                    OnSockDeath(this);
+            }
+        }
+    }
+
     void OnCollisionEnter2D(Collision2D projectile)
     {
 
@@ -100,7 +153,7 @@ public class PlayerDetectHit : MonoBehaviour
                 _p4Point = false;
             }
 
-            else
+            else if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pFour)
             {
                 _p1Point = false;
                 _p2Point = false;
@@ -108,7 +161,6 @@ public class PlayerDetectHit : MonoBehaviour
                 _p4Point = true;
 
             }
-
             // POINT HANDLER
 
             if (projectile.gameObject.GetComponent<Stone>() != null)
@@ -148,11 +200,7 @@ public class PlayerDetectHit : MonoBehaviour
                     OnBarrelDeath(this);
             }
 
-            else if (projectile.gameObject.GetComponent<SockExplosion>() != null)
-            {
-                if (OnSockDeath != null)
-                    OnSockDeath(this);
-            }
+            
 
             else if (projectile.gameObject.GetComponent<DuckExplosion>() != null)
             {
@@ -160,11 +208,7 @@ public class PlayerDetectHit : MonoBehaviour
                     OnDuckDeath(this);
             }
 
-            else if (projectile.gameObject.GetComponent<Bomb>() != null)
-            {
-                if (OnBombDeath != null)
-                    OnBombDeath(this);
-            }
+          
 
             else if (projectile.gameObject.GetComponent<MusicNote>() != null)
             {

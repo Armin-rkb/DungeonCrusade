@@ -355,7 +355,7 @@ GameObject:
   - 4: {fileID: 42608004}
   - 212: {fileID: 42608006}
   - 61: {fileID: 42608005}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Platform (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -6770,14 +6770,6 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 413896, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 6.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 433624, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 6.01
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc959ccbf419c564199dee0593fa93b8, type: 2}
   m_IsPrefabParent: 0
@@ -7389,10 +7381,10 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 3
-  m_ReferenceResolution: {x: 480, y: 640}
+  m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -8817,7 +8809,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _deathText: {fileID: 1569774183}
-  _colorText: []
   _deathStrings:
   - Ouch! Stones hurt.
   - Have some medicine.
@@ -14638,18 +14629,9 @@ MonoBehaviour:
   - {fileID: 114916, guid: 6bc73be28845f7342b3ddb0148422b37, type: 2}
   - {fileID: 150266, guid: f5222d4f7b067e24d96228ac04cac566, type: 2}
   _inGameCharacters: []
-  _mainCountdownText: {fileID: 1373168612}
-  _countDownText:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  _mainCountdownText: {fileID: 0}
+  _countDownText: []
   _countDownTimer: 3
-  _playerCountDownTimers:
-  - 3
-  - 3
-  - 3
-  - 3
   _transformPoints:
   - {fileID: 455326, guid: 4344468ee7b25a34788cfe1267046957, type: 2}
   - {fileID: 457672, guid: a439094ae02f15c4aa3fb10c39c66731, type: 2}

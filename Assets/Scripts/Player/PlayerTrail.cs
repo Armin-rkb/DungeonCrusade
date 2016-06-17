@@ -18,7 +18,7 @@ public class PlayerTrail : MonoBehaviour {
 
     void CheckCollision()
     {
-        if (_playerMovement.GetIsGrounded)
+        if (_playerMovement.GetIsGrounded && Input.GetAxis(ControllerInputs.horizontalp + _playerMovement.PlayerNumber) != 0)
             _playerTrail.enableEmission = true;
         else
             _playerTrail.enableEmission = false;

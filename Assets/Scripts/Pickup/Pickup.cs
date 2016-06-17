@@ -13,7 +13,7 @@ public class Pickup : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     //Our new sprite
     [SerializeField] private Sprite chestOpen;
-    
+
     void GiveWeapon(GameObject player)
     {
         //Play chest open sound
@@ -28,7 +28,6 @@ public class Pickup : MonoBehaviour
         pickupIcon.SetWeaponIcon(randWeapon);
     }
 
-    
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject != null)
@@ -41,7 +40,7 @@ public class Pickup : MonoBehaviour
             }
         }
     }
-    
+
     void OnTriggerEnter2D(Collider2D coll)
     {
         if (coll.gameObject != null)
