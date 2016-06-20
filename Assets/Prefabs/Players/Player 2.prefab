@@ -463,7 +463,7 @@ MonoBehaviour:
   musicnote:
   - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
   - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
-  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: de9b905c46bd38a439c79391680b3c55, type: 2}
   playerCollision: {fileID: 11499356}
   flip: {fileID: 11423776}
   playernumber: {fileID: 11473704}

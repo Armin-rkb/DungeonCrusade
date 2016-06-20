@@ -1,18 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Stone : MonoBehaviour
+public class Stone : BaseBullet
 {
-    //Rigidbody of the Gameobject
-    [SerializeField] private Rigidbody2D rbStone;
     //Sprite of this bullet
     [SerializeField] private SpriteRenderer sprite;
-    //Speed of the bullet
-    [SerializeField] private float speed;
-    //Amout of damage that the bullet will deal
-    [SerializeField] private int damage;
-    //Amount of Knockback the bullet will give
-    [SerializeField] private float knockback;
     //The broken sprite.
     [SerializeField] private GameObject brokenBullet;
     private bool isRight;
@@ -36,22 +28,9 @@ public class Stone : MonoBehaviour
     void FixedUpdate()
     {
         if (isRight)
-            rbStone.velocity = new Vector2(speed, rbStone.velocity.y);
+            rbBullet.velocity = new Vector2(speed, rbBullet.velocity.y);
         else if (isLeft)
-            rbStone.velocity = new Vector2(-speed, rbStone.velocity.y);
-    }
-
-    void Hit(GameObject player)
-    {
-        //Finds the health script of the hit player 
-        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage, true);
-        //Give the player knockback
-        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-        Rigidbody2D rbPlayer = player.GetComponent<Rigidbody2D>();
-        Vector2 currPosition = (rbStone.position - rbPlayer.position).normalized;
-        //float xPos = currPosition.x * knockback;
-        playerMovement.ApplyKnockback(currPosition * knockback);
+            rbBullet.velocity = new Vector2(-speed, rbBullet.velocity.y);
     }
 
     void OnCollisionEnter2D(Collision2D coll)

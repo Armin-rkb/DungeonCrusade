@@ -92,12 +92,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b62a4fb65810a54c9e13f117e1276c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbHadouken: {fileID: 5096370}
+  rbBullet: {fileID: 5096370}
   speed: 3
   damage: 2
   knockback: 7
   brokenBullet: {fileID: 144998, guid: e7299d8a00fb3b74494176243691f778, type: 2}
-  playernum: 0
 --- !u!114 &11468382
 MonoBehaviour:
   m_ObjectHideFlags: 1

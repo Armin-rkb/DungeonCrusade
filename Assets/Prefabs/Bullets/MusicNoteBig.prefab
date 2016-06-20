@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88182569c7b14254c9e9d08b8e842cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbMusicNote: {fileID: 5025236}
+  rbBullet: {fileID: 5025236}
   speed: 4
   damage: 2
   knockback: 3

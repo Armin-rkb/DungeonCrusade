@@ -634,7 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 7
+  currNumber: 3
 --- !u!114 &11437648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -695,7 +695,7 @@ MonoBehaviour:
   musicnote:
   - {fileID: 11452272, guid: 501efd6140c181d4196e29090eaba263, type: 2}
   - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
-  - {fileID: 11401294, guid: d32e973004c4bfb4081f81ebdbb34617, type: 2}
+  - {fileID: 11401294, guid: de9b905c46bd38a439c79391680b3c55, type: 2}
   playerCollision: {fileID: 11469742}
   flip: {fileID: 11433018}
   playernumber: {fileID: 11422414}

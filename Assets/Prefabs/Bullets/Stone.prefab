@@ -74,13 +74,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f219ee08a32e9a4ab0511f21a7405f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbStone: {fileID: 5090160}
-  sprite: {fileID: 21201322}
+  rbBullet: {fileID: 5090160}
   speed: 10
   damage: 1
   knockback: 2
+  sprite: {fileID: 21201322}
   brokenBullet: {fileID: 153106, guid: 4273ee6c2c7c4d747bd78a6361e6013c, type: 2}
-  playernum: 0
 --- !u!114 &11472158
 MonoBehaviour:
   m_ObjectHideFlags: 1

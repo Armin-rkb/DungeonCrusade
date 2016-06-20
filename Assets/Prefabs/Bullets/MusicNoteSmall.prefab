@@ -16,7 +16,7 @@ GameObject:
   - 61: {fileID: 6155012}
   - 82: {fileID: 8281204}
   m_Layer: 0
-  m_Name: MusicNoteSmall 1
+  m_Name: MusicNoteSmall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88182569c7b14254c9e9d08b8e842cea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbMusicNote: {fileID: 5023498}
+  rbBullet: {fileID: 5023498}
   speed: 4
   damage: 1
   knockback: 2

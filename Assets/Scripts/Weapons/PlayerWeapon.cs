@@ -30,11 +30,11 @@ public class PlayerWeapon : MonoBehaviour
     {
         currentWeapon = weaponList[wepNumber];
         currNumber = wepNumber;
-        CheckWeaponCooldown(wepNumber);
+        SetWeaponCooldown(wepNumber);
         cooldown = 20;
     }
 
-    void CheckWeaponCooldown(int weaponNum)
+    void SetWeaponCooldown(int weaponNum)
     {
         switch (weaponNum)
         {
@@ -58,13 +58,13 @@ public class PlayerWeapon : MonoBehaviour
             case 4:
                 maxCooldown = 90;
                 break;
-            //Sock
-            case 5:
-                maxCooldown = 80;
-                break;
             //Barrel
-            case 6:
+            case 5:
                 maxCooldown = 45;
+                break;
+            //Sock
+            case 6:
+                maxCooldown = 80;
                 break;
             //Duck
             case 7:
@@ -79,22 +79,6 @@ public class PlayerWeapon : MonoBehaviour
                 maxCooldown = 65;
                 break;
         }
-    }
-
-    void ScrollWeaponList()
-    {
-        if (currNumber < 0)
-            currNumber = 8;
-        else if (currNumber > 8)
-            currNumber = 0;
-
-        //Switch with Scroll
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-            currNumber++;
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
-            currNumber--;
-
-        currentWeapon = weaponList[currNumber];
     }
 
     void Awake()
@@ -115,8 +99,6 @@ public class PlayerWeapon : MonoBehaviour
 
     void Update()
     {
-        //ScrollWeaponList();
-
         if (cooldown <= maxCooldown)
         {
             cooldown--;
