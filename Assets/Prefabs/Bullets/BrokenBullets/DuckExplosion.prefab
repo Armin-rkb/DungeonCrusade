@@ -16,7 +16,7 @@ GameObject:
   - 114: {fileID: 11421492}
   m_Layer: 0
   m_Name: DuckExplosion
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -85,7 +85,6 @@ MonoBehaviour:
   collider: {fileID: 5834666}
   damage: 1
   knockback: 5
-  playernum: 0
 --- !u!198 &19842418
 ParticleSystem:
   m_ObjectHideFlags: 1

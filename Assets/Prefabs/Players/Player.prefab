@@ -449,7 +449,7 @@ MonoBehaviour:
   sock: {fileID: 11441114, guid: cf855dc9f841ac74d9ed7194a2e1f631, type: 2}
   playerCollision: {fileID: 11469742}
   flip: {fileID: 11433018}
-  playernumber: {fileID: 11422414}
+  _playerMovement: {fileID: 11422414}
 --- !u!114 &11408116
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -634,7 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d10a5bd38e105e74193a1ea0a279accc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currNumber: 7
+  currNumber: 0
 --- !u!114 &11437648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -727,6 +727,7 @@ MonoBehaviour:
   _playerMovement: {fileID: 11422414}
   _playerFlip: {fileID: 11433018}
   _detectHit: {fileID: 11435682}
+  _playerWeapon: {fileID: 11436936}
   _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _sendShake: {fileID: 11430206}
   playernum: 0

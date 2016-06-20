@@ -11,6 +11,12 @@ public class CameraShake : MonoBehaviour {
         get { return _shakePower; }
         set { _shakePower = value; }
     }
+
+    /*
+     * Using a getter and setter for adjusting the shake's power.
+     * We'll be using this in other scripts.
+     */
+
     //Floats
 
     //Bool
@@ -39,7 +45,7 @@ public class CameraShake : MonoBehaviour {
     {
         if (_isShaking)
         {
-            _gameCamera.orthographicSize = 6.95f;
+            _gameCamera.orthographicSize = 6.975f;
             transform.localPosition = transform.localPosition + Random.insideUnitSphere * _shakePower;
         }
         else
@@ -53,6 +59,10 @@ public class CameraShake : MonoBehaviour {
         CancelInvoke();
         Invoke("StopShaking", duration);
     }
+
+    /*
+     * Start shaking.
+     */
  
 
     public void StopShaking()
@@ -60,4 +70,8 @@ public class CameraShake : MonoBehaviour {
         _isShaking = false;
         this.transform.position = _startPos;
     }
+
+    /*
+     * Gets called after the shake gets triggered.
+     */ 
 }

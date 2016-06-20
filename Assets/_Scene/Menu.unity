@@ -2413,6 +2413,7 @@ GameObject:
   - 114: {fileID: 2028262397}
   - 114: {fileID: 2028262398}
   - 114: {fileID: 2028262399}
+  - 114: {fileID: 2028262400}
   m_Layer: 0
   m_Name: JoinSystem
   m_TagString: Untagged
@@ -2491,6 +2492,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88602a745329cca41908b7e7f75d8912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _joinCheck: {fileID: 2028262397}
+--- !u!114 &2028262400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2028262394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9f2383b4a5ecb4e9ca693f5841fb84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _joinCheck: {fileID: 2028262397}

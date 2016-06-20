@@ -517,7 +517,7 @@ MonoBehaviour:
   sock: {fileID: 11441114, guid: cf855dc9f841ac74d9ed7194a2e1f631, type: 2}
   playerCollision: {fileID: 11447382}
   flip: {fileID: 11447402}
-  playernumber: {fileID: 11447472}
+  _playerMovement: {fileID: 11447472}
 --- !u!114 &11433362
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -695,9 +695,9 @@ MonoBehaviour:
   _playerMovement: {fileID: 11447472}
   _playerFlip: {fileID: 11447402}
   _detectHit: {fileID: 11470660}
-  _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
+  _playerWeapon: {fileID: 11403274}
   _sendShake: {fileID: 11455670}
-  playernum: 0
+  _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _thisRigidBody2D: {fileID: 5067204}
 --- !u!114 &11467230
 MonoBehaviour:

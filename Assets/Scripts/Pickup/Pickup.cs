@@ -28,15 +28,34 @@ public class Pickup : MonoBehaviour
         pickupIcon.SetWeaponIcon(randWeapon);
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void OnCollisionStay2D(Collision2D coll)
     {
         if (coll.gameObject != null)
         {
             if (coll.gameObject.CompareTag(GameTags.ground))
             {
                 rbPickup.gravityScale = 0;
-                Destroy(rbPickup);
+                rbPickup.isKinematic = true;
                 boxCollider.isTrigger = true;
+            }
+            else
+            {
+                rbPickup.gravityScale = 1;
+                rbPickup.isKinematic = false;
+                boxCollider.isTrigger = false;
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D coll)
+    {
+        if (coll.gameObject != null)
+        {
+            if (coll.gameObject.CompareTag(GameTags.ground))
+            {
+                rbPickup.gravityScale = 1;
+                rbPickup.isKinematic = false;
+                boxCollider.isTrigger = false;
             }
         }
     }

@@ -62,72 +62,11 @@ public class PlayerDetectHit : MonoBehaviour
         HealthPlayer.OnNewRound += SendText;
     }
 
-    void OnParticleCollision(GameObject explosion)
-    {
-        if (explosion != null)
-        {
-            if (explosion.CompareTag(GameTags.bullet))
-            {
-                if (this.gameObject.CompareTag(GameTags.player))
-                    StartCoroutine("Flash");
-
-                // POINT HANDLER
-
-                if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
-                {
-                    _p1Point = true;
-                    _p2Point = false;
-                    _p3Point = false;
-                    _p4Point = false;
-
-                }
-
-                else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pTwo)
-                {
-                    _p1Point = false;
-                    _p2Point = true;
-                    _p3Point = false;
-                    _p4Point = false;
-
-                }
-
-                else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pThree)
-                {
-                    _p1Point = false;
-                    _p2Point = false;
-                    _p3Point = true;
-                    _p4Point = false;
-                }
-
-                else if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pFour)
-                {
-                    _p1Point = false;
-                    _p2Point = false;
-                    _p3Point = false;
-                    _p4Point = true;
-
-                }
-                // POINT HANDLER
-
-                else if (explosion.gameObject.GetComponent<DuckExplosion>() != null)
-                {
-                    if (OnDuckDeath != null)
-                        OnDuckDeath(this);
-                }
-
-
-
-            }
-        }
-    }
-
     void OnTriggerEnter2D(Collider2D explosion)
     {
         if (explosion.gameObject.CompareTag(GameTags.bullet))
         {
-            if (this.gameObject.CompareTag(GameTags.player))
-                StartCoroutine("Flash");
-
+            
             // POINT HANDLER
 
             if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
@@ -170,6 +109,27 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnSockDeath != null)
                     OnSockDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
+            }
+
+            else if (explosion.gameObject.GetComponent<DuckExplosion>() != null)
+            {
+                if (OnDuckDeath != null)
+                    OnDuckDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
+            }
+
+            else if (explosion.gameObject.GetComponent<BombExplosion>() != null)
+            {
+                if (OnBombDeath != null)
+                    OnBombDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
         }
     }
@@ -179,10 +139,6 @@ public class PlayerDetectHit : MonoBehaviour
 
         if(projectile.gameObject.CompareTag(GameTags.bullet))
         {
-            if (this.gameObject.CompareTag(GameTags.player))
-            StartCoroutine("Flash");
-          
-            // Hit Feedback
 
             // POINT HANDLER
 
@@ -230,18 +186,27 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnStoneDeath != null)
                     OnStoneDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
             else if (projectile.gameObject.GetComponent<Pill>() != null)
             {
                 if (OnPillDeath != null)
                     OnPillDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
             else if (projectile.gameObject.GetComponent<Shuriken>() != null)
             {
                 if (OnShurikenDeath != null)
                     OnShurikenDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
 
@@ -249,6 +214,9 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnHadoukenDeath != null)
                     OnHadoukenDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
             else if (projectile.gameObject.GetComponent<Pizza>() != null)
@@ -261,6 +229,9 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnBarrelDeath != null)
                     OnBarrelDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
  
 
@@ -268,6 +239,9 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnMusicDeath != null)
                     OnMusicDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
         }
     }
