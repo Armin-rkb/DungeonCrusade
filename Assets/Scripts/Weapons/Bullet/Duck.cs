@@ -4,15 +4,20 @@ using System.Collections;
 public class Duck : MonoBehaviour
 {
     //Rigidbody of the Gameobject
-    [SerializeField] private Rigidbody2D rbSock;
+    [SerializeField]
+    private Rigidbody2D rbSock;
     //Sprite of this bullet
-    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField]
+    private SpriteRenderer sprite;
     //Time left for explosion
-    [SerializeField] private float explodeTime;
+    [SerializeField]
+    private float explodeTime;
     //Speed of the bullet
-    [SerializeField] private float speed;
+    [SerializeField]
+    private float speed;
     //Explosion object
-    [SerializeField] private GameObject explosionObj;
+    [SerializeField]
+    private GameObject explosionObj;
     private bool isRight;
     private bool isLeft;
     private bool bounce;
@@ -58,10 +63,10 @@ public class Duck : MonoBehaviour
         if (explodeTime < 0)
         {
             //When the time is up instantiate our explosion obj and remove this obj
-           GameObject duckexplosion = Instantiate(explosionObj, transform.position, transform.rotation) as GameObject;
+            GameObject duckexplosion = Instantiate(explosionObj, transform.position, transform.rotation) as GameObject;
 
             duckexplosion.GetComponent<BulletNumber>().playernum = playernum;
-            
+
             Destroy(this.gameObject);
         }
     }

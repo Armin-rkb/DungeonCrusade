@@ -64,11 +64,9 @@ public class PlayerDetectHit : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D explosion)
     {
-        if(explosion.gameObject.CompareTag(GameTags.bullet))
+        if (explosion.gameObject.CompareTag(GameTags.bullet))
         {
-            if (this.gameObject.CompareTag(GameTags.player))
-                StartCoroutine("Flash");
-
+            
             // POINT HANDLER
 
             if (explosion.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
@@ -111,6 +109,27 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnSockDeath != null)
                     OnSockDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
+            }
+
+            else if (explosion.gameObject.GetComponent<DuckExplosion>() != null)
+            {
+                if (OnDuckDeath != null)
+                    OnDuckDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
+            }
+
+            else if (explosion.gameObject.GetComponent<BombExplosion>() != null)
+            {
+                if (OnBombDeath != null)
+                    OnBombDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
         }
     }
@@ -120,19 +139,19 @@ public class PlayerDetectHit : MonoBehaviour
 
         if(projectile.gameObject.CompareTag(GameTags.bullet))
         {
-            if (this.gameObject.CompareTag(GameTags.player))
-            StartCoroutine("Flash");
-          
-            // Hit Feedback
 
             // POINT HANDLER
 
             if (projectile.gameObject.GetComponent<BulletNumber>().playernum == _pOne)
             {
-                _p1Point = true;
-                _p2Point = false;
-                _p3Point = false;
-                _p4Point = false;
+                if (!_p1Point)
+                {
+                    _p1Point = true;
+                    _p2Point = false;
+                    _p3Point = false;
+                    _p4Point = false;
+                }
+                
 
             }
 
@@ -167,18 +186,27 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnStoneDeath != null)
                     OnStoneDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
             else if (projectile.gameObject.GetComponent<Pill>() != null)
             {
                 if (OnPillDeath != null)
                     OnPillDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
             else if (projectile.gameObject.GetComponent<Shuriken>() != null)
             {
                 if (OnShurikenDeath != null)
                     OnShurikenDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
 
@@ -186,6 +214,9 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnHadoukenDeath != null)
                     OnHadoukenDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
 
             else if (projectile.gameObject.GetComponent<Pizza>() != null)
@@ -198,25 +229,20 @@ public class PlayerDetectHit : MonoBehaviour
             {
                 if (OnBarrelDeath != null)
                     OnBarrelDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
-
-            
-
-            else if (projectile.gameObject.GetComponent<DuckExplosion>() != null)
-            {
-                if (OnDuckDeath != null)
-                    OnDuckDeath(this);
-            }
-
-          
+ 
 
             else if (projectile.gameObject.GetComponent<MusicNote>() != null)
             {
                 if (OnMusicDeath != null)
                     OnMusicDeath(this);
+
+                if (this.gameObject.CompareTag(GameTags.player))
+                    StartCoroutine("Flash");
             }
-
-
         }
     }
 

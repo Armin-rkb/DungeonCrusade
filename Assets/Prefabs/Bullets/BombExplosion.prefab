@@ -11,13 +11,13 @@ GameObject:
   - 212: {fileID: 21275524}
   - 95: {fileID: 9503128}
   - 50: {fileID: 5019740}
-  - 61: {fileID: 6114196}
   - 114: {fileID: 11459828}
-  - 114: {fileID: 11429816}
   - 114: {fileID: 11410790}
+  - 58: {fileID: 5815772}
+  - 114: {fileID: 11488386}
   m_Layer: 0
   m_Name: BombExplosion
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,8 +51,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &6114196
-BoxCollider2D:
+--- !u!58 &5815772
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -60,11 +60,11 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_Offset: {x: -0.035511345, y: -0.000000059604645}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.8666667, y: 0.8}
+  m_Radius: 0.35
 --- !u!95 &9503128
 Animator:
   serializedVersion: 3
@@ -94,22 +94,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playernum: 0
---- !u!114 &11429816
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 139890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94cb99c11b5e0484b9af0c4b1ba335ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rbExplosion: {fileID: 5019740}
-  boxCollider: {fileID: 6114196}
-  damage: 4
-  knockback: 8
-  playernum: 0
 --- !u!114 &11459828
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -122,6 +106,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeTime: 0.015
+--- !u!114 &11488386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 139890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb8ecf58d1395c7468e5ddab97e3c835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collider: {fileID: 5815772}
+  damage: 8
+  knockback: 8
+  playernum: 0
 --- !u!212 &21275524
 SpriteRenderer:
   m_ObjectHideFlags: 1

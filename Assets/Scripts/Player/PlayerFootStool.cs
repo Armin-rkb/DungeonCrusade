@@ -23,13 +23,13 @@ public class PlayerFootStool : MonoBehaviour {
             if (_playerFlip.facingRight)
             {
                 this.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 5);
-                this.GetComponent<Rigidbody2D>().AddForce(new Vector2(1500, 0));
+            //    this.GetComponent<Rigidbody2D>().AddForce(new Vector2(1500, 0));
             }
                 
             else
             {
                 this.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 5);
-                this.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500, 0));
+               // this.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500, 0));
             }
                 
         }

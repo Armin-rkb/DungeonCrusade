@@ -14,14 +14,19 @@ public class JoinCheck : MonoBehaviour {
     public OnControllerEventHandler OnPlayerThreeEnter;
     public OnControllerEventHandler OnPlayerFourEnter;
 
-    [SerializeField]
-    private JoinManager _joinManager;
+   // Delegates
+
+    [SerializeField]  private JoinManager _joinManager;
 
     bool _p1Joined;
     bool _p2Joined;
     bool _p3Joined;
     bool _p4Joined;
 
+    /*
+     * We will need these booleans to determine the amount of players joined.
+     * In this case, there's a total of four players.
+     */
 
     void Update()
     {
@@ -31,6 +36,10 @@ public class JoinCheck : MonoBehaviour {
             AssignPlayerAmount();
             CheckPlayerAmount();
         }
+
+        /*
+         * Check per frame if any players have joined.
+         */
     }
 
     void AssignPlayerAmount()
@@ -42,6 +51,11 @@ public class JoinCheck : MonoBehaviour {
             CheckP3();
             CheckP4();
         }
+
+        /*
+         * As long as the max amount of players haven't joined yet,
+         * Keep on checking these methods.
+         */
     }
 
     void CheckPlayerAmount()
@@ -51,6 +65,13 @@ public class JoinCheck : MonoBehaviour {
             if (OnPlayerReady != null)
                 OnPlayerReady();
         }
+
+        /*
+         * We need a minimum of two players to play this game.
+         * You wouldn't want to play on your own, right?
+         * Whenever two or more players have joined, a delegate gets sent.
+         * This makes the join button visible.
+         */
     }
 
     void CheckP1()
@@ -64,13 +85,6 @@ public class JoinCheck : MonoBehaviour {
 
                 _joinManager.AddPlayer++;
                 _p1Joined = true;
-            }
-        }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                _p1Joined = false;
             }
         }
     }
@@ -123,4 +137,11 @@ public class JoinCheck : MonoBehaviour {
             }
         }
     }
+
+
+    /*
+     * These are the methods that makes joining possible.
+     * Whenever their join button gets pressed down, a delegate gets sent.
+     * The amount of players will get updated, and their joined boolean gets turned on.
+     */
 }

@@ -7,32 +7,25 @@ public class PlayerDeath : MonoBehaviour
     public delegate void DeathEventHandler();
     public DeathEventHandler OnPlayerDeath;
 
-    [SerializeField]
-    private HealthPlayer _healthPlayer;
+    [SerializeField] private HealthPlayer _healthPlayer;
+    [SerializeField] private PlayerMovement _playerMovement;
+    [SerializeField] private PlayerFlip _playerFlip;
+    [SerializeField] private PlayerDetectHit _detectHit;
+    [SerializeField] private PlayerWeapon _playerWeapon;
+    [SerializeField] private PlayerSendShake _sendShake;
 
-    [SerializeField]
-    private PlayerMovement _playerMovement;
+    [SerializeField] private FXManager _fxManager;
+    [SerializeField] private Rigidbody2D _thisRigidBody2D;
 
-    [SerializeField]
-    private PlayerFlip _playerFlip;
+    private BoxCollider2D[] _thisBoxCollider2D;
 
-    [SerializeField]
-    private PlayerDetectHit _detectHit;
+    int playernum;
 
-    [SerializeField]
-    private FXManager _fxManager;
-
-[SerializeField]
-    private PlayerSendShake _sendShake;
-
-public int playernum;
-
-[SerializeField]
-private Rigidbody2D _thisRigidBody2D;
-
-private BoxCollider2D[] _thisBoxCollider2D;
+    public int GetPlayerNumber
+    {
+        get { return playernum; }
+    }
    
-
     bool death;
 
     public bool GetDeath
@@ -67,11 +60,13 @@ private BoxCollider2D[] _thisBoxCollider2D;
             _detectHit.enabled = false;
             _sendShake.enabled = false;
             _healthPlayer.enabled = false;
+            _playerWeapon.enabled = false;
 
             foreach (BoxCollider2D collider2d in _thisBoxCollider2D)
                 collider2d.gameObject.tag = GameTags.dead;
 
             _thisRigidBody2D.constraints = RigidbodyConstraints2D.FreezePositionX;
+            _thisRigidBody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
             
             yield return new WaitForSeconds(2);
 

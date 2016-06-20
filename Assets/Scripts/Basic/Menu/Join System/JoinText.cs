@@ -6,19 +6,16 @@ using System.Collections.Generic;
 public class JoinText : MonoBehaviour {
 
 
-    [SerializeField]
-    private List<GameObject> _pressStartText;
+    /*
+     * This script handles the visibility of all text on the Join menu.
+     * You could call this the delegate listener.
+     */
 
+    [SerializeField] private List<GameObject> _pressStartText;
+    [SerializeField] private List<Text> _joinedText;
 
-    [SerializeField]
-    private List<Text> _joinedText;
-
-
-    [SerializeField]
-    private JoinCheck _joinCheck;
-
-    [SerializeField]
-    private JoinButton _joinButton;
+    [SerializeField] private JoinCheck _joinCheck;
+    [SerializeField] private JoinButton _joinButton;
 
     void Awake()
     {
@@ -35,8 +32,12 @@ public class JoinText : MonoBehaviour {
         _joinCheck.OnPlayerReady += ReadyText;
         _joinButton.OnPlayersJoined += DestroyAllStartText;
 
+        /*
+         * Delegate factory.
+         * Whenever a delegate gets sent from another script,
+         * The function appointed to them will run.
+         */
     }
-
 
     void ChangeP1Text()
     {
@@ -58,6 +59,12 @@ public class JoinText : MonoBehaviour {
         _joinedText[3].text = "OK";
     }
 
+    /*
+     * Whenever one of the players have pressed their join button,
+     * The text on their box will turn to an OK,
+     * To give them the feedback they need to know they succeeded.
+     */
+
     void RemoveP1StartText()
     {
         Destroy(_pressStartText[0].gameObject);
@@ -78,6 +85,10 @@ public class JoinText : MonoBehaviour {
         Destroy(_pressStartText[3].gameObject);
     }
 
+    /*
+     * This removes the text above the OK text whenever someone joined.
+     */
+
     void ReadyText()
     {
         _joinedText[4].text = "Press A To Start";
@@ -90,6 +101,5 @@ public class JoinText : MonoBehaviour {
             if (allstart != null)
                 Destroy(allstart.gameObject);
         }
-            
     }
 }
