@@ -12,7 +12,7 @@ public class BackgroundLightning : MonoBehaviour {
 
     void Start()
     {
-        InvokeRepeating("StartLightning", 1, Random.Range(5, 30));
+        InvokeRepeating("StartLightning", 1, Random.Range(10, 30));
     }
 
     void StartLightning()
@@ -22,6 +22,8 @@ public class BackgroundLightning : MonoBehaviour {
 
     IEnumerator Lightning()
     {
+        SoundManager.PlayAudioClip(19);
+
         _backgroundSprite.color = _lightningColors[0];
         yield return new WaitForSeconds(0.025f);
         _backgroundSprite.color = _lightningColors[1];

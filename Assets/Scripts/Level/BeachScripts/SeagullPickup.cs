@@ -19,6 +19,7 @@ public class SeagullPickup : MonoBehaviour {
 
     void InstantiatePickUp()
     {
+        SoundManager.PlayAudioClip(20);
         GameObject droppedObj = Instantiate(_droppedObjects[Random.Range(0, _droppedObjects.Length)], transform.position, transform.rotation) as GameObject;
         fxManager.PlayFX(0, droppedObj.transform.position);
     }

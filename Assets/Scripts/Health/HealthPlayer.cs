@@ -123,6 +123,7 @@ public class HealthPlayer : MonoBehaviour, IHealth
     private void Death()
     {
         SoundManager.PlayAudioClip(10);
+        SoundManager.PlayAudioClip(23);
 
         if (OnNewRound != null)
             OnNewRound(this);

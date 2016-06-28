@@ -91,7 +91,7 @@ public class JoinText : MonoBehaviour {
 
     void ReadyText()
     {
-        _joinedText[4].text = "Press A To Start";
+        _joinedText[4].text = "Press SPACE To Start";
     }
 
     void DestroyAllStartText()

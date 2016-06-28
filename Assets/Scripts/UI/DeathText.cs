@@ -133,4 +133,26 @@ public class DeathText : MonoBehaviour {
     {
         _deathText.color = _colorText[3];
     }
+
+    void OnDestroy()
+    {
+        PlayerDetectHit.OnStoneDeath -= SetStoneText;
+        PlayerDetectHit.OnPillDeath -= SetPillText;
+        PlayerDetectHit.OnShurikenDeath -= SetShurikenText;
+
+        PlayerDetectHit.OnHadoukenDeath -= SetHadoukenText;
+        PlayerDetectHit.OnPizzaDeath -= SetPizzaText;
+        PlayerDetectHit.OnBarrelDeath -= SetBarrelText;
+
+        PlayerDetectHit.OnSockDeath -= SetSockText;
+        PlayerDetectHit.OnDuckDeath -= SetDuckText;
+        PlayerDetectHit.OnBombDeath -= SetBombText;
+
+        PlayerDetectHit.OnMusicDeath -= SetMusicText;
+
+        PlayerDetectHit.AddP1Score -= ColorP1Text;
+        PlayerDetectHit.AddP2Score -= ColorP2Text;
+        PlayerDetectHit.AddP3Score -= ColorP3Text;
+        PlayerDetectHit.AddP4Score -= ColorP4Text;
+    }
 }

@@ -136,4 +136,39 @@ public class PlayerHearts : MonoBehaviour {
             _heartSpriteRenderer.sprite = _heartSprites[5];
     }
 
+    void OnDestroy()
+    {
+        PlayerActive.ResetP1Heart -= ResetP1Heart;
+        PlayerActive.ResetP2Heart -= ResetP2Heart;
+
+        PlayerActive.ResetP3Heart -= ResetP3Heart;
+        PlayerActive.ResetP4Heart -= ResetP4Heart;
+
+
+        PlayerActive.CheckP1Active -= CheckActivityP1;
+        PlayerActive.CheckP2Active -= CheckActivityP2;
+
+        PlayerActive.CheckP3Active -= CheckActivityP3;
+        PlayerActive.CheckP4Active -= CheckActivityP4;
+
+
+        /*
+         * Simply adding these functions to the delegates
+         * they all belong to.
+         */
+
+        if (this.gameObject.name == "P1Hearts")
+            HealthPlayer.ReduceP1Heart -= ChangeP1Sprite;
+        else if (this.gameObject.name == "P2Hearts")
+            HealthPlayer.ReduceP2Heart -= ChangeP2Sprite;
+        else if (this.gameObject.name == "P3Hearts")
+            HealthPlayer.ReduceP3Heart -= ChangeP3Sprite;
+        else
+            HealthPlayer.ReduceP4Heart -= ChangeP4Sprite;
+
+        /*
+         * Checks which object to use for which function.
+         */
+    }
+
 }

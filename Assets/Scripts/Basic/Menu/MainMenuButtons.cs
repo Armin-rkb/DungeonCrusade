@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class MainMenuButtons : MonoBehaviour
 {
-
+    [SerializeField]
+    private StageSelection _stageSelection;
    
     public delegate void BestOfEventHandler();
 
@@ -12,6 +13,14 @@ public class MainMenuButtons : MonoBehaviour
 
     public BestOfEventHandler OnDungeonButton;
     public BestOfEventHandler OnBeachButton;
+    public BestOfEventHandler OnDragonButton;
+
+    void Awake()
+    {
+        _stageSelection.OnDungeonSelect += DungeonLevel;
+        _stageSelection.OnBeachSelect += BeachLevel;
+        _stageSelection.OnDragonSelect += DragonLevel;
+    }
 
     public void DungeonLevel()
     {
@@ -31,6 +40,15 @@ public class MainMenuButtons : MonoBehaviour
 
         if (OnBeachButton != null)
             OnBeachButton();
+    }
+
+    public void DragonLevel()
+    {
+        if (OnPlayButton != null)
+            OnPlayButton();
+
+        if (OnDragonButton != null)
+            OnDragonButton();
     }
 
     /*

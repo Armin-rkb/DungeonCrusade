@@ -16,7 +16,7 @@ public class IntroTransition : MonoBehaviour {
 
     private IEnumerator TurnOnEverything()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(5);
         foreach (GameObject turn in _turnOn)
             turn.SetActive(true);
     }

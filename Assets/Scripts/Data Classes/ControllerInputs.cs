@@ -4,6 +4,7 @@ using System.Collections;
 public class ControllerInputs  {
 
     public const string allhorizontal = "AllHorizontal";
+    public const string allvertical = "AllVertical";
 
     public const string horizontalp = "HorizontalP";
     public const string horizontalcp = "HorizontalCP";

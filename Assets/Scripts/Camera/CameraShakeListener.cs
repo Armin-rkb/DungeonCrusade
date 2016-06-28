@@ -82,4 +82,19 @@ public class CameraShakeListener : MonoBehaviour {
         _cameraShake.SetShakePower = 0.025f;
     }
 
+    void OnDestroy()
+    {
+        PlayerSendShake.OnStoneShake -= StoneShake;
+        PlayerSendShake.OnPillShake -= PillShake;
+        PlayerSendShake.OnShurikenShake -= ShurikenShake;
+        PlayerSendShake.OnHadoukenShake -= HadoukenShake;
+        PlayerSendShake.OnPizzaShake -= PizzaShake;
+        PlayerSendShake.OnBarrelShake -= BarrelShake;
+        PlayerSendShake.OnSockShake -= SockShake;
+        PlayerSendShake.OnDuckShake -= DuckShake;
+        PlayerSendShake.OnMusicShake -= MusicShake;
+
+        BombExplosion.OnBombSpawn -= BombShake;
+    }
+
 }
