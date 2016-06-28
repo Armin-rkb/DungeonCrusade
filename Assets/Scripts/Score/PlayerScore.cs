@@ -117,4 +117,14 @@ public class PlayerScore : MonoBehaviour {
     }
 
     // Adds a point to P4.
+
+
+    void OnDestroy()
+    {
+        PlayerDetectHit.AddP1Score -= AddScoreP1;
+        PlayerDetectHit.AddP2Score -= AddScoreP2;
+
+        PlayerDetectHit.AddP3Score -= AddScoreP3;
+        PlayerDetectHit.AddP4Score -= AddScoreP4;
+    }
 }

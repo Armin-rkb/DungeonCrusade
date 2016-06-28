@@ -544,7 +544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 7
   _isGrounded: 0
-  _joystickEnabled: 0
+  _joystickEnabled: 1
   _playerNumber: 1
 --- !u!114 &11425064
 MonoBehaviour:
@@ -728,9 +728,8 @@ MonoBehaviour:
   _playerFlip: {fileID: 11433018}
   _detectHit: {fileID: 11435682}
   _playerWeapon: {fileID: 11436936}
-  _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _sendShake: {fileID: 11430206}
-  playernum: 0
+  _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
   _thisRigidBody2D: {fileID: 5054240}
 --- !u!114 &11469742
 MonoBehaviour:

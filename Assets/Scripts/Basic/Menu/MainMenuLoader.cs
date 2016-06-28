@@ -17,6 +17,7 @@ public class MainMenuLoader : MonoBehaviour {
 
     bool _dungeonLevel;
     bool _beachLevel;
+    bool _dragonLevel;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class MainMenuLoader : MonoBehaviour {
     {
         _mainMenuButtons.OnDungeonButton += TurnOnDungeon;
         _mainMenuButtons.OnBeachButton += TurnOnBeach;
+        _mainMenuButtons.OnDragonButton += TurnOnDragon;
 
         _mainMenuButtons.OnPlayButton += StartLoad;
     }
@@ -42,6 +44,11 @@ public class MainMenuLoader : MonoBehaviour {
     void TurnOnBeach()
     {
         _beachLevel = true;
+    }
+
+    void TurnOnDragon()
+    {
+        _dragonLevel = true;
     }
 
     void StartLoad()
@@ -74,9 +81,16 @@ public class MainMenuLoader : MonoBehaviour {
         while (!async.isDone)
             yield return null;
         }
-        else
+        else if (_beachLevel)
         {
             AsyncOperation async = Application.LoadLevelAsync("WackyBeach");
+
+            while (!async.isDone)
+                yield return null;
+        }
+        else if (_dragonLevel)
+        {
+            AsyncOperation async = Application.LoadLevelAsync("Dragon");
 
             while (!async.isDone)
                 yield return null;

@@ -1191,10 +1191,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 658688945}
     m_Modifications:
-    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: audioList.Array.size
-      value: 18
-      objectReference: {fileID: 0}
     - target: {fileID: 479924, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
       propertyPath: m_LocalPosition.x
       value: -0.41791353
@@ -1227,22 +1223,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 8207668, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: m_Pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8207668, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: Priority
-      value: 55
-      objectReference: {fileID: 0}
-    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: audioList.Array.data[16]
-      value: 
-      objectReference: {fileID: 8300000, guid: cbb5dd7ced2b58e47a89c09cdf7f62be, type: 3}
-    - target: {fileID: 11486878, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
-      propertyPath: audioList.Array.data[17]
-      value: 
-      objectReference: {fileID: 8300000, guid: 786f0fe6c0c4ae8488f7c8a0f3139ffa, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b2d47c6d1847d5a44bf70b260665d248, type: 2}
   m_IsPrefabParent: 0

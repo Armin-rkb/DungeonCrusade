@@ -5,21 +5,32 @@ public class BestOfManager : MonoBehaviour
 {
 
 
-    // NEEDS DELEGATE. FIXING!
-    [SerializeField]
-    private RoundsSetUp _roundsSetUp;
-    // NEEDS DELEGATE. FIXING!
+    [SerializeField] private RoundsSetUp _roundsSetUp;
+    [SerializeField] private JoinButton _joinButton;
+    [SerializeField] private AudioSource _selectFX;
 
     //Bool
     private bool _runOnce;
+    private bool _doneSelection;
+
+    public bool GetDoneSelection
+    {
+        get { return _doneSelection; }
+    }
     
     [SerializeField] bool _adjustRound;
     //Bool
 
     void Update()
     {
-        if (_adjustRound)
-            AdjustRound();
+        if (_joinButton.GetPlayersJoined)
+        {
+            if (_adjustRound && !_doneSelection)
+                AdjustRound();
+
+            CheckDone();
+        }
+        
     }
 
     void AdjustRound()
@@ -31,6 +42,7 @@ public class BestOfManager : MonoBehaviour
                 if (_roundsSetUp.BestOf > 1)
                 {
                     _roundsSetUp.MinBestOf -= 1;
+                    _selectFX.Play();
                     _runOnce = true;
                 }
             }
@@ -41,6 +53,7 @@ public class BestOfManager : MonoBehaviour
             if (!_runOnce)
             {
                 _roundsSetUp.AddBestOf += 1;
+                _selectFX.Play();
                 _runOnce = true;
             }
         }
@@ -49,5 +62,28 @@ public class BestOfManager : MonoBehaviour
         {
             _runOnce = false;
         }
+    }
+
+    void CheckDone()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetAxis(ControllerInputs.allvertical) > 0)
+        {
+            if (!_doneSelection)
+            {
+                SoundManager.PlayAudioClip(AudioData.ScoreUp);
+                _doneSelection = true;
+            }
+            
+        }
+
+        else if (Input.GetKeyDown(KeyCode.Escape) || Input.GetAxis(ControllerInputs.allvertical) < 0)
+        {
+            if (_doneSelection)
+            {
+                SoundManager.PlayAudioClip(AudioData.ScoreUp);
+                _doneSelection = false;
+            }
+        }
+        
     }
 }

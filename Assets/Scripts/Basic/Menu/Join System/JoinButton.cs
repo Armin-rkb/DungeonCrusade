@@ -11,6 +11,13 @@ public class JoinButton : MonoBehaviour {
 
     [SerializeField]  private JoinCheck _joinCheck;
 
+    bool _playersJoined;
+
+    public bool GetPlayersJoined
+    {
+        get { return _playersJoined; }
+    }
+
 
     void Awake()
     {
@@ -21,10 +28,12 @@ public class JoinButton : MonoBehaviour {
 
     void GoToMenu()
     {
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetButtonDown(ControllerInputs.pressabutton))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown(ControllerInputs.pressabutton))
         {
             if (OnPlayersJoined != null)
                 OnPlayersJoined();
+
+            _playersJoined = true;
         }
             
         /*

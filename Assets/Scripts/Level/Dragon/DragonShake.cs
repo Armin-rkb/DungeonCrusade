@@ -20,7 +20,7 @@ public class DragonShake : MonoBehaviour
     void TurnShakeOn()
     {
         _dragonShaking = true;
-        _cameraShake.Shake(3f);
+        _cameraShake.Shake(4f);
         
     }
 
@@ -30,8 +30,9 @@ public class DragonShake : MonoBehaviour
         {
             
 
-            if (_cameraShake.SetShakePower >= 0.25)
+            if (_cameraShake.SetShakePower >= 0.15)
             {
+                _dragonShaking = false;
                 _cameraShake.SetShakePower -= 0.01f;
             }
             else

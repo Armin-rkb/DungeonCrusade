@@ -733,7 +733,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 7
   _isGrounded: 0
-  _joystickEnabled: 0
+  _joystickEnabled: 1
   _playerNumber: 2
 --- !u!114 &11480850
 MonoBehaviour:
