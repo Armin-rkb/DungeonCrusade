@@ -838,7 +838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fxManager: {fileID: 11400098, guid: 7adffefe30892fd45a8b14854b1cd1c2, type: 2}
-  _checkPort: {fileID: 0}
+  _checkPort: {fileID: 11422414, guid: 19a057409500865468e8e4199d2540ab, type: 2}
 --- !u!114 &11499148
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -1,16 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Pizza : MonoBehaviour
+public class Pizza : BaseBullet
 {
-    //Rigidbody of the Gameobject
-    [SerializeField] private Rigidbody2D rbPizza;
     //Sprite of this bullet
     [SerializeField] private SpriteRenderer sprite;
-    //Speed of the bullet
-    [SerializeField] private float speed;
-    //Amout of damage that the bullet will deal
-    [SerializeField] private int damage;
+    //Explosion partical
     [SerializeField] private GameObject pizzaExplosion;
     private bool isRight;
     private bool isLeft;
@@ -33,17 +28,9 @@ public class Pizza : MonoBehaviour
     void FixedUpdate()
     {
         if (isRight)
-            rbPizza.velocity = new Vector2(speed, rbPizza.velocity.y);
+            rbBullet.velocity = new Vector2(speed, rbBullet.velocity.y);
         else if (isLeft)
-            rbPizza.velocity = new Vector2(-speed, rbPizza.velocity.y);
-    }
-
-    void Hit(GameObject player)
-    {
-        //Finds the health script of the hit player 
-        HealthPlayer healthPlayer = player.GetComponent<HealthPlayer>();
-        healthPlayer.ChangeHealth(damage, true);
-        Instantiate(pizzaExplosion, player.transform.position, player.transform.rotation);
+            rbBullet.velocity = new Vector2(-speed, rbBullet.velocity.y);
     }
 
     void OnCollisionEnter2D(Collision2D coll)
@@ -59,7 +46,7 @@ public class Pizza : MonoBehaviour
             {
                 isRight = false;
                 isLeft = false;
-                rbPizza.isKinematic = true;
+                rbBullet.isKinematic = true;
                 gameObject.AddComponent<Fade>();
             }
         }

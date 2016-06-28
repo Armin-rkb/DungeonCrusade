@@ -104,10 +104,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5e07ecbd391a6468d5d9cc14768c9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbPizza: {fileID: 5006540}
-  sprite: {fileID: 21289542}
+  rbBullet: {fileID: 5006540}
   speed: 9
   damage: 5
+  knockback: 0
+  sprite: {fileID: 21289542}
   pizzaExplosion: {fileID: 183220, guid: 3085415addf99524e9c3a8a3e11ab77b, type: 2}
 --- !u!212 &21289542
 SpriteRenderer:

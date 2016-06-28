@@ -92,12 +92,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 077d17e33cdda9f4cbc817ad6c305554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rbPill: {fileID: 5067676}
-  sprite: {fileID: 21272338}
+  rbBullet: {fileID: 5067676}
   speed: 3
   damage: 2
   knockback: 4
-  playernum: 0
+  sprite: {fileID: 21272338}
 --- !u!114 &11447478
 MonoBehaviour:
   m_ObjectHideFlags: 1

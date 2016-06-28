@@ -44,9 +44,9 @@ public class Bomb : MonoBehaviour
             else
             {
                 SoundManager.PlayAudioClip(AudioData.Explosion);
-               GameObject nuke = Instantiate(explosionNuke, transform.position, transform.rotation) as GameObject;
+                GameObject nuke = Instantiate(explosionNuke, transform.position, transform.rotation) as GameObject;
 
-               nuke.GetComponent<BulletNumber>().playernum = playernum;
+                nuke.GetComponent<BulletNumber>().playernum = playernum;
             }
             Destroy(this.gameObject);
         }

@@ -14,7 +14,7 @@ public class BaseBullet : MonoBehaviour
 
     protected void Hit(GameObject player)
     {
-        //Finds the health script of the hit player 
+        //Finds the IHealth component of the hit player 
         ExecuteEvents.Execute<IHealth>(player.gameObject, null, (x, y) => x.ChangeHealth(damage, true));
 
         //Give the player knockback

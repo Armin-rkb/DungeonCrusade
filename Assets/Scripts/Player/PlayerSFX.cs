@@ -24,7 +24,7 @@ public class PlayerSFX : MonoBehaviour {
         if (_playerMovement.GetAmountJumps == 0)
             SoundManager.PlayAudioClip(AudioData.Jump);
         else if (_playerMovement.GetAmountJumps == 1)
-            SoundManager.PlayAudioClip(18);
+            SoundManager.PlayAudioClip(AudioData.DoubleJump);
     }
 
     void PlayFootStoolSound()
