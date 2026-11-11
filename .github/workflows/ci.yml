@@ -1,0 +1,76 @@
+# Continuous integration: type check, unit tests and the web + server builds
+# on every push and pull request. Release packaging lives in release.yml.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # The asset pipeline (tools/build-assets.mjs) transcodes the original
+      # Unity audio with ffmpeg.
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:server
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  platforms:
+    name: Platform scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platforms/electron/package-lock.json
+
+      - name: Mobile manifest/Info.plist patcher self-test
+        run: node platforms/mobile/patch-native.mjs --self-test
+
+      - name: Shell scripts parse
+        run: bash -n platforms/mobile/setup.sh
+
+      # Electron shell: syntax + type check against the Electron and
+      # steamworks.js typings (the Electron binary itself is not needed).
+      - name: Electron shell check
+        working-directory: platforms/electron
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+        run: |
+          npm ci
+          npm run check

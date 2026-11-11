@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardened-runtime entitlements for the macOS build (used for the app and its helpers).
+  - allow-jit / allow-unsigned-executable-memory: required by V8 (Electron).
+  - disable-library-validation: lets the app load libsteam_api.dylib, which is
+    signed by Valve (different Team ID), and the steamworks.js addon.
+  - allow-dyld-environment-variables: the Steam overlay is injected with
+    DYLD_INSERT_LIBRARIES when Steam launches the game.
+-->
+<plist version="1.0">
+  <dict>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+  </dict>
+</plist>

@@ -1,0 +1,372 @@
+# Release packaging for every platform from the single web build.
+#
+#   web      -> dist/ (artifact `web-dist`, reused by all other jobs) + web/server tarball
+#   electron -> Windows (NSIS, portable, zip), macOS (universal dmg/zip), Linux (AppImage, tar.gz)
+#   android  -> debug APK; signed release AAB when a keystore secret exists
+#   ios      -> unsigned simulator build (proves the project compiles)
+#   steam    -> SteamPipe upload of the unpacked desktop builds (only with Steam secrets)
+#   publish  -> draft GitHub release with the installers (tags only)
+#
+# Repository variables (Settings > Secrets and variables > Actions > Variables), all optional:
+#   VITE_SERVER_URL  relay WebSocket URL baked into the build (default wss://dungeon-crusade.fly.dev/ws)
+#   VITE_PUBLIC_URL  public web URL used in invite links / Android App Links
+#   STEAM_APP_ID     real Steam app id (written to steam_appid.txt; enables the steam job)
+#   STEAM_BRANCH     Steam branch to set the build live on (e.g. beta); empty = upload only
+#
+# Secrets, all optional - jobs degrade to unsigned builds / skip uploads without them:
+#   WIN_CSC_LINK, WIN_CSC_KEY_PASSWORD           Windows code signing (.pfx, base64 or https URL)
+#   MAC_CSC_LINK, MAC_CSC_KEY_PASSWORD           Developer ID Application certificate (.p12, base64)
+#   APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID   macOS notarisation (with MAC_CSC_LINK)
+#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+#   STEAM_USERNAME, STEAM_CONFIG_VDF             SteamPipe builder account + base64 config.vdf
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL || 'wss://dungeon-crusade.fly.dev/ws' }}
+  VITE_PUBLIC_URL: ${{ vars.VITE_PUBLIC_URL || 'https://dungeon-crusade.fly.dev/' }}
+
+jobs:
+  config:
+    name: Release config
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.cfg.outputs.version }}
+      steam: ${{ steps.cfg.outputs.steam }}
+    steps:
+      - id: cfg
+        env:
+          # Secrets cannot be used in job-level `if:`; expose only "true"/"false".
+          HAS_STEAM: ${{ secrets.STEAM_USERNAME != '' && secrets.STEAM_CONFIG_VDF != '' && vars.STEAM_APP_ID != '' }}
+        run: |
+          # Tag v2.1.0 -> 2.1.0; manual runs keep the package.json versions.
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then version="${GITHUB_REF_NAME#v}"; else version=""; fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "steam=$HAS_STEAM" >> "$GITHUB_OUTPUT"
+          echo "version='${version:-<package.json>}' steam=$HAS_STEAM"
+
+  web:
+    name: Web + server
+    needs: config
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DC_VERSION: ${{ needs.config.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install ffmpeg (audio transcoding in the asset pipeline)
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run build:server
+
+      - name: Package web + relay server
+        run: |
+          version="${DC_VERSION:-$(node -p "require('./package.json').version")}"
+          mkdir -p release
+          tar -czf "release/dungeon-crusade-${version}-web-server.tar.gz" dist dist-server package.json package-lock.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-web
+          path: release/
+          if-no-files-found: error
+
+  electron:
+    name: Desktop (${{ matrix.target }})
+    needs: [config, web]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, target: win, unpacked: win-unpacked }
+          - { os: macos-latest, target: mac, unpacked: mac-universal }
+          - { os: ubuntu-latest, target: linux, unpacked: linux-unpacked }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+        working-directory: platforms/electron
+    env:
+      DC_VERSION: ${{ needs.config.outputs.version }}
+      # electron-builder downloads its own Electron per target; skip npm's copy.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: platforms/electron/package-lock.json
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+      - run: npm ci
+
+      - name: Use the real Steam app id
+        if: vars.STEAM_APP_ID != ''
+        env:
+          STEAM_APP_ID: ${{ vars.STEAM_APP_ID }}
+        run: echo "$STEAM_APP_ID" > steam_appid.txt
+
+      - run: npm run prepare:web
+
+      - name: Build installers
+        env:
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          args=(--${{ matrix.target }} --publish never)
+          if [ -n "$DC_VERSION" ]; then args+=("-c.extraMetadata.version=$DC_VERSION"); fi
+          # Unset empty secrets so electron-builder does not try to use them.
+          if [ -z "$WIN_CSC_LINK" ]; then unset WIN_CSC_LINK WIN_CSC_KEY_PASSWORD; fi
+          if [ -z "$APPLE_ID" ]; then unset APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; fi
+          if [ "${{ matrix.target }}" = mac ]; then
+            if [ -n "$MAC_CSC_LINK" ]; then
+              export CSC_LINK="$MAC_CSC_LINK" CSC_KEY_PASSWORD="$MAC_CSC_KEY_PASSWORD"
+            else
+              # No Developer ID certificate: ad-hoc signature so the arm64 half runs
+              # at all (users still allow it under Privacy & Security). No notarisation.
+              args+=("-c.mac.identity=-")
+              unset APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
+            fi
+          fi
+          npx electron-builder "${args[@]}"
+          ls -la out
+
+      # The unpacked app is the Steam depot. tar keeps symlinks (macOS
+      # frameworks) and executable bits, which artifact uploads would lose.
+      - name: Archive unpacked build for Steam
+        run: tar -C out -czf "steam-${{ matrix.target }}.tar.gz" "${{ matrix.unpacked }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.target }}
+          if-no-files-found: error
+          path: |
+            platforms/electron/out/dungeon-crusade-*.exe
+            platforms/electron/out/dungeon-crusade-*.zip
+            platforms/electron/out/dungeon-crusade-*.dmg
+            platforms/electron/out/dungeon-crusade-*.AppImage
+            platforms/electron/out/dungeon-crusade-*.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: steam-${{ matrix.target }}
+          path: platforms/electron/steam-${{ matrix.target }}.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  android:
+    name: Android
+    needs: [config, web]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      DC_VERSION: ${{ needs.config.outputs.version }}
+      DC_BUILD_NUMBER: ${{ github.run_number }}
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      # npx cap add android + manifest patches + npx cap sync android
+      - name: Generate native project
+        run: bash platforms/mobile/setup.sh android
+
+      - name: Debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Signed release bundle (AAB)
+        if: env.HAS_KEYSTORE == 'true'
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          ./gradlew bundleRelease --no-daemon --stacktrace
+          jarsigner -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore "$RUNNER_TEMP/release.jks" \
+            -storepass:env ANDROID_KEYSTORE_PASSWORD -keypass:env ANDROID_KEY_PASSWORD \
+            -signedjar app/build/outputs/bundle/release/app-release-signed.aab \
+            app/build/outputs/bundle/release/app-release.aab "$ANDROID_KEY_ALIAS"
+          rm -f "$RUNNER_TEMP/release.jks"
+
+      - name: Collect outputs
+        run: |
+          version="${DC_VERSION:-$(node -p "require('./package.json').version")}"
+          mkdir -p release
+          cp android/app/build/outputs/apk/debug/app-debug.apk "release/dungeon-crusade-${version}-android-debug.apk"
+          if [ -f android/app/build/outputs/bundle/release/app-release-signed.aab ]; then
+            cp android/app/build/outputs/bundle/release/app-release-signed.aab "release/dungeon-crusade-${version}-android.aab"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-android
+          path: release/
+          if-no-files-found: error
+
+  ios:
+    name: iOS (simulator, unsigned)
+    needs: [config, web]
+    runs-on: macos-latest
+    timeout-minutes: 45
+    env:
+      DC_VERSION: ${{ needs.config.outputs.version }}
+      DC_BUILD_NUMBER: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+      # Capacitor 8 needs a recent Xcode; pick the newest stable one on the runner.
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      # npx cap add ios (Swift Package Manager) + Info.plist patches + npx cap sync ios
+      - name: Generate native project
+        run: bash platforms/mobile/setup.sh ios
+
+      # Device / TestFlight builds need an Apple Developer account: import the
+      # distribution certificate + provisioning profile, then `xcodebuild archive`
+      # and `xcodebuild -exportArchive` (see platforms/README.md).
+      - name: Build for the iOS simulator (no code signing)
+        run: |
+          if [ -d ios/App/App.xcworkspace ]; then project=(-workspace ios/App/App.xcworkspace); else project=(-project ios/App/App.xcodeproj); fi
+          xcodebuild "${project[@]}" -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/ios-build" \
+            CODE_SIGNING_ALLOWED=NO build
+          mkdir -p release
+          ditto -c -k --keepParent "$RUNNER_TEMP/ios-build/Build/Products/Debug-iphonesimulator/App.app" release/dungeon-crusade-ios-simulator.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator
+          path: release/
+          if-no-files-found: error
+
+  steam:
+    name: Steam upload
+    needs: [config, electron]
+    if: needs.config.outputs.steam == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: steam-*
+          path: steam-artifacts
+
+      # Depot layout: content/windows, content/macos (the .app), content/linux.
+      - name: Unpack depots
+        run: |
+          for pair in win:windows mac:macos linux:linux; do
+            mkdir -p "content/${pair#*:}"
+            tar -xzf "steam-artifacts/steam-${pair%%:*}/steam-${pair%%:*}.tar.gz" -C "content/${pair#*:}" --strip-components=1
+          done
+          ls -la content/*
+
+      # Depot ids follow Steamworks' default numbering: app id + 1 (Windows),
+      # + 2 (macOS), + 3 (Linux). For other ids use the VDF templates in
+      # platforms/steam/ with steamcmd instead.
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}
+          appId: ${{ vars.STEAM_APP_ID }}
+          buildDescription: ${{ github.ref_name }} ${{ github.sha }}
+          rootPath: content
+          depot1Path: windows
+          depot2Path: macos
+          depot3Path: linux
+          releaseBranch: ${{ vars.STEAM_BRANCH }}
+
+  publish:
+    name: Draft GitHub release
+    needs: [web, electron, android]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: release
+          merge-multiple: true
+
+      # A draft: review the notes and assets, then publish it by hand.
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: release/*

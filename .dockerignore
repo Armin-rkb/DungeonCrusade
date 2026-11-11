@@ -1,0 +1,38 @@
+# Docker build context: the web client sources, server, tools and the original
+# Unity Assets (the asset pipeline regenerates public/gen inside the image).
+
+# VCS / CI / editor
+.git
+.github
+.vscode
+.idea
+
+# Dependencies and build output (rebuilt in the image)
+node_modules
+**/node_modules
+dist
+dist-server
+dist-electron
+public/gen
+test-results
+*.log
+
+# Native wrappers and their generated projects
+platforms
+android
+ios
+capacitor.config.ts
+
+# Unity editor state that the web build never reads
+Library
+Temp
+Obj
+Build
+Builds
+Logs
+UserSettings
+
+# Deployment files themselves
+Dockerfile
+.dockerignore
+fly.toml
