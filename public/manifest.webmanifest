@@ -1,0 +1,14 @@
+{
+  "name": "Dungeon Crusade",
+  "short_name": "Dungeon Crusade",
+  "description": "2-4 player projectile arena brawler. Couch versus and online crossplay.",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0b0b16",
+  "theme_color": "#0b0b16",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -674,7 +674,6 @@ export class RoomScreen extends Screen {
     this.unsub?.();
     this.unsub = this.app.conn?.on((m) => {
       if (m.t === 'room') this.app.ui.refresh();
-      else if (m.t === 'start') this.app.startOnline(m.start);
       else if (m.t === 'error' && m.code === 'closed') {
         toast('Disconnected from server.', true);
         this.app.goMainMenu();
@@ -912,8 +911,11 @@ export class PauseScreen extends Screen {
     this.app.ui.pop();
     return true;
   }
-  update() {
-    if (input.nav.start) this.back();
+  private age = 0;
+  update(dt: number) {
+    // The Start press that opened this menu must not close it again.
+    this.age += dt;
+    if (this.age > 0.15 && input.nav.start) this.back();
   }
 }
 

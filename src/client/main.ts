@@ -118,6 +118,13 @@ class App implements AppApi {
     conn.on((m) => {
       if (m.t === 'room') setPresence(m.room.phase === 'game' ? 'In a match' : 'In a lobby', m.room.code);
       if (m.t === 'left') setPresence('In the menus', null);
+      // Handled here (not in a screen) so players still on the results screen
+      // also jump into the rematch.
+      if (m.t === 'start' && conn === this.conn) {
+        const running = this.session && this.session.state.phase !== Phase.End;
+        if (!running) this.startOnline(m.start);
+      }
+      if (m.t === 'error' && m.code === 'dropped') toast(m.msg, true);
     });
     await conn.connect();
     return conn;

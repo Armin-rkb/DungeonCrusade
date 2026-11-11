@@ -107,8 +107,12 @@ class KeyboardDevice implements Device {
 // ------------------------------------------------------------------ gamepad
 function glyphsFor(id: string): Glyphs {
   const s = id.toLowerCase();
-  if (s.includes('054c') || s.includes('dualsense') || s.includes('dualshock') || s.includes('playstation') || s.includes('wireless controller')) return 'playstation';
-  if (s.includes('057e') || s.includes('pro controller') || s.includes('joy-con') || s.includes('nintendo') || s.includes('switch')) return 'nintendo';
+  // Vendor ids first (Chrome: "Vendor: 054c", Firefox: "054c-0ce6-...").
+  if (/045e|xbox|xinput/.test(s)) return 'xbox';
+  if (/054c|dualsense|dualshock|playstation/.test(s)) return 'playstation';
+  if (/057e|pro controller|joy-con|nintendo|switch/.test(s)) return 'nintendo';
+  // Sony pads also report themselves as just "Wireless Controller".
+  if (s.includes('wireless controller')) return 'playstation';
   return 'xbox';
 }
 

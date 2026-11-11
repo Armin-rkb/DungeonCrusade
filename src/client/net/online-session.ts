@@ -56,6 +56,8 @@ export class OnlineSession implements Session {
   desyncs = 0;
   waitingFor = '';
   ended = false;
+  /** Connection lost: the match continues offline against CPUs. */
+  offline = false;
 
   constructor(public conn: Connection, public start: StartInfo, public locals: Map<number, string>, delay: number) {
     const cfg = start.cfg;
@@ -105,6 +107,17 @@ export class OnlineSession implements Session {
           }
           this.confirmed[slot] = c;
         });
+        return;
+      }
+      case 'error': {
+        // Lost the server (or we were dropped): keep playing, everyone else
+        // becomes a CPU from the last frame we know.
+        if (m.code !== 'closed' && m.code !== 'dropped') return;
+        this.offline = true;
+        for (const [peer] of [...this.peerSlots]) {
+          const slots = this.peerSlots.get(peer)!;
+          this.onMessage({ t: 'peer-left', p: peer, lastFrame: Math.min(...slots.map((x) => this.confirmed[x])) });
+        }
         return;
       }
       case 'peer-left': {
@@ -197,7 +210,17 @@ export class OnlineSession implements Session {
     if (events) for (const e of this.state.events) events.push(e);
   }
 
+  private offlineBase = 0;
+  private offlineFrame = 0;
   targetFrame(): number {
+    if (this.offline) {
+      // Without the server clock, just run in real time from here.
+      if (!this.offlineBase) {
+        this.offlineBase = performance.now();
+        this.offlineFrame = this.current;
+      }
+      return this.offlineFrame + Math.floor((performance.now() - this.offlineBase) / FRAME_MS);
+    }
     return Math.floor((this.conn.serverNow() - this.start.startAt) / FRAME_MS);
   }
 
@@ -296,7 +319,8 @@ export class OnlineSession implements Session {
   }
 
   status(): string | undefined {
-    if (this.current <= 0) return 'Connecting...';
+    if (this.offline) return 'Connection lost - playing on vs CPUs';
+    if (this.current <= 0) return 'Get ready...';
     if (this.waitingFor) return `Waiting for ${this.waitingFor}...`;
     return undefined;
   }

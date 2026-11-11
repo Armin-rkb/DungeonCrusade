@@ -40,6 +40,7 @@ const MIME: Record<string, string> = {
 };
 
 const rooms = new RoomManager();
+setInterval(() => rooms.tick(), 1000).unref();
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url ?? '/', 'http://localhost');

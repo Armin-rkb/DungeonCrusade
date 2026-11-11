@@ -27,6 +27,10 @@ export interface Client {
   send: (m: ServerMsg) => void;
   hello: boolean;
   lastFrame: number;
+  /** ms timestamp of the last input during a match. */
+  lastInputAt: number;
+  /** Dropped from the current match (idle); inputs are ignored until the next one. */
+  dropped: boolean;
 }
 
 export interface Room {
@@ -38,6 +42,7 @@ export interface Room {
   settings: RoomSettings;
   matchId: number;
   created: number;
+  gameStartAt?: number;
 }
 
 const LEVELS = ['dungeon', 'beach', 'dragon'];
@@ -64,6 +69,7 @@ export class RoomManager {
     const c: Client = {
       id: (this.nextId++).toString(36) + Math.random().toString(36).slice(2, 6),
       name: 'Knight', platform: 'web', players: [], ready: false, ping: 0, room: null, send, hello: false, lastFrame: -1,
+      lastInputAt: 0, dropped: false,
     };
     this.clients.add(c);
     return c;
@@ -138,7 +144,7 @@ export class RoomManager {
     r.clients = r.clients.filter((x) => x !== c);
     c.room = null;
     c.ready = false;
-    if (r.phase === 'game') this.broadcast(r, { t: 'peer-left', p: c.id, lastFrame: c.lastFrame });
+    if (r.phase === 'game' && !c.dropped) this.broadcast(r, { t: 'peer-left', p: c.id, lastFrame: c.lastFrame });
     if (r.clients.length === 0) {
       this.rooms.delete(r.code);
       return;
@@ -246,14 +252,20 @@ export class RoomManager {
           x.ready = false;
         }
         const startAt = this.now() + 1200;
+        for (const x of r.clients) {
+          x.lastInputAt = startAt + 4000;
+          x.dropped = false;
+        }
+        r.gameStartAt = startAt;
         this.broadcast(r, { t: 'start', start: { cfg: m.cfg, owners: m.owners, startAt, matchId: r.matchId } });
         this.sync(r);
         return;
       }
       case 'i': {
         const r = c.room;
-        if (!r || r.phase !== 'game' || !Array.isArray(m.d) || typeof m.f !== 'number') return;
+        if (!r || r.phase !== 'game' || c.dropped || !Array.isArray(m.d) || typeof m.f !== 'number') return;
         if (m.f > c.lastFrame) c.lastFrame = m.f;
+        c.lastInputAt = this.now();
         this.broadcast(r, { t: 'i', p: c.id, f: m.f, d: m.d.slice(0, 4).map((x) => Number(x) & 255) }, c);
         return;
       }
@@ -283,6 +295,29 @@ export class RoomManager {
         r.phase = 'lobby';
         this.sync(r);
         return;
+      }
+    }
+  }
+
+  /**
+   * Called every second: a player whose game stopped sending inputs (app in the
+   * background, frozen tab) is dropped from the match so the others don't wait
+   * forever; a CPU takes over their knight on every peer.
+   */
+  tick(idleMs = 6000) {
+    const now = this.now();
+    for (const r of this.rooms.values()) {
+      if (r.phase !== 'game') continue;
+      for (const c of r.clients) {
+        if (c.dropped || now - c.lastInputAt < idleMs) continue;
+        c.dropped = true;
+        this.broadcast(r, { t: 'peer-left', p: c.id, lastFrame: c.lastFrame }, c);
+        c.send({ t: 'error', code: 'dropped', msg: 'You were inactive and left the match.' });
+      }
+      // Everyone gone idle (e.g. all on the results screen): back to the lobby.
+      if (r.clients.every((c) => c.dropped)) {
+        r.phase = 'lobby';
+        this.sync(r);
       }
     }
   }
