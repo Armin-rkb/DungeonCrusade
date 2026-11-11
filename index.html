@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0b16" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Dungeon Crusade: a 2-4 player projectile arena brawler. Couch versus and online crossplay." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="./icon-192.png" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <title>Dungeon Crusade</title>
+    <link rel="stylesheet" href="./src/client/style.css" />
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <div id="ui"></div>
+    <div id="boot">
+      <div class="boot-title">DUNGEON CRUSADE</div>
+      <div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div>
+      <div class="boot-text" id="boot-text">Loading...</div>
+    </div>
+    <div id="rotate-hint"><div>Rotate your device</div><div class="rot-icon">⟳</div></div>
+    <script type="module" src="./src/client/main.ts"></script>
+  </body>
+</html>

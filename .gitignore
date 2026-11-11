@@ -24,3 +24,14 @@ ExportedObj/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+# Dungeon Crusade 2 (web/TypeScript rebuild)
+node_modules/
+dist/
+dist-server/
+dist-electron/
+public/gen/
+test-results/
+*.log
+platforms/electron/out/
+platforms/electron/app/

@@ -1,0 +1,42 @@
+{
+  "name": "dungeon-crusade",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Dungeon Crusade - projectile arena brawler for 2-4 players. Couch versus + online crossplay.",
+  "type": "module",
+  "scripts": {
+    "assets": "node tools/build-assets.mjs",
+    "dev": "node tools/build-assets.mjs --if-missing && vite",
+    "dev:server": "tsx watch server/index.ts",
+    "build": "node tools/build-assets.mjs && tsc --noEmit && vite build",
+    "build:server": "esbuild server/index.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist-server/index.mjs --packages=external",
+    "start": "node dist-server/index.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "node tests/e2e/run.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@capacitor-community/keep-awake": "^8.0.1",
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/status-bar": "^8.0.4",
+    "ws": "^8.22.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
+    "@types/node": "^22.20.5",
+    "@types/ws": "^8.18.2",
+    "esbuild": "^0.25.12",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.6",
+    "vitest": "^3.2.7"
+  }
+}
