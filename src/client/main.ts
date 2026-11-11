@@ -5,7 +5,7 @@ import type { AppApi, CouchSlot, LastMatch, OnlineLocal } from './app-api';
 import { assets, loadFonts, loadImages, loadManifest } from './assets';
 import { audio, MUSIC, SFX } from './audio';
 import { Effects, type FxContext } from './fx';
-import { input, isTouchDevice } from './input/input';
+import { input, isTouchDevice, label } from './input/input';
 import { TouchControls } from './input/touch';
 import { Connection, defaultServerUrl } from './net/connection';
 import { OnlineSession } from './net/online-session';
@@ -14,7 +14,7 @@ import { achievement, initPlatform, launchJoinCode, lockLandscape, onJoinRequest
 import { Renderer } from './render/renderer';
 import { WorldRenderer } from './render/world';
 import { LocalSession, type Session } from './session';
-import { playerName, settings } from './settings';
+import { playerName, saveSettings, settings } from './settings';
 import { toast, UI } from './ui/core';
 import { MainMenuScreen, OnlineScreen, PauseScreen, ResultsScreen, RoomScreen, TitleScreen } from './ui/screens';
 import { LEVELS, levelInfo } from '../shared/levels';
@@ -35,6 +35,8 @@ class App implements AppApi {
   attract: LocalSession | null = null;
   private lastT = 0;
   private resultsShown = false;
+  private tip = '';
+  private tipUntil = 0;
   private frameDt = 1 / 60;
 
   constructor() {
@@ -191,6 +193,17 @@ class App implements AppApi {
     this.renderer.setView(s.match.level.view);
     audio.playMusic(levelInfo(s.match.cfg.level as LevelId).music || MUSIC.dungeon);
     this.touch.show([...s.locals.values()].includes('touch'));
+    if (!settings.tutorialSeen) {
+      // First match ever: a one-line controls reminder for the device in use.
+      const dev = input.device([...s.locals.values()][0] ?? '');
+      const g = dev?.glyphs ?? 'keyboard';
+      this.tip = g === 'touch' ? 'Left side: move & aim  ·  JUMP  ·  THROW  ·  jump twice to double jump'
+        : g === 'keyboard' ? 'WASD move/aim · Space jump · F throw  |  P2: arrows · . jump · / throw'
+        : `Stick move/aim · ${label(g, 'jump')} jump · ${label(g, 'attack')} throw · jump on heads!`;
+      this.tipUntil = performance.now() + 9000;
+      settings.tutorialSeen = true;
+      saveSettings();
+    }
   }
 
   stopSession() {
@@ -297,7 +310,7 @@ class App implements AppApi {
         names: view.names,
         local: [0, 1, 2, 3].map((i) => view.locals.has(i)),
         ping: s?.ping(),
-        status: s?.status(),
+        status: s?.status() ?? (performance.now() < this.tipUntil ? this.tip : undefined),
         tags: !!s,
         hidden: !s,
       };

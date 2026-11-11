@@ -576,6 +576,7 @@ export class OnlineScreen extends Screen {
 
 export class RoomScreen extends Screen {
   private unsub: (() => void) | null = null;
+  private startFocused = false;
   constructor(private app: AppApi) {
     super('dim');
   }
@@ -626,7 +627,7 @@ export class RoomScreen extends Screen {
     const cpus = Math.min(room.settings.cpus, 4 - this.totalPlayers());
     for (let i = 0; i < cpus; i++) peers.appendChild(h('div', { class: 'peer' }, `<span class="dot" style="--kc:#888"></span><span>CPU (${CPU_LEVELS[room.settings.cpuLevel - 1].label})</span>`));
     left.appendChild(peers);
-    if (this.totalPlayers() < 4) left.appendChild(h('div', { class: 'sub' }, `<br>Couch + online: press ${g('jump')} on another controller to add a local player.`));
+    if (this.totalPlayers() < 4) left.appendChild(h('div', { class: 'sub' }, '<br>Couch + online: press jump on another controller (or the other half of the keyboard) to add a local player.'));
     grid.appendChild(left);
 
     // Settings
@@ -659,6 +660,14 @@ export class RoomScreen extends Screen {
     row.append(button('LEAVE', () => this.back(), { cls: 'small danger', key: 'leave' }));
     const canStart = this.totalPlayers() + cpus >= 2;
     if (isHost) row.append(button(canStart ? 'START MATCH' : 'WAITING FOR PLAYERS...', () => this.start(), { cls: 'primary', key: 'start', autofocus: true, disabled: !canStart }));
+    if (isHost && canStart && !this.startFocused) {
+      // Once the room can start, put the cursor on START for controller users.
+      this.startFocused = true;
+      queueMicrotask(() => {
+        const b = this.el.querySelector<HTMLElement>('[data-key="start"]');
+        if (b) this.focus(b, false);
+      });
+    }
     else row.append(h('div', { class: 'sub' }, room.phase === 'game' ? 'Match in progress - you will join the next one.' : 'Waiting for the host to start...'));
     this.el.appendChild(row);
     this.el.appendChild(hints([[g('confirm'), 'Select'], [g('back'), 'Leave'], ['🌐', 'Crossplay on']]));
