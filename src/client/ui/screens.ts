@@ -960,7 +960,7 @@ export class ResultsScreen extends Screen {
       const tr = h('tr', p.slot === winner || (teams && m.cfg.slots[p.slot].team === s.winnerTeam) ? { class: 'win' } : {});
       const kv = KNIGHTS[m.cfg.slots[p.slot].knight];
       const acc = p.shots ? Math.round((p.hits / p.shots) * 100) : 0;
-      tr.innerHTML = `<td><span style="color:${kv.color}">■</span> ${escapeHtml(sess.names[p.slot] || `P${p.slot + 1}`)}${m.cfg.slots[p.slot].bot ? ' (CPU)' : ''}</td><td>${p.score}</td><td>${p.deaths}</td><td>${p.damageDealt}</td><td>${acc}%</td>`;
+      tr.innerHTML = `<td><span style="color:${kv.color}">■</span> ${escapeHtml(sess.names[p.slot] || `P${p.slot + 1}`)}${m.cfg.slots[p.slot].bot && !/^CPU/.test(sess.names[p.slot] ?? '') ? ' (CPU)' : ''}</td><td>${p.score}</td><td>${p.deaths}</td><td>${p.damageDealt}</td><td>${acc}%</td>`;
       table.appendChild(tr);
     }
     this.el.appendChild(table);

@@ -311,8 +311,8 @@ class App implements AppApi {
         local: [0, 1, 2, 3].map((i) => view.locals.has(i)),
         ping: s?.ping(),
         status: s?.status() ?? (performance.now() < this.tipUntil ? this.tip : undefined),
-        tags: !!s,
-        hidden: !s,
+        tags: !!s && !this.resultsShown,
+        hidden: !s || this.resultsShown,
       };
       this.world.draw(this.renderer, view.match, view.state, this.fx, hud, dt);
     } else {
