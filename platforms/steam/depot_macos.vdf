@@ -1,0 +1,12 @@
+// Depot: macOS universal - launch Dungeon Crusade.app
+"DepotBuild"
+{
+	"DepotID" "1234562" // TODO: your depot id
+	"FileMapping"
+	{
+		"LocalPath" "macos/*" // relative to the app build ContentRoot
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+	"FileExclusion" "*.pdb"
+}

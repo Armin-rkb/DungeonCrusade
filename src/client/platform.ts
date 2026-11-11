@@ -96,6 +96,15 @@ export async function launchJoinCode(): Promise<string | null> {
   const fromUrl = params.get('join') ?? new URLSearchParams(window.location.hash.slice(1)).get('join');
   if (fromUrl) return fromUrl;
   if (native) return native.launchJoinCode();
+  // Android only delivers 'appUrlOpen' while running: ask for the launch URL.
+  const app = cap?.Plugins?.App as unknown as { getLaunchUrl?: () => Promise<{ url?: string } | undefined> } | undefined;
+  try {
+    const launch = await app?.getLaunchUrl?.();
+    const m = launch?.url ? /join[=/]([A-Za-z]{4})/.exec(launch.url) : null;
+    if (m) return m[1];
+  } catch {
+    /* plugin unavailable */
+  }
   return null;
 }
 

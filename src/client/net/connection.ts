@@ -15,15 +15,22 @@ export function defaultServerUrl(): string {
   const env = (import.meta as unknown as { env?: Record<string, string> }).env;
   const configured = env?.VITE_SERVER_URL;
   if (configured) return configured;
+  // Native apps (Capacitor serves the game from https://localhost or
+  // capacitor://localhost) always use the public relay.
+  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+  if (cap?.isNativePlatform?.()) return PUBLIC_SERVER;
   const loc = window.location;
   if (loc.protocol === 'http:' || loc.protocol === 'https:') {
     // Dev server (vite on 5173) talks to the local relay on 8787.
     if (loc.port === '5173' || loc.port === '4173') return `ws://${loc.hostname}:8787/ws`;
     return `${loc.protocol === 'https:' ? 'wss' : 'ws'}://${loc.host}/ws`;
   }
-  // Electron (file://) / Capacitor: use the public server.
-  return 'wss://dungeon-crusade.fly.dev/ws';
+  // Electron (app://) uses the public server.
+  return PUBLIC_SERVER;
 }
+
+/** Default public relay (override at build time with VITE_SERVER_URL). */
+const PUBLIC_SERVER = 'wss://dungeon-crusade.fly.dev/ws';
 
 export class Connection {
   ws: WebSocket | null = null;

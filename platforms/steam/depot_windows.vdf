@@ -1,0 +1,12 @@
+// Depot: Windows x64 - launch DungeonCrusade.exe
+"DepotBuild"
+{
+	"DepotID" "1234561" // TODO: your depot id
+	"FileMapping"
+	{
+		"LocalPath" "windows/*" // relative to the app build ContentRoot
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+	"FileExclusion" "*.pdb"
+}

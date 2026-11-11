@@ -1,0 +1,26 @@
+// SteamPipe app build script for Dungeon Crusade (manual uploads with steamcmd).
+// CI uploads with game-ci/steam-deploy instead (.github/workflows/release.yml),
+// which uses the same depot numbering: app id + 1 / + 2 / + 3.
+//
+// 1. Replace the placeholder ids below (1234560 = app, 1234561-1234563 = depots)
+//    here and in the three depot_*.vdf files.
+// 2. Fill content/ (paths relative to this file) with the unpacked builds:
+//      content/windows/  <- platforms/electron/out/win-unpacked/*
+//      content/macos/    <- platforms/electron/out/mac-universal/Dungeon Crusade.app
+//      content/linux/    <- platforms/electron/out/linux-unpacked/*
+// 3. steamcmd +login <builder account> +run_app_build "$PWD/platforms/steam/app_build.vdf" +quit
+"AppBuild"
+{
+	"AppID" "1234560" // TODO: your Steam app id
+	"Desc" "Dungeon Crusade" // internal build description (shown in Steamworks)
+	"ContentRoot" "./content/" // relative to this file
+	"BuildOutput" "./output/" // logs + chunk cache, relative to this file
+	"SetLive" "" // e.g. "beta" to set this build live on a branch; never "default"
+	"Preview" "0" // "1" = dry run: build the manifest without uploading
+	"Depots"
+	{
+		"1234561" "depot_windows.vdf"
+		"1234562" "depot_macos.vdf"
+		"1234563" "depot_linux.vdf"
+	}
+}

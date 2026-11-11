@@ -1,0 +1,11 @@
+// Rich presence localization (Steamworks > Community > Rich Presence).
+// main.cjs sets steam_display = "#Status" and status = the renderer's text
+// ("In the menus", "In a lobby", "In a match"), so friends see that text.
+"lang"
+{
+	"Language" "english"
+	"Tokens"
+	{
+		"#Status" "%status%"
+	}
+}

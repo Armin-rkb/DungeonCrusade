@@ -13,7 +13,10 @@
     "start": "node dist-server/index.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "e2e": "node tests/e2e/run.mjs"
+    "e2e": "node tests/e2e/run.mjs",
+    "cap:sync": "npm run build && bash platforms/mobile/setup.sh",
+    "android": "npm run build && bash platforms/mobile/setup.sh android && cap open android",
+    "ios": "npm run build && bash platforms/mobile/setup.sh ios && cap open ios"
   },
   "engines": {
     "node": ">=20"

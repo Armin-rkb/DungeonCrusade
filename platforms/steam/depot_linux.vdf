@@ -1,0 +1,12 @@
+// Depot: Linux x64 - launch dungeon-crusade --no-sandbox (see platforms/README.md)
+"DepotBuild"
+{
+	"DepotID" "1234563" // TODO: your depot id
+	"FileMapping"
+	{
+		"LocalPath" "linux/*" // relative to the app build ContentRoot
+		"DepotPath" "."
+		"Recursive" "1"
+	}
+	"FileExclusion" "*.pdb"
+}
