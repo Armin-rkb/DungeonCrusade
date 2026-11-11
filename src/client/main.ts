@@ -323,5 +323,7 @@ class App implements AppApi {
 
 const app = new App();
 void app.boot();
-(window as unknown as { __app: App }).__app = app;
+// Debug / tooling hooks (used by tests/e2e and tools/capture-footage.mjs).
+(window as unknown as { __app: App; __audio: typeof audio }).__app = app;
+(window as unknown as { __audio: typeof audio }).__audio = audio;
 export { assets };

@@ -489,9 +489,15 @@ export class WorldRenderer {
       const t = b.t / b.dur;
       const pop = t < 0.12 ? 0.4 + (t / 0.12) * 0.8 : t < 0.22 ? 1.2 - ((t - 0.12) / 0.1) * 0.2 : 1;
       const alpha = t > 0.8 ? (1 - t) / 0.2 : 1;
-      const size = Math.min(W_ / 9, H_ / 6) * pop;
-      c.globalAlpha = alpha;
+      let size = Math.min(W_ / 9, H_ / 6) * pop;
       c.font = `${Math.round(size)}px Karmatic, EightBit, monospace`;
+      // Long banners ("THE TEMPLE FALLS") shrink to fit the screen.
+      const tw = c.measureText(b.text).width;
+      if (tw > W_ * 0.88) {
+        size *= (W_ * 0.88) / tw;
+        c.font = `${Math.round(size)}px Karmatic, EightBit, monospace`;
+      }
+      c.globalAlpha = alpha;
       c.textBaseline = 'middle';
       c.lineWidth = Math.max(3, size * 0.12);
       outlined(c, b.text, W_ / 2, H_ * 0.42, b.color);

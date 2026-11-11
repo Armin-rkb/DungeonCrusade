@@ -16,7 +16,8 @@
     "e2e": "node tests/e2e/run.mjs",
     "cap:sync": "npm run build && bash platforms/mobile/setup.sh",
     "android": "npm run build && bash platforms/mobile/setup.sh android && cap open android",
-    "ios": "npm run build && bash platforms/mobile/setup.sh ios && cap open ios"
+    "ios": "npm run build && bash platforms/mobile/setup.sh ios && cap open ios",
+    "footage": "node tools/capture-footage.mjs"
   },
   "engines": {
     "node": ">=20"
