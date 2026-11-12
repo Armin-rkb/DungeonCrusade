@@ -126,7 +126,7 @@ Other scripts:
 | `node tests/e2e/monkey.mjs [url] [out] [seconds] [seed]` | Seeded random keyboard/gamepad/mouse/touch mashing across every screen; fails on any error or stall |
 | `FUZZ_RUNS=25 npx vitest run tests/fuzz.test.ts` | Deep fuzz: random inputs on every stage/mode with physics invariants, rollback over a simulated lossy network, random server traffic |
 | `node tools/build-assets.mjs` / `node tools/extract-levels.mjs` | Regenerate the asset manifest / level JSON from the Unity project |
-| `npm run footage` (`-- --crusade`) | Record an MP4 with sound straight from the game (Classic or Crusade) |
+| `npm run footage` (`-- --crusade` / `-- --highlights`) | Record an MP4 with sound straight from the game. `--highlights` records ~2.5 min of unscripted CPU play in both modes and auto-cuts the most action-packed moments into a ~45 s reel |
 
 Desktop (Steam), Android, iOS, server deployment and CI are described in
 [platforms/README.md](platforms/README.md).

@@ -6,7 +6,11 @@
 // machine is. Every sound the game plays is logged and mixed afterwards from
 // the original sound files, together with the stage music.
 //
-// Usage: node tools/capture-footage.mjs [out.mp4] [--crusade]
+// Usage: node tools/capture-footage.mjs [out.mp4] [--crusade | --highlights]
+//
+// --highlights records ~2.5 minutes of unscripted CPU play in both modes, scores
+// every moment by what happens (KOs, parries, splats, bounties, explosions, the
+// dragon) and cuts the best moments into a ~45 s reel.
 // Needs: Playwright with Chromium, ffmpeg. Starts its own Vite dev server.
 
 import { spawn, execFileSync } from 'node:child_process';
@@ -16,7 +20,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const MODE = process.argv.includes('--crusade') ? 'crusade' : 'classic';
+const HIGHLIGHTS = process.argv.includes('--highlights');
+const MODE = HIGHLIGHTS ? 'highlights' : process.argv.includes('--crusade') ? 'crusade' : 'classic';
 const argOut = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const OUT = path.resolve(argOut ?? path.join(ROOT, 'test-results', 'footage', `dungeon-crusade-${MODE}.mp4`));
 const WORK = path.join(path.dirname(OUT), 'frames');
@@ -91,6 +96,14 @@ await page.evaluate(() => {
     window.__music.push({ id: null, t: window.__capture.t });
   };
   a.duckMusic = () => {};
+  // Game events with their time, for picking highlights.
+  window.__events = [];
+  const fx = window.__app.fx;
+  const handle = fx.handle.bind(fx);
+  fx.handle = (events, st, ctx) => {
+    if (window.__app.session) for (const e of events) window.__events.push({ t: e.t, k: e.k, w: e.w, b: e.b, time: window.__capture.t });
+    handle(events, st, ctx);
+  };
 });
 
 let frame = 0;
@@ -110,6 +123,7 @@ async function play(seconds, capture = true) {
 async function scene(level, weapons, opts = {}) {
   cuts.push(frame);
   await page.evaluate(({ level, weapons, skipCountdown, seed, mode }) => {
+    const lvl = level;
     const app = window.__app;
     const names = ['GOLD', 'SILVER', 'GREEN', 'RED'];
     const cfg = {
@@ -120,7 +134,8 @@ async function scene(level, weapons, opts = {}) {
     const s = app.session.state;
     if (skipCountdown) s.phaseTimer = 2;
     window.__weapons = weapons;
-  }, { level, weapons, skipCountdown: !!opts.skipCountdown, seed: opts.seed ?? 7, mode: MODE });
+    if (lvl === 'dragon' && mode === 'crusade' && window.__weakTemple) s.templeHp = window.__weakTemple;
+  }, { level, weapons, skipCountdown: !!opts.skipCountdown, seed: opts.seed ?? 7, mode: opts.mode ?? MODE });
   // Hand out a mix of weapons once the fight starts so the clip shows them off.
   const arm = () => page.evaluate(() => {
     const s = window.__app.session.state;
@@ -136,6 +151,27 @@ async function scene(level, weapons, opts = {}) {
 }
 
 console.log('capturing...');
+/** Highlight reel segments in captured frames: { from, to, caption }. */
+let reel = null;
+if (HIGHLIGHTS) {
+  // Title, then long stretches of real CPU play; no staged weapons.
+  const scenes = [];
+  await play(2.2);
+  const titleEnd = frame;
+  const record = async (level, mode, seconds, seed, caption) => {
+    const from = frame;
+    await scene(level, null, { mode, seed, skipCountdown: true });
+    await play(seconds);
+    scenes.push({ from, to: frame, caption, picks: level === 'dragon' ? 3 : 2 });
+  };
+  await record('beach', 'classic', 32, 21, 'CLASSIC MODE');
+  await record('dungeon', 'crusade', 40, 8, 'CRUSADE MODE');
+  await record('beach', 'crusade', 32, 13, 'CRUSADE MODE');
+  // A cracked temple so the dragon shows up within the recording.
+  await page.evaluate(() => (window.__weakTemple = 12));
+  await record('dragon', 'crusade', 45, 31, 'CRUSADE MODE');
+  reel = { titleEnd, scenes };
+} else {
 // 1. Title screen with the attract-mode brawl behind it.
 await play(2.5);
 // 2. Dungeon: full 3-2-1 countdown, then a brawl.
@@ -158,7 +194,9 @@ await page.evaluate(() => {
   s.projs.push({ id: 99999, kind: 8, owner: 0, team: 0, x: 0.2, y: -1.6, vx: 0, vy: 0, age: 40, life: 1, bounces: 0, dead: false, p: 1, q: 0 });
 });
 await play(12.5);
+}
 const totalMs = await page.evaluate(() => window.__capture.t);
+const events = await page.evaluate(() => window.__events);
 const sounds = await page.evaluate(() => window.__sounds);
 const music = await page.evaluate(() => window.__music);
 const manifest = await page.evaluate(() => window.__app && fetch('gen/manifest.json').then((r) => r.json()));
@@ -241,12 +279,79 @@ for (let i = 0; i < mix.length; i++) mix[i] = Math.tanh(mix[i] * 0.9);
 const rawPath = path.join(path.dirname(OUT), 'mix.f32');
 fs.writeFileSync(rawPath, Buffer.from(mix.buffer));
 
+// ------------------------------------------------------------------ highlights
+/** How exciting each game event is. */
+const WEIGHT = { ko: 10, parry: 6, splat: 6, temple: 16, 'dragon-wake': 6, 'dragon-swoop': 14, stomp: 4, tile: 4, clash: 3, pickup: 2, hit: 2, armor: 2, quack: 1, sudden: 6, gull: 3 };
+function eventScore(e) {
+  if (e.t === 'points') return e.w === 1 ? 12 : e.w === 2 ? 3 : 0; // bounty / assist
+  if (e.t === 'boom') return e.b === 2 ? 12 : 3; // nuke vs other blasts
+  return WEIGHT[e.t] ?? 0;
+}
+function pickHighlights() {
+  const perFrame = new Float32Array(frame);
+  for (const e of events) {
+    const f = Math.round(((e.time - startMs) / 1000) * FPS);
+    if (f >= 0 && f < frame) perFrame[f] += eventScore(e);
+  }
+  const L = Math.round(4.5 * FPS);
+  const segments = [{ from: 0, to: reel.titleEnd, caption: '' }];
+  for (const sc of reel.scenes) {
+    const chosen = [];
+    for (let k = 0; k < sc.picks; k++) {
+      let best = -1;
+      let bestScore = 0;
+      for (let st = sc.from + 15; st + L <= sc.to; st += 6) {
+        if (chosen.some((c) => st < c + L + FPS && st + L + FPS > c)) continue;
+        let score = 0;
+        // Count the middle of the window most (action should be on screen).
+        for (let f = st + 10; f < st + L - 10; f++) score += perFrame[f];
+        if (score > bestScore) { bestScore = score; best = st; }
+      }
+      if (best >= 0) chosen.push(best);
+    }
+    chosen.sort((a, b) => a - b);
+    chosen.forEach((st, i) => segments.push({ from: st, to: st + L, caption: i === 0 ? sc.caption : '' }));
+  }
+  return segments;
+}
+
 // ------------------------------------------------------------------ encode
 // Each scene is encoded with its own fade in/out (an ffmpeg fade-out keeps
 // everything after it black), then the clips are concatenated.
 console.log(`encoding ${frame} frames (${durationS.toFixed(1)} s)...`);
-const bounds = [0, ...cuts.filter((c) => c > 0), frame];
 const parts = [];
+if (reel) {
+  const segments = pickHighlights();
+  const font = path.join(ROOT, 'Assets', 'Fonts', 'ka1.ttf').replace(/\\/g, '/').replace(/:/g, '\\:');
+  segments.forEach((sg, i) => {
+    const n = sg.to - sg.from;
+    const d = n / FPS;
+    const pcm = path.join(WORK, `seg${i}.f32`);
+    fs.writeFileSync(pcm, Buffer.from(mix.slice(sg.from / FPS * RATE * 2 | 0, (sg.to / FPS * RATE * 2) | 0).buffer));
+    const fades = `fade=t=in:st=0:d=0.2,fade=t=out:st=${Math.max(0, d - 0.2).toFixed(3)}:d=0.2`;
+    const text = sg.caption
+      ? `,drawtext=fontfile='${font}':text='${sg.caption}':fontsize=34:fontcolor=0xffc53d:borderw=4:bordercolor=black:x=40:y=h-80:enable='lt(t,2.2)'`
+      : '';
+    const part = path.join(WORK, `part${i}.mp4`);
+    execFileSync('ffmpeg', [
+      '-y', '-loglevel', 'error',
+      '-framerate', String(FPS), '-start_number', String(sg.from), '-i', path.join(WORK, '%05d.png'),
+      '-f', 'f32le', '-ar', String(RATE), '-ac', '2', '-i', pcm,
+      '-frames:v', String(n),
+      '-vf', `${fades}${text},format=yuv420p`,
+      '-af', `afade=t=in:st=0:d=0.12,afade=t=out:st=${Math.max(0, d - 0.15).toFixed(3)}:d=0.15`,
+      '-c:v', 'libx264', '-preset', 'slow', '-crf', '22', '-tune', 'animation', '-r', String(FPS),
+      '-c:a', 'aac', '-b:a', '160k', '-shortest',
+      part,
+    ], { stdio: 'inherit' });
+    parts.push(part);
+  });
+  const list = path.join(WORK, 'parts.txt');
+  fs.writeFileSync(list, parts.map((p) => `file '${p}'`).join('\n'));
+  execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', '-movflags', '+faststart', OUT], { stdio: 'inherit' });
+  console.log(`highlights: ${segments.map((sg) => `${(sg.from / FPS).toFixed(1)}-${(sg.to / FPS).toFixed(1)}s${sg.caption ? ` [${sg.caption}]` : ''}`).join(', ')}`);
+} else {
+const bounds = [0, ...cuts.filter((c) => c > 0), frame];
 for (let i = 0; i + 1 < bounds.length; i++) {
   const n = bounds[i + 1] - bounds[i];
   if (n <= 0) continue;
@@ -272,6 +377,7 @@ execFileSync('ffmpeg', [
   '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart',
   OUT,
 ], { stdio: 'inherit' });
+}
 fs.rmSync(rawPath);
 console.log(`wrote ${OUT}`);
 process.exit(0);
