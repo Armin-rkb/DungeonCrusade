@@ -85,6 +85,7 @@ The new arenas are written as plain-text maps in `src/shared/levels/arenas.ts`, 
   - the original sounds with pitch variation, stereo panning and music ducking
 - Controller rumble on gamepads, and haptics on phones.
 - Optional player-coloured outlines around every knight (Settings), for readability in 4-player chaos.
+- A reload meter above each knight while their weapon cools down (blinks green when ready), matching the HUD bar.
 
 ## Controls
 

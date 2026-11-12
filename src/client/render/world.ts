@@ -25,6 +25,9 @@ interface PlayerVis {
   face: number;
   alive: boolean;
   djumpTime: number;
+  /** Weapon cooldown meter: reloading last frame, and when it last became ready. */
+  reloading: boolean;
+  readyAt: number;
 }
 
 export interface HudInfo {
@@ -259,7 +262,7 @@ export class WorldRenderer {
   private visFor(slot: number): PlayerVis {
     let v = this.vis[slot];
     if (!v) {
-      v = this.vis[slot] = { key: '', start: 0, sx: 1, sy: 1, wasGround: true, lastVy: 0, koTime: -10, koX: 0, koY: 0, face: 1, alive: true, djumpTime: -10 };
+      v = this.vis[slot] = { key: '', start: 0, sx: 1, sy: 1, wasGround: true, lastVy: 0, koTime: -10, koX: 0, koY: 0, face: 1, alive: true, djumpTime: -10, reloading: false, readyAt: -10 };
     }
     return v;
   }
@@ -380,7 +383,7 @@ export class WorldRenderer {
         const cx = r.sx(p.x);
         r.world();
         const c = r.ctx;
-        const size = Math.max(9, 0.28 * r.scale);
+        const size = Math.max(7 * r.dpr, 0.22 * r.scale);
         c.font = `${Math.round(size)}px EightBit, monospace`;
         c.textAlign = 'center';
         c.textBaseline = 'bottom';
@@ -397,6 +400,7 @@ export class WorldRenderer {
         c.lineTo(cx, tagY + size * 0.45);
         c.closePath();
         c.fill();
+        this.drawReload(r, p, v, now);
         if (p.weapon !== W.Stone) {
           r.drawSprite(WEAPON_ICONS[p.weapon], p.x + 0.42, p.y + T.height + 0.5, { sx: 1.8, sy: 1.8 });
           if (p.ammo > 0) {
@@ -411,6 +415,33 @@ export class WorldRenderer {
         if (m.cfg.mode === 'crusade' && crownHolder(m, s) === p.slot) drawCrown(c, cx, tagY - size * 1.15, size * 1.1);
       }
     }
+  }
+
+  /**
+   * Weapon cooldown right above the knight: a small bar that fills while the
+   * weapon reloads (same colours as the HUD) and blinks green when it is ready.
+   */
+  private drawReload(r: Renderer, p: PlayerState, v: PlayerVis, now: number) {
+    const busy = p.cd > 0 && p.cdMax > 0;
+    if (!busy && v.reloading) v.readyAt = now;
+    v.reloading = busy;
+    const sinceReady = now - v.readyAt;
+    if (!busy && sinceReady > 0.3) return;
+    const frac = busy ? Math.max(0, Math.min(1, 1 - p.cd / p.cdMax)) : 1;
+    const c = r.ctx;
+    // At least ~24 x 3 CSS px so it stays readable on small phone screens.
+    const w = Math.round(Math.max(24 * r.dpr, 0.6 * r.scale));
+    const h = Math.round(Math.max(3 * r.dpr, 0.07 * r.scale));
+    const x = Math.round(r.sx(p.x) - w / 2);
+    const y = Math.round(r.sy(p.y + T.height + 0.13));
+    c.globalAlpha = busy ? 0.95 : 1 - sinceReady / 0.3;
+    c.fillStyle = '#000';
+    c.fillRect(x - 1, y - 1, w + 2, h + 2);
+    c.fillStyle = '#333';
+    c.fillRect(x, y, w, h);
+    c.fillStyle = busy ? '#ffd166' : '#7CFC00';
+    c.fillRect(x, y, Math.round(w * frac), h);
+    c.globalAlpha = 1;
   }
 
   /** Sword swipe: the original sword sprite sweeping through an arc + a trail. */
