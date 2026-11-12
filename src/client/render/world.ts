@@ -7,8 +7,8 @@ import { settings } from '../settings';
 import type { Renderer } from './renderer';
 import { CHEST, FX, KNIGHTS, MUSIC_NOTES, PROJECTILES, TEAM_COLORS, WEAPON_ICONS } from './visuals';
 import type { LevelLayer, LevelRuntime } from '../../shared/level';
-import type { Match } from '../../shared/sim';
-import { T, FPS } from '../../shared/tuning';
+import { crownHolder, type Match } from '../../shared/sim';
+import { CR, T, FPS } from '../../shared/tuning';
 import { Phase, type GameState, type PlayerState } from '../../shared/types';
 import { W } from '../../shared/weapons';
 
@@ -58,6 +58,8 @@ export class WorldRenderer {
   vis: PlayerVis[] = [];
   time = 0;
   private lightningOn = false;
+  private lastTempleHp = -1;
+  private templeShake = 0;
 
   setLevel(level: LevelRuntime) {
     this.level = level;
@@ -73,8 +75,12 @@ export class WorldRenderer {
       const half = def ? (Math.max(def.w, def.h) / def.ppu) * Math.max(Math.abs(l.sx), Math.abs(l.sy)) : 2;
       if (l.x + half < v.x - margin || l.x - half > v.x + v.w + margin || l.y + half < v.y - margin || l.y - half > v.y + v.h + margin) continue;
       let breakable = -1;
+      const small = def ? (def.w / def.ppu) * Math.abs(l.sx) <= 1.6 && (def.h / def.ppu) * Math.abs(l.sy) <= 1.6 : false;
       for (const so of level.solids) {
-        if (so.breakable >= 0 && l.group && so.group === l.group) breakable = so.breakable;
+        if (so.breakable < 0) continue;
+        if (l.group && so.group === l.group) breakable = so.breakable;
+        // Crusade's crumbling walls have no group: match tiles by position.
+        else if (!so.group && small && l.x >= so.x - 0.01 && l.x <= so.x + so.w + 0.01 && l.y >= so.y - 0.01 && l.y <= so.y + so.h + 0.01) breakable = so.breakable;
       }
       items.push({ l, breakable, sparkle: l.group === 'armor' && /sparkle/i.test(l.name) });
     }
@@ -104,6 +110,7 @@ export class WorldRenderer {
     this.lightningOn = fx.lightning > 0 && (lt < 0.03 || (lt > 0.08 && lt < 0.17));
     this.drawLayers(r, s, dt);
     this.drawFalling(r, dt);
+    this.drawTempleBar(r, m, s);
     if (this.lightningOn) {
       r.world();
       r.ctx.globalAlpha = 0.12;
@@ -131,6 +138,9 @@ export class WorldRenderer {
 
   private drawLayers(r: Renderer, s: GameState, dt: number) {
     let rainDone = this.emitters.length === 0;
+    if (this.lastTempleHp >= 0 && s.templeHp < this.lastTempleHp) this.templeShake = 0.18;
+    this.lastTempleHp = s.templeHp;
+    this.templeShake = Math.max(0, this.templeShake - dt);
     const templeGone = s.groupsGone.includes('temple');
     if (templeGone && !this.templeFell) this.startTempleFall();
     for (const it of this.layers) {
@@ -160,9 +170,36 @@ export class WorldRenderer {
         id = animFrame(l.anim, this.time) ?? id;
       }
       if (l.group === 'lightning-bg' && this.lightningOn) tint = '#ccc6fbff';
+      if (it.breakable >= 0 && s.tileHp.length && s.tileHp[it.breakable] < CR.tileHp) {
+        // Crumbling wall: redder and shakier as it takes damage.
+        const k = Math.max(0, s.tileHp[it.breakable]) / CR.tileHp;
+        const g = Math.round(110 + 145 * k).toString(16).padStart(2, '0');
+        tint = `#ff${g}${g}ff`;
+        if (k < 0.5) x += Math.sin(this.time * 60 + it.breakable) * 0.02;
+      }
+      if (l.group === 'temple' && this.templeShake > 0) x += Math.sin(this.time * 90) * 0.06;
       r.drawSprite(id, x, y, { sx: l.sx, sy: l.sy, flipX: l.flipX, flipY: l.flipY, rot: l.rot, alpha: alphaOf(tint), tint });
     }
     if (!rainDone) this.drawRain(r, dt);
+  }
+
+  private drawTempleBar(r: Renderer, m: Match, s: GameState) {
+    const t = m.level.features.temple;
+    if (!t || m.cfg.mode !== 'crusade' || s.dragon.stage !== 0 || s.templeHp >= CR.templeHp) return;
+    const c = r.ctx;
+    r.world();
+    const w = 3.2 * r.scale;
+    const h = Math.max(4, 0.14 * r.scale);
+    const x = r.sx(t.x + t.w / 2) - w / 2;
+    const y = r.sy(t.y + t.h + 0.3);
+    c.globalAlpha = 0.85;
+    c.fillStyle = '#000';
+    c.fillRect(x - 2, y - 2, w + 4, h + 4);
+    c.fillStyle = '#3a1a1a';
+    c.fillRect(x, y, w, h);
+    c.fillStyle = '#ff6b3d';
+    c.fillRect(x, y, (w * Math.max(0, s.templeHp)) / CR.templeHp, h);
+    c.globalAlpha = 1;
   }
 
   private startTempleFall() {
@@ -274,7 +311,7 @@ export class WorldRenderer {
       else if (p.act && p.actTimer > 0) {
         if (p.act === 2) key = kv.hadouken;
         else if (p.act === 3) key = kv.mic;
-        else key = p.ground ? kv.throw : kv.airThrow;
+        else key = p.ground ? kv.throw : kv.airThrow; // throw / sword swing
         loop = false;
       } else if (!p.ground && p.wall !== 0 && p.vy < 0) {
         key = 'wall';
@@ -315,7 +352,14 @@ export class WorldRenderer {
       r.ctx.ellipse(r.sx(p.x), r.sy(p.y) - 1, 0.24 * r.scale * v.sx, 0.05 * r.scale, 0, 0, Math.PI * 2);
       r.ctx.fill();
       r.ctx.globalAlpha = 1;
+      if (settings.outlines && !blink) {
+        // Player-coloured outline: the silhouette nudged one pixel each way.
+        const px = 1 / def.ppu;
+        const col = m.cfg.teams ? TEAM_COLORS[m.cfg.slots[p.slot].team % 2] : kv.color;
+        for (const [ox, oy] of [[px, 0], [-px, 0], [0, px], [0, -px]]) r.drawSpriteDef(def, x + ox, pivotY + oy, { flipX, sx: v.sx, sy: v.sy, fill: col, alpha: 0.9 });
+      }
       r.drawSpriteDef(def, x, pivotY, { flipX, sx: v.sx, sy: v.sy, alpha: blink ? 0.35 : 1 });
+      if (p.swing > 0) this.drawSwing(r, p);
       if (p.flash > 0 && p.flash % 3 !== 0) r.drawSpriteDef(def, x, pivotY, { flipX, sx: v.sx, sy: v.sy, white: true, alpha: 0.9 });
       if (p.hp > T.maxHp) {
         const sp = animFrame(FX.sparkles, now + p.slot * 0.1);
@@ -346,9 +390,49 @@ export class WorldRenderer {
         c.fill();
         if (p.weapon !== W.Stone) {
           r.drawSprite(WEAPON_ICONS[p.weapon], p.x + 0.42, p.y + T.height + 0.5, { sx: 1.8, sy: 1.8 });
+          if (p.ammo > 0) {
+            c.font = `${Math.round(size * 0.8)}px EightBit, monospace`;
+            c.textAlign = 'left';
+            c.lineWidth = Math.max(2, size * 0.2);
+            c.strokeText(`${p.ammo}`, r.sx(p.x + 0.62), tagY);
+            c.fillStyle = '#fff';
+            c.fillText(`${p.ammo}`, r.sx(p.x + 0.62), tagY);
+          }
         }
+        if (m.cfg.mode === 'crusade' && crownHolder(m, s) === p.slot) drawCrown(c, cx, tagY - size * 1.15, size * 1.1);
       }
     }
+  }
+
+  /** Sword swipe: the original sword sprite sweeping through an arc + a trail. */
+  private drawSwing(r: Renderer, p: PlayerState) {
+    const t = 1 - p.swing / CR.swingTime; // 0..1
+    const f = p.face;
+    const startA = 115;
+    const endA = -55;
+    const a = startA + (endA - startA) * Math.min(1, t * 1.6);
+    const rad = (a * Math.PI) / 180;
+    const hx = p.x + f * 0.18;
+    const hy = p.y + 0.48;
+    const bx = hx + f * Math.cos(rad) * 0.42;
+    const by = hy + Math.sin(rad) * 0.42;
+    const active = p.swing <= CR.swingTime - CR.swingActiveFrom && p.swing >= CR.swingTime - CR.swingActiveTo;
+    if (active) {
+      const c = r.ctx;
+      r.world();
+      c.globalAlpha = 0.55;
+      c.strokeStyle = '#e8f4ff';
+      c.lineWidth = Math.max(2, 0.16 * r.scale);
+      c.lineCap = 'round';
+      c.beginPath();
+      const a0 = (-startA * Math.PI) / 180;
+      const a1 = (-a * Math.PI) / 180;
+      if (f > 0) c.arc(r.sx(hx), r.sy(hy), CR.swingRange * 0.8 * r.scale, a0, a1);
+      else c.arc(r.sx(hx), r.sy(hy), CR.swingRange * 0.8 * r.scale, Math.PI - a0, Math.PI - a1, true);
+      c.stroke();
+      c.globalAlpha = 1;
+    }
+    r.drawSprite('levi/animations/projectiles/_0009_zwaard', bx, by, { sx: 1.6, sy: 1.6, rot: f > 0 ? a : 180 - a, flipY: f < 0 });
   }
 
   // ---------------------------------------------------------------- projectiles
@@ -356,6 +440,17 @@ export class WorldRenderer {
     for (const pr of s.projs) {
       const v = PROJECTILES[pr.kind];
       if (!v) continue;
+      if (pr.refl > 0) {
+        // Parried shots glow gold.
+        const c = r.ctx;
+        r.world();
+        c.globalAlpha = 0.45 + Math.sin(this.time * 30) * 0.15;
+        c.fillStyle = '#ffd34d';
+        c.beginPath();
+        c.arc(r.sx(pr.x), r.sy(pr.y), 0.3 * r.scale, 0, Math.PI * 2);
+        c.fill();
+        c.globalAlpha = 1;
+      }
       const t = pr.age / FPS;
       const dir = pr.kind === W.Barrel ? pr.q || Math.sign(pr.vx) : Math.sign(pr.vx) || 1;
       if (v.trail) {
@@ -478,7 +573,7 @@ export class WorldRenderer {
     c.textBaseline = 'top';
     const info = m.cfg.timeLimit > 0 && s.phase !== Phase.Countdown
       ? fmtTime(Math.max(0, m.cfg.timeLimit * FPS - s.clock))
-      : `FIRST TO ${m.cfg.targetScore}`;
+      : m.cfg.mode === 'crusade' ? `CRUSADE · FIRST TO ${m.cfg.targetScore} PTS` : `FIRST TO ${m.cfg.targetScore}`;
     c.font = `${compact ? 10 : 12}px EightBit, monospace`;
     outlined(c, s.suddenDeath ? 'SUDDEN DEATH' : info, W_ / 2, top + ph + 6, s.suddenDeath ? '#ff5050' : '#ffffffcc');
     if (hud.status) outlined(c, hud.status, W_ / 2, top + ph + 22, '#ffd166');
@@ -567,6 +662,14 @@ export class WorldRenderer {
         c.drawImage(img, wi.x, wi.y, wi.w, wi.h, nx, wy, wi.w * sc, wi.h * sc);
       }
     }
+    if (p.ammo > 0) {
+      c.font = `${compact ? 7 : 8}px EightBit, monospace`;
+      c.textAlign = 'left';
+      c.textBaseline = 'top';
+      c.fillStyle = '#fff';
+      c.fillText(`x${p.ammo}`, nx + 24 + (compact ? 30 : 46) + 4, wy + 1);
+    }
+    if (m.cfg.mode === 'crusade' && crownHolder(m, s) === p.slot) drawCrown(c, x + 6 + (h - 12) / 2, y + 12, 14);
     const cdw = compact ? 30 : 46;
     const frac = p.cdMax > 0 ? 1 - p.cd / p.cdMax : 1;
     c.fillStyle = '#333';
@@ -622,6 +725,20 @@ function roundRect(c: CanvasRenderingContext2D, x: number, y: number, w: number,
   c.arcTo(x, y + h, x, y, r);
   c.arcTo(x, y, x + w, y, r);
   c.closePath();
+}
+
+const CROWN = ['X..X..X', 'XX.X.XX', 'XXXXXXX', 'XXXXXXX', '.XXXXX.'];
+/** Pixel crown centred at x, bottom at y. */
+function drawCrown(c: CanvasRenderingContext2D, x: number, y: number, size: number) {
+  const px = size / 7;
+  const x0 = x - size / 2;
+  const y0 = y - px * CROWN.length;
+  c.fillStyle = '#000';
+  for (let j = 0; j < CROWN.length; j++) for (let i = 0; i < 7; i++) if (CROWN[j][i] === 'X') c.fillRect(x0 + i * px - px * 0.4, y0 + j * px - px * 0.4, px * 1.8, px * 1.8);
+  c.fillStyle = '#ffd34d';
+  for (let j = 0; j < CROWN.length; j++) for (let i = 0; i < 7; i++) if (CROWN[j][i] === 'X') c.fillRect(x0 + i * px, y0 + j * px, px + 0.3, px + 0.3);
+  c.fillStyle = '#ff4d5e';
+  c.fillRect(x0 + 3 * px, y0 + 3 * px, px, px);
 }
 
 const HEART = ['.XX.XX.', 'XXXXXXX', 'XXXXXXX', '.XXXXX.', '..XXX..', '...X...'];

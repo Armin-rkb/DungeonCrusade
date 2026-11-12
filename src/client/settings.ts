@@ -20,6 +20,10 @@ export interface Settings {
   teams: boolean;
   botLevel: number;
   tutorialSeen: boolean;
+  /** 'classic' (original rules) or 'crusade' (the remix). */
+  mode: 'classic' | 'crusade';
+  /** Coloured outline around every knight (readability). */
+  outlines: boolean;
 }
 
 const KEY = 'dungeon-crusade-settings-v2';
@@ -44,6 +48,8 @@ const defaults: Settings = {
   teams: false,
   botLevel: 2,
   tutorialSeen: false,
+  mode: 'classic',
+  outlines: true,
 };
 
 function load(): Settings {

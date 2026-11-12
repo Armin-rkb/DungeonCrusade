@@ -232,6 +232,7 @@ export class RoomManager {
         if (!r || r.host !== c.id) return;
         const s = m.settings ?? {};
         if (s.level && LEVELS.includes(s.level)) r.settings.level = s.level;
+        if (s.mode === 'classic' || s.mode === 'crusade') r.settings.mode = s.mode;
         if (typeof s.targetScore === 'number') r.settings.targetScore = Math.max(1, Math.min(20, Math.floor(s.targetScore)));
         if (typeof s.timeLimit === 'number') r.settings.timeLimit = Math.max(0, Math.min(900, Math.floor(s.timeLimit)));
         if (typeof s.items === 'boolean') r.settings.items = s.items;

@@ -244,6 +244,9 @@ h2 {
 .card .kn { width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; }
 .card canvas.knight { image-rendering: pixelated; width: min(96px, 18vw); height: auto; }
 .card .name { font-size: 10px; text-align: center; min-height: 14px; }
+.card .perk { font-size: 7px; color: var(--muted); text-align: center; line-height: 1.5; padding: 0 4px; }
+.card .perk b { color: var(--kc, var(--gold)); }
+.mode-blurb { text-align: left; padding: 2px 12px 8px; line-height: 1.7; color: #c9c3df; }
 .card .dev { font-size: 8px; color: var(--muted); text-align: center; }
 .card .join-hint { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.7; animation: blink 1.4s steps(2, start) infinite; }
 .card .kbtns { display: flex; gap: 6px; }
@@ -392,6 +395,8 @@ table.stats tr.win td { color: var(--gold); }
 }
 .tbtn-jump { right: calc(26px + var(--sar)); bottom: calc(30px + var(--sab)); background: rgba(80, 200, 120, 0.55); width: calc(104px * var(--touch-scale)); height: calc(104px * var(--touch-scale)); }
 .tbtn-attack { right: calc(150px * var(--touch-scale) + var(--sar)); bottom: calc(62px * var(--touch-scale) + var(--sab)); background: rgba(255, 110, 80, 0.6); }
+.tbtn-swing { right: calc(40px * var(--touch-scale) + var(--sar)); bottom: calc(150px * var(--touch-scale) + var(--sab)); background: rgba(120, 140, 255, 0.6); width: calc(76px * var(--touch-scale)); height: calc(76px * var(--touch-scale)); font-size: calc(10px * var(--touch-scale)); }
+.touch-controls.lefty .tbtn-swing { right: auto; left: calc(40px * var(--touch-scale) + var(--sal)); }
 .tbtn.down { transform: scale(0.9); opacity: calc(var(--touch-opacity) + 0.3); border-color: #fff; }
 .touch-controls.lefty .tbtn-jump { right: auto; left: calc(26px + var(--sal)); }
 .touch-controls.lefty .tbtn-attack { right: auto; left: calc(150px * var(--touch-scale) + var(--sal)); }

@@ -7,7 +7,7 @@
 //  * all randomness comes from the seeded PRNG stored in the state,
 //  * iteration order is always array order.
 
-import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_UP, MAX_PLAYERS } from './input';
+import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_SWING, BTN_UP, MAX_PLAYERS } from './input';
 import type { LevelRuntime, Solid } from './level';
 import { rand, randInt } from './rng';
 import {
@@ -21,7 +21,7 @@ import {
 } from './types';
 import { BLASTS, W, WEAPONS, WEAPON_COUNT, type BlastKind } from './weapons';
 import { botInput } from './bot';
-import { T, FPS, DT } from './tuning';
+import { AMMO, CR, T, FPS, DT } from './tuning';
 
 export { T, FPS, DT };
 
@@ -34,6 +34,16 @@ export interface Match {
   level: LevelRuntime;
 }
 
+/** Crusade = the remixed rules (parry, splats, ammo, bounty, perks). */
+export function isCrusade(m: Match): boolean {
+  return m.cfg.mode === 'crusade';
+}
+
+/** Knight perk in Crusade: 0 lucky, 1 swift, 2 bouncy, 3 heavy (-1 in Classic). */
+function perkOf(m: Match, slot: number): number {
+  return isCrusade(m) ? m.cfg.slots[slot]?.knight ?? -1 : -1;
+}
+
 // ------------------------------------------------------------------ creation
 function newPlayer(slot: number, active: boolean): PlayerState {
   return {
@@ -43,6 +53,7 @@ function newPlayer(slot: number, active: boolean): PlayerState {
     hp: T.maxHp, weapon: W.Stone, cd: 0, cdMax: WEAPONS[W.Stone].cooldown, burst: 0, burstTimer: 0, burstAim: 0,
     stun: 0, hitstop: 0, invuln: 0, flash: 0, lastHitBy: -1, lastHitFrame: -9999,
     btn: 0, prevBtn: 0, act: 0, actTimer: 0, airTime: 0,
+    swing: 0, swingCd: 0, swingHit: 0, ammo: -1, splatCd: 0, dmgBy: [0, 0, 0, 0], assists: 0, parries: 0, splats: 0,
     score: 0, kos: 0, deaths: 0, damageDealt: 0, shots: 0, hits: 0,
     ai: { target: -1, timer: 0, jumpHold: 0, dir: 0, reaction: 0, wantShoot: 0, stuck: 0, lastX: 0, idle: 0 },
   };
@@ -70,6 +81,8 @@ export function createGame(match: Match): GameState {
     gull: { active: false, x: 0, y: 0, vx: 0, dropX: 0, dropped: false, timer: 600 },
     dragon: { stage: 0, timer: 0, x: 0, y: 0, by: -1 },
     armorCd: 0,
+    tileHp: new Array(level.breakables).fill(CR.tileHp),
+    templeHp: level.features.temple ? CR.templeHp : 0,
     winner: -1,
     winnerTeam: -1,
     events: [],
@@ -243,7 +256,9 @@ export function step(m: Match, s: GameState, inputs: ArrayLike<number>): void {
     const sc = m.cfg.slots[i];
     const raw = inputs[i] ?? 0;
     // 255 = the human controlling this slot disconnected; a CPU takes over.
-    p.btn = !p.active ? 0 : sc && sc.bot > 0 ? botInput(m, s, p, sc.bot) : raw === 255 ? botInput(m, s, p, 2) : raw & 63;
+    p.btn = !p.active ? 0 : sc && sc.bot > 0 ? botInput(m, s, p, sc.bot) : raw === 255 ? botInput(m, s, p, 2) : raw & 127;
+    // Classic has no sword: the swing button is just another throw button.
+    if (!isCrusade(m) && p.btn & BTN_SWING) p.btn = (p.btn & ~BTN_SWING) | BTN_ATTACK;
   }
 
   if (s.phase === Phase.Countdown) {
@@ -279,6 +294,7 @@ export function step(m: Match, s: GameState, inputs: ArrayLike<number>): void {
   }
 
   for (const p of s.players) if (p.active) updatePlayer(m, s, p, dt);
+  if (isCrusade(m)) swings(m, s);
   stomps(m, s);
   updateProjectiles(m, s, dt);
   clashProjectiles(m, s);
@@ -314,6 +330,13 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
   if (p.actTimer > 0) p.actTimer--; else p.act = 0;
   if (p.drop > 0) p.drop--;
   if (p.wallLock > 0) p.wallLock--;
+  if (p.swing > 0) p.swing--;
+  if (p.swingCd > 0) p.swingCd--;
+  if (p.splatCd > 0) p.splatCd--;
+  const crusade = isCrusade(m);
+  const perk = perkOf(m, p.slot);
+  const runSpeed = perk === 1 ? T.runSpeed * CR.swiftRun : T.runSpeed;
+  const airJumps = perk === 2 ? 2 : 1;
 
   const dir = stunned ? 0 : (btn & BTN_RIGHT ? 1 : 0) - (btn & BTN_LEFT ? 1 : 0);
   p.jumpHeld = !stunned && (btn & BTN_JUMP) !== 0;
@@ -322,14 +345,14 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
 
   // ---- horizontal
   if (!stunned) {
-    const target = dir * T.runSpeed;
+    const target = dir * runSpeed;
     let accel: number;
     if (p.ground) accel = dir !== 0 ? T.groundAccel : T.groundDecel;
     else accel = dir !== 0 ? T.airAccel : T.airDecel;
     if (p.wallLock > 0) accel *= 0.25;
     if (dir !== 0 && sign(p.vx) === -dir) accel *= T.turnBoost;
     // Keep momentum above run speed in the air (knockback / wall jumps).
-    if (!(Math.abs(p.vx) > T.runSpeed && sign(p.vx) === dir)) p.vx = approach(p.vx, target, accel * dt);
+    if (!(Math.abs(p.vx) > runSpeed && sign(p.vx) === dir)) p.vx = approach(p.vx, target, accel * dt);
     else p.vx = approach(p.vx, target, T.airDecel * dt);
     if (dir !== 0 && p.wallLock <= 0) p.face = dir;
   } else {
@@ -354,7 +377,7 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
       p.ground = false;
       p.coyote = 0;
       p.jumpBuf = 0;
-      p.jumps = 1;
+      p.jumps = airJumps;
       emit(s, 'jump', p.slot, { a: p.slot, x: p.x, y: p.y });
     } else if (p.wall !== 0) {
       p.vx = -p.wall * T.wallJumpVX;
@@ -362,7 +385,7 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
       p.face = -p.wall;
       p.wallLock = T.wallLock;
       p.jumpBuf = 0;
-      p.jumps = 1;
+      p.jumps = airJumps;
       emit(s, 'walljump', p.slot, { a: p.slot, x: p.x + p.wall * T.halfW, y: p.y + 0.4, v: p.wall });
     } else if (p.jumps > 0) {
       p.vy = T.doubleJumpV;
@@ -392,9 +415,18 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
   const fallSpeed = p.vy;
   const body = { x: p.x, y: p.y + T.height / 2 };
   const hh = T.height / 2;
+  const vxIn = p.vx;
+  const vyIn = p.vy;
   const r = moveBox(m, s, body, T.halfW, hh, p.vx * dt, p.vy * dt, true, p.drop > 0);
   p.x = body.x;
   p.y = body.y - hh;
+  // Crusade: slamming into a surface while launched hurts ("SPLAT!").
+  if (crusade && stunned && p.splatCd <= 0 && ((r.hitX !== 0 && Math.abs(vxIn) > CR.splatSpeed) || (r.hitY !== 0 && Math.abs(vyIn) > CR.splatSpeed))) {
+    splat(m, s, p, r.hitX !== 0 ? -vxIn * 0.45 : p.vx, r.hitY !== 0 ? -vyIn * 0.45 : p.vy, r.hitX !== 0 ? r.hitX : 0, r.hitY);
+    if (!p.alive) return;
+    p.ground = false;
+    return;
+  }
   if (r.hitX !== 0) p.vx = 0;
   if (r.hitY === 1 && p.vy > 0) p.vy = 0;
   if (r.hitY === -1) p.vy = 0;
@@ -403,7 +435,7 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
   p.ground = p.vy <= 0 && onGround(m, s, p);
   if (p.ground) {
     p.coyote = T.coyote;
-    p.jumps = 1;
+    p.jumps = airJumps;
     p.airTime = 0;
     if (!wasGround) {
       emit(s, 'land', p.slot, { a: p.slot, x: p.x, y: p.y, v: -fallSpeed });
@@ -420,6 +452,16 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
 
   // ---- shooting
   if (stunned) return;
+  if (crusade && (pressed & BTN_SWING) && p.swingCd <= 0 && p.swing <= 0 && s.phase === Phase.Play) {
+    p.swing = CR.swingTime;
+    p.swingCd = perk === 1 ? CR.swingCdSwift : CR.swingCd;
+    p.swingHit = 0;
+    p.act = 4;
+    p.actTimer = CR.swingTime;
+    p.invuln = 0;
+    emit(s, 'swing', p.slot, { a: p.slot, x: p.x + p.face * 0.5, y: p.y + 0.45, v: p.face });
+  }
+  if (p.swing > 0) return; // busy swinging
   if (p.burst > 0) {
     p.burstTimer--;
     if (p.burstTimer <= 0) {
@@ -477,6 +519,9 @@ function respawn(m: Match, s: GameState, p: PlayerState) {
   p.hitstop = 0;
   p.invuln = T.spawnInvuln;
   p.jumps = 1;
+  p.ammo = -1;
+  p.swing = 0;
+  p.dmgBy = [0, 0, 0, 0];
   p.face = sp.x > m.level.view.x + m.level.view.w / 2 ? -1 : 1;
   emit(s, 'spawn', p.slot, { a: p.slot, x: p.x, y: p.y });
 }
@@ -509,6 +554,15 @@ function damage(m: Match, s: GameState, v: PlayerState, attacker: number, dmg: n
   v.hp -= dmg;
   v.flash = 9;
   v.hitstop = Math.min(9, 3 + dmg);
+  if (isCrusade(m) && (kx !== 0 || ky !== 0)) {
+    // The lower your health, the further you fly. Heavy knights resist.
+    const missing = 1 - Math.max(0, Math.min(T.maxHp, v.hp)) / T.maxHp;
+    let mult = 1 + CR.lowHpKnock * missing;
+    if (perkOf(m, v.slot) === 3) mult *= CR.heavyKnock;
+    kx *= mult;
+    ky *= mult;
+  }
+  if (attacker >= 0 && attacker !== v.slot && attacker < 4) v.dmgBy[attacker] += dmg;
   const kb = Math.sqrt(kx * kx + ky * ky);
   v.stun = Math.max(v.stun, Math.round(9 + kb * 0.9));
   if (kb > 0) {
@@ -548,15 +602,70 @@ function ko(m: Match, s: GameState, v: PlayerState, attacker: number, kind: numb
   let killer = attacker !== v.slot ? attacker : -1;
   if (killer < 0 && v.lastHitBy >= 0 && s.frame - v.lastHitFrame < T.creditWindow) killer = v.lastHitBy;
   if (killer >= 0 && teamOf(m, killer) === teamOf(m, v.slot) && killer !== v.slot) killer = -1;
-  if (killer >= 0) {
+  const play = s.phase === Phase.Play;
+  if (isCrusade(m)) {
+    crusadeScore(m, s, v, killer, play);
+  } else if (killer >= 0) {
     const k = s.players[killer];
     k.kos++;
-    if (s.phase === Phase.Play) k.score++;
+    if (play) k.score++;
   }
   v.lastHitBy = -1;
   s.freeze = T.koFreeze;
   emit(s, 'ko', v.slot, { a: killer, b: v.slot, x: v.x, y: v.y + T.height / 2, w: kind });
-  if (s.phase === Phase.Play) checkWin(m, s, killer);
+  if (play) {
+    if (isCrusade(m)) checkWinAny(m, s, killer);
+    else checkWin(m, s, killer);
+  }
+}
+
+/** Crusade scoring: KO 2, assist 1, +1 for KOing the crowned leader, -1 for a self-KO. */
+function crusadeScore(m: Match, s: GameState, v: PlayerState, killer: number, play: boolean) {
+  if (killer >= 0) {
+    const k = s.players[killer];
+    k.kos++;
+    const bounty = crownHolder(m, s) === v.slot;
+    const pts = CR.koPoints + (bounty ? CR.bountyPoints : 0);
+    if (play) k.score += pts;
+    emit(s, 'points', `ko-${v.slot}`, { a: killer, b: v.slot, v: pts, w: bounty ? 1 : 0, x: k.x, y: k.y + T.height + 0.6 });
+    for (const o of s.players) {
+      if (!o.active || o.slot === killer || o.slot === v.slot) continue;
+      if (teamOf(m, o.slot) === teamOf(m, v.slot)) continue;
+      if (v.dmgBy[o.slot] < CR.assistMinDamage) continue;
+      o.assists++;
+      if (play) o.score += CR.assistPoints;
+      emit(s, 'points', `assist-${v.slot}-${o.slot}`, { a: o.slot, b: v.slot, v: CR.assistPoints, w: 2, x: o.x, y: o.y + T.height + 0.6 });
+    }
+  } else if (play && v.score > 0) {
+    v.score = Math.max(0, v.score - CR.selfKoPenalty);
+    emit(s, 'points', `oops-${v.slot}`, { a: v.slot, b: v.slot, v: -CR.selfKoPenalty, w: 3, x: v.x, y: v.y + T.height + 0.6 });
+  }
+}
+
+/** Slot of the crowned leader: strictly highest score (Crusade). -1 when tied or nobody scored. */
+export function crownHolder(m: Match, s: GameState): number {
+  let best = -1;
+  let bestScore = 0;
+  let tie = false;
+  for (const p of s.players) {
+    if (!p.active) continue;
+    if (p.score > bestScore) { bestScore = p.score; best = p.slot; tie = false; }
+    else if (p.score === bestScore && bestScore > 0) tie = true;
+  }
+  return tie ? -1 : best;
+}
+
+/** Anyone (or any team) may cross the target in Crusade (assists also score). */
+function checkWinAny(m: Match, s: GameState, preferred: number) {
+  const reached = (slot: number) => (m.cfg.teams ? teamScore(m, s, teamOf(m, slot)) : s.players[slot].score) >= m.cfg.targetScore;
+  if (s.suddenDeath && preferred >= 0) return endMatch(m, s, preferred);
+  if (preferred >= 0 && reached(preferred)) return endMatch(m, s, preferred);
+  let best = -1;
+  for (const p of s.players) {
+    if (!p.active || !reached(p.slot)) continue;
+    if (best < 0 || p.score > s.players[best].score) best = p.slot;
+  }
+  if (best >= 0) endMatch(m, s, best);
 }
 
 function teamScore(m: Match, s: GameState, team: number): number {
@@ -615,7 +724,7 @@ function spawnProj(m: Match, s: GameState, p: PlayerState, kind: W, vx: number, 
   const def = WEAPONS[kind];
   const pr: Projectile = {
     id: s.nextId++, kind, owner: p.slot, team: teamOf(m, p.slot),
-    x: p.x + p.face * ox, y: p.y + oy, vx, vy, age: 0, life: def.life, bounces: 0, dead: false, p: 0, q: 0,
+    x: p.x + p.face * ox, y: p.y + oy, vx, vy, age: 0, life: def.life, bounces: 0, dead: false, p: 0, q: 0, refl: 0,
   };
   s.projs.push(pr);
   return pr;
@@ -668,8 +777,9 @@ function shoot(m: Match, s: GameState, p: PlayerState) {
       const b = aim === 1 ? spawnProj(m, s, p, W.Bomb, f * 3 + carry, 9)
         : aim === -1 ? spawnProj(m, s, p, W.Bomb, f * 1.5, -3, 0.1, 0.2)
         : spawnProj(m, s, p, W.Bomb, f * sp + carry, 4.5);
-      // Decide the outcome now so every peer agrees: 1 in 4 is a nuke.
-      b.p = rand(s) < 0.25 ? 1 : 0;
+      // Decide the outcome now so every peer agrees: 1 in 4 is a nuke
+      // (1 in 3 for a Lucky knight in Crusade).
+      b.p = rand(s) < (perkOf(m, p.slot) === 0 ? 0.34 : 0.25) ? 1 : 0;
       break;
     }
     case W.Music:
@@ -680,6 +790,14 @@ function shoot(m: Match, s: GameState, p: PlayerState) {
       break;
   }
   emit(s, 'shoot', p.slot, { a: p.slot, w: p.weapon, x: p.x + f * 0.4, y: p.y + 0.45, v: aim });
+  if (p.ammo > 0) {
+    p.ammo--;
+    if (p.ammo === 0) {
+      emit(s, 'empty', `${p.slot}-${p.shots}`, { a: p.slot, w: p.weapon, x: p.x, y: p.y + T.height + 0.4 });
+      p.weapon = W.Stone;
+      p.ammo = -1;
+    }
+  }
 }
 
 function fireMusicNote(m: Match, s: GameState, p: PlayerState, index: number) {
@@ -766,6 +884,12 @@ function breakProj(s: GameState, pr: Projectile, how = 'break') {
 
 function projHitsWorld(m: Match, s: GameState, pr: Projectile, hit: MoveResult) {
   const sol = hit.solid >= 0 ? m.level.solids[hit.solid] : null;
+  if (sol && isCrusade(m) && pr.kind !== W.Barrel && pr.kind !== W.Sock) {
+    // Crusade: walls crumble and the temple cracks under fire.
+    const dmg = Math.max(1, WEAPONS[pr.kind].damage);
+    if (sol.breakable >= 0 && !s.destroyed[sol.breakable] && (hit.hitX || pr.kind !== W.Pill)) damageTile(s, sol, dmg, pr.owner);
+    if (sol.group === 'temple') damageTemple(m, s, dmg, pr.owner, pr.x, pr.y);
+  }
   switch (pr.kind) {
     case W.Stone:
     case W.Shuriken:
@@ -864,7 +988,20 @@ function explode(m: Match, s: GameState, pr: Projectile, kind: BlastKind) {
     id: s.nextId++, kind, owner: pr.owner, team: pr.team, x: pr.x, y: pr.y, r: d.r,
     age: 0, life: d.life, damage: d.damage, knockback: d.knockback, pulse: d.pulse, hitMask: 0,
   };
+  if (isCrusade(m) && kind === 'confetti') {
+    // The dud is no longer useless: a party popper that shoves everyone.
+    b.knockback = CR.confettiKnock;
+    b.r = CR.confettiRadius;
+  }
   s.blasts.push(b);
+  if (isCrusade(m) && kind !== 'nuke') {
+    const dmg = kind === 'sock' ? 3 : 2;
+    for (const so of m.level.solids) {
+      if (so.breakable >= 0 && !s.destroyed[so.breakable] && circleRect(b.x, b.y, b.r, so)) damageTile(s, so, dmg, b.owner);
+    }
+    const t = m.level.features.temple;
+    if (t && circleRect(b.x, b.y, b.r, t)) damageTemple(m, s, dmg, b.owner, b.x, b.y);
+  }
   emit(s, 'boom', b.id, { w: pr.kind, x: b.x, y: b.y, a: b.owner, v: kind === 'nuke' ? 3 : kind === 'confetti' ? 0 : kind === 'sock' ? 2 : 1, b: ['sock', 'duck', 'nuke', 'confetti'].indexOf(kind) });
   if (kind === 'nuke') {
     // Nukes smash breakable tiles and the Dragon temple.
@@ -875,14 +1012,33 @@ function explode(m: Match, s: GameState, pr: Projectile, kind: BlastKind) {
       }
     }
     const t = m.level.features.temple;
-    if (t && s.dragon.stage === 0 && circleRect(b.x, b.y, b.r + 0.5, t)) {
-      s.dragon.stage = 1;
-      s.dragon.timer = 150;
-      s.dragon.by = b.owner;
-      if (!s.groupsGone.includes('temple')) s.groupsGone.push('temple');
-      emit(s, 'temple', 0, { a: b.owner, x: t.x + t.w / 2, y: t.y + t.h / 2 });
-    }
+    if (t && s.dragon.stage === 0 && circleRect(b.x, b.y, b.r + 0.5, t)) collapseTemple(m, s, b.owner);
   }
+}
+
+function collapseTemple(m: Match, s: GameState, by: number) {
+  const t = m.level.features.temple;
+  if (!t || s.dragon.stage !== 0) return;
+  s.dragon.stage = 1;
+  s.dragon.timer = 150;
+  s.dragon.by = by;
+  s.templeHp = 0;
+  if (!s.groupsGone.includes('temple')) s.groupsGone.push('temple');
+  emit(s, 'temple', 0, { a: by, x: t.x + t.w / 2, y: t.y + t.h / 2 });
+}
+
+function damageTemple(m: Match, s: GameState, dmg: number, by: number, x: number, y: number) {
+  if (s.dragon.stage !== 0 || s.templeHp <= 0) return;
+  s.templeHp -= dmg;
+  emit(s, 'temple-hit', `${s.frame}-${x.toFixed(2)}`, { x, y, v: Math.max(0, s.templeHp), a: by });
+  if (s.templeHp <= 0) collapseTemple(m, s, by);
+}
+
+function damageTile(s: GameState, so: Solid, dmg: number, by: number) {
+  if (so.breakable < 0 || s.destroyed[so.breakable]) return;
+  s.tileHp[so.breakable] -= dmg;
+  if (s.tileHp[so.breakable] <= 0) breakSolid(s, so, by);
+  else emit(s, 'tile-hit', `${s.frame}-${so.breakable}`, { x: so.x + so.w / 2, y: so.y + so.h / 2, v: s.tileHp[so.breakable] });
 }
 
 function breakSolid(s: GameState, so: Solid, by: number) {
@@ -905,7 +1061,7 @@ function updateBlasts(m: Match, s: GameState) {
       b.hitMask = 0;
       if (b.age > 0) emit(s, 'quack', `${b.id}-${b.age}`, { x: b.x, y: b.y });
     }
-    if (b.damage > 0 && (b.pulse > 0 || b.age < 6)) {
+    if ((b.damage > 0 || b.knockback > 0) && (b.pulse > 0 || b.age < 6)) {
       for (const v of s.players) {
         if (!v.active || !v.alive) continue;
         if (b.hitMask & (1 << v.slot)) continue;
@@ -915,7 +1071,7 @@ function updateBlasts(m: Match, s: GameState) {
         b.hitMask |= 1 << v.slot;
         // Your own blasts hurt you, but less.
         const self = v.slot === b.owner;
-        const dmg = self ? Math.max(1, Math.floor(b.damage / 2)) : b.damage;
+        const dmg = b.damage === 0 ? 0 : self ? Math.max(1, Math.floor(b.damage / 2)) : b.damage;
         const [kx, ky] = knockFrom(b.knockback, v.x - b.x, cy - b.y + 0.3);
         damage(m, s, v, b.owner, dmg, kx, ky, 100 + ['sock', 'duck', 'nuke', 'confetti'].indexOf(b.kind));
       }
@@ -1013,10 +1169,16 @@ function updatePickups(m: Match, s: GameState, dt: number) {
         p.hp = Math.min(T.armorHp, p.hp + 5);
         emit(s, 'armor', c.id, { a: p.slot, x: c.x, y: c.y });
       } else {
-        // A random weapon different from the current one (never the starter stone).
-        let w = randInt(s, 1, WEAPON_COUNT - 2);
-        if (w >= p.weapon && p.weapon !== W.Stone) w++;
-        if (w === p.weapon) w = ((w % (WEAPON_COUNT - 1)) + 1) as W;
+        let w: number;
+        if (isCrusade(m)) {
+          w = underdogWeapon(m, s, p);
+          p.ammo = Math.ceil(AMMO[w] * (perkOf(m, p.slot) === 0 ? CR.luckyAmmo : 1));
+        } else {
+          // A random weapon different from the current one (never the starter stone).
+          w = randInt(s, 1, WEAPON_COUNT - 2);
+          if (w >= p.weapon && p.weapon !== W.Stone) w++;
+          if (w === p.weapon) w = ((w % (WEAPON_COUNT - 1)) + 1) as W;
+        }
         c.weapon = w;
         p.weapon = w as W;
         p.cd = 12;
@@ -1028,6 +1190,86 @@ function updatePickups(m: Match, s: GameState, dt: number) {
     }
   }
   s.pickups = s.pickups.filter((c) => c.opened < 45);
+}
+
+const STRONG: W[] = [W.Pizza, W.Bomb, W.Hadouken, W.Duck];
+const NORMAL: W[] = [W.Pill, W.Shuriken, W.Barrel, W.Sock, W.Music];
+
+/** Crusade chests favour whoever is behind: last place gets the big guns. */
+function underdogWeapon(m: Match, s: GameState, p: PlayerState): W {
+  let top = 0;
+  for (const o of s.players) if (o.active && o.score > top) top = o.score;
+  const behind = top > 0 ? (top - p.score) / top : 0.5;
+  const lucky = perkOf(m, p.slot) === 0 ? CR.luckyStrong : 0;
+  const tier = rand(s) < 0.2 + 0.55 * behind + lucky ? STRONG : NORMAL;
+  const options = tier.filter((w) => w !== p.weapon);
+  return options[randInt(s, 0, options.length - 1)];
+}
+
+// ------------------------------------------------------------------ crusade: swords
+/** Active sword swings parry projectiles and shove knights. */
+function swings(m: Match, s: GameState) {
+  for (const p of s.players) {
+    if (!p.active || !p.alive || p.swing <= 0) continue;
+    const t = CR.swingTime - p.swing;
+    if (t < CR.swingActiveFrom || t > CR.swingActiveTo) continue;
+    const cx = p.x + p.face * 0.5;
+    const cy = p.y + 0.45;
+    const r = CR.swingRange;
+    const myTeam = teamOf(m, p.slot);
+    // ---- parry
+    for (const pr of s.projs) {
+      if (pr.dead || pr.owner === p.slot) continue;
+      if (m.cfg.teams && pr.team === myTeam) continue;
+      const [hw, hh] = projHalf(pr);
+      if (!circleRect(cx, cy, r, { x: pr.x - hw, y: pr.y - hh, w: hw * 2, h: hh * 2 })) continue;
+      const def = WEAPONS[pr.kind];
+      const speed = Math.min(24, Math.max(Math.sqrt(pr.vx * pr.vx + pr.vy * pr.vy), def.speed) * CR.parryBoost);
+      const aim = aimOf(p);
+      if (def.gravity > 0) {
+        pr.vx = p.face * speed * 0.75;
+        pr.vy = aim === 1 ? 11 : aim === -1 ? -4 : 6;
+      } else if (aim === 0) {
+        pr.vx = p.face * speed;
+        pr.vy = 0;
+      } else {
+        pr.vx = p.face * speed * C35;
+        pr.vy = aim * speed * S35;
+      }
+      if (pr.kind === W.Barrel) { pr.q = p.face; pr.bounces = 0; }
+      pr.owner = p.slot;
+      pr.team = myTeam;
+      pr.refl++;
+      pr.life = Math.max(pr.life, Math.min(def.life, 90));
+      p.parries++;
+      p.hitstop = Math.max(p.hitstop, 5);
+      p.swingCd = Math.min(p.swingCd, CR.parryRefund);
+      emit(s, 'parry', `${pr.id}-${pr.refl}`, { a: p.slot, x: pr.x, y: pr.y, w: pr.kind });
+    }
+    // ---- sword hits
+    for (const v of s.players) {
+      if (v === p || !v.active || !v.alive || v.invuln > 0) continue;
+      if (p.swingHit & (1 << v.slot)) continue;
+      if (teamOf(m, v.slot) === myTeam && m.cfg.teams) continue;
+      if (!circleRect(cx, cy, r, { x: v.x - T.halfW, y: v.y, w: T.halfW * 2, h: T.height })) continue;
+      p.swingHit |= 1 << v.slot;
+      const power = CR.swingKnock * (perkOf(m, p.slot) === 3 ? CR.heavySwing : 1);
+      const [kx, ky] = knockFrom(power, p.face, 0.45 + (aimOf(p) === 1 ? 0.6 : 0));
+      p.hitstop = Math.max(p.hitstop, 4);
+      damage(m, s, v, p.slot, CR.swingDamage, kx, ky, 300);
+    }
+  }
+}
+
+/** Launched knight slammed into a surface. */
+function splat(m: Match, s: GameState, p: PlayerState, vx: number, vy: number, hx: number, hy: number) {
+  p.splatCd = CR.splatCooldown;
+  const by = p.lastHitBy >= 0 && s.frame - p.lastHitFrame < T.creditWindow ? p.lastHitBy : -1;
+  if (by >= 0) s.players[by].splats++;
+  emit(s, 'splat', `${p.slot}-${s.frame}`, { a: by, b: p.slot, x: p.x + hx * T.halfW, y: p.y + T.height / 2 + (hy > 0 ? 0.4 : hy < 0 ? -0.4 : 0), v: hx !== 0 ? hx : 0, w: hy });
+  damage(m, s, p, by, CR.splatDamage, 0, 0, 301);
+  p.vx = vx;
+  p.vy = vy;
 }
 
 // ------------------------------------------------------------------ level scripts
@@ -1079,6 +1321,9 @@ function updateLevel(m: Match, s: GameState, dt: number) {
   }
 
   const d = s.dragon;
+  if (f.temple && isCrusade(m) && d.stage === 0 && s.phase === Phase.Play && s.clock >= CR.templeAutoCollapse) {
+    collapseTemple(m, s, -1);
+  }
   if (f.dragon && d.stage > 0) {
     if (d.stage !== 4) d.timer--;
     if (d.stage === 1 && d.timer <= 0) { d.stage = 2; d.timer = 150; emit(s, 'dragon-wake', 0); }
@@ -1105,7 +1350,7 @@ function updateLevel(m: Match, s: GameState, dt: number) {
       }
       if (d.x < v.x - 4 || d.x > v.x + v.w + 4) {
         d.stage = 5;
-        d.timer = randInt(s, 900, 1500);
+        d.timer = isCrusade(m) ? randInt(s, 600, 1000) : randInt(s, 900, 1500);
       }
     } else if (d.stage === 5 && d.timer <= 0 && s.phase === Phase.Play) {
       d.stage = 4;

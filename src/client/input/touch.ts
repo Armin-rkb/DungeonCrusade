@@ -2,7 +2,7 @@
 // left, JUMP and THROW buttons on the right (mirrored for left-handed play),
 // and a pause button. Multi-touch aware.
 
-import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_UP } from '../../shared/input';
+import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_SWING, BTN_UP } from '../../shared/input';
 import { settings } from '../settings';
 import { haptic, input } from './input';
 
@@ -20,10 +20,13 @@ export class TouchControls {
   stickKnob: HTMLDivElement;
   jumpBtn: HTMLDivElement;
   attackBtn: HTMLDivElement;
+  swingBtn: HTMLDivElement;
   pauseBtn: HTMLButtonElement;
   stick: StickState | null = null;
   jumpTouch = -1;
   attackTouch = -1;
+  swingTouch = -1;
+  swingEnabled = false;
   visible = false;
   onPause: () => void = () => {};
 
@@ -36,6 +39,7 @@ export class TouchControls {
       <div class="stick-base"><div class="stick-knob"></div></div>
       <div class="tbtn tbtn-attack"><span>THROW</span></div>
       <div class="tbtn tbtn-jump"><span>JUMP</span></div>
+      <div class="tbtn tbtn-swing"><span>SWING</span></div>
     `;
     this.pauseBtn = document.createElement('button');
     this.pauseBtn.className = 'tbtn-pause';
@@ -47,6 +51,7 @@ export class TouchControls {
     this.stickKnob = this.root.querySelector('.stick-knob')!;
     this.jumpBtn = this.root.querySelector('.tbtn-jump')!;
     this.attackBtn = this.root.querySelector('.tbtn-attack')!;
+    this.swingBtn = this.root.querySelector('.tbtn-swing')!;
 
     const opts = { passive: false } as AddEventListenerOptions;
     this.root.addEventListener('touchstart', (e) => this.onStart(e), opts);
@@ -71,9 +76,12 @@ export class TouchControls {
     this.root.classList.toggle('lefty', settings.touchLeftHanded);
   }
 
-  show(on: boolean) {
+  /** swing = show the Crusade sword button. */
+  show(on: boolean, swing = this.swingEnabled) {
     this.visible = on;
+    this.swingEnabled = swing;
     this.root.classList.toggle('hidden', !on);
+    this.swingBtn.classList.toggle('hide', !swing);
     if (!on) this.reset();
   }
 
@@ -81,6 +89,8 @@ export class TouchControls {
     this.stick = null;
     this.jumpTouch = -1;
     this.attackTouch = -1;
+    this.swingTouch = -1;
+    this.swingBtn.classList.remove('down');
     this.stickBase.classList.remove('active');
     this.jumpBtn.classList.remove('down');
     this.attackBtn.classList.remove('down');
@@ -92,8 +102,10 @@ export class TouchControls {
     return settings.touchLeftHanded ? x > w * 0.55 : x < w * 0.45;
   }
 
-  private buttonAt(x: number, y: number): 'jump' | 'attack' | null {
-    for (const [el, name] of [[this.jumpBtn, 'jump'], [this.attackBtn, 'attack']] as const) {
+  private buttonAt(x: number, y: number): 'jump' | 'attack' | 'swing' | null {
+    const list: Array<[HTMLDivElement, 'jump' | 'attack' | 'swing']> = [[this.jumpBtn, 'jump'], [this.attackBtn, 'attack']];
+    if (this.swingEnabled) list.push([this.swingBtn, 'swing']);
+    for (const [el, name] of list) {
       const r = el.getBoundingClientRect();
       const pad = 18;
       if (x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad) return name;
@@ -128,6 +140,10 @@ export class TouchControls {
           this.attackTouch = t.identifier;
           this.attackBtn.classList.add('down');
           haptic('light', 10);
+        } else if (b === 'swing' && this.swingTouch < 0) {
+          this.swingTouch = t.identifier;
+          this.swingBtn.classList.add('down');
+          haptic('medium', 12);
         }
       }
     }
@@ -184,6 +200,10 @@ export class TouchControls {
         this.attackTouch = -1;
         this.attackBtn.classList.remove('down');
       }
+      if (t.identifier === this.swingTouch) {
+        this.swingTouch = -1;
+        this.swingBtn.classList.remove('down');
+      }
     }
     this.update();
   }
@@ -206,6 +226,7 @@ export class TouchControls {
     }
     if (this.jumpTouch >= 0) b |= BTN_JUMP;
     if (this.attackTouch >= 0) b |= BTN_ATTACK;
+    if (this.swingTouch >= 0) b |= BTN_SWING;
     input.touch.buttons = b;
   }
 }

@@ -1,7 +1,7 @@
 // Canvas 2D renderer: camera (fit the arena to any screen), pixel-art sprite
 // drawing with Unity pivots / pixels-per-unit, hit-flash silhouettes, shake.
 
-import { assets, sprite, tintedImage, whiteImage, type SpriteDef } from '../assets';
+import { assets, silhouette, sprite, tintedImage, whiteImage, type SpriteDef } from '../assets';
 import type { Rect } from '../../shared/level';
 
 export interface DrawOpts {
@@ -15,6 +15,8 @@ export interface DrawOpts {
   additive?: boolean;
   /** Multiply colour '#rrggbb[aa]' (Unity SpriteRenderer colour). */
   tint?: string;
+  /** Draw a flat-colour silhouette (outlines). */
+  fill?: string;
 }
 
 export class Renderer {
@@ -125,7 +127,7 @@ export class Renderer {
   }
 
   drawSpriteDef(def: SpriteDef, x: number, y: number, o: DrawOpts = {}) {
-    const img = o.white ? whiteImage(def.img) : o.tint ? tintedImage(def.img, o.tint) : assets.images.get(def.img);
+    const img = o.fill ? silhouette(def.img, o.fill) : o.white ? whiteImage(def.img) : o.tint ? tintedImage(def.img, o.tint) : assets.images.get(def.img);
     if (!img) return;
     const c = this.ctx;
     const k = this.scale / def.ppu;

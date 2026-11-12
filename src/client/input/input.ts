@@ -5,7 +5,7 @@
 // Every physical device produces one button byte for the simulation plus menu
 // navigation edges. Local players are bound to devices in the lobby.
 
-import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_UP } from '../../shared/input';
+import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_SWING, BTN_UP } from '../../shared/input';
 import { settings } from '../settings';
 
 export type Glyphs = 'xbox' | 'playstation' | 'nintendo' | 'keyboard' | 'touch';
@@ -47,19 +47,19 @@ const KB_LAYOUTS = [
     id: 'kb1',
     name: 'Keyboard (WASD)',
     left: ['KeyA'], right: ['KeyD'], up: ['KeyW'], down: ['KeyS'],
-    jump: ['Space', 'KeyC'], attack: ['KeyF', 'KeyV'],
+    jump: ['Space', 'KeyC'], attack: ['KeyF', 'KeyV'], swing: ['KeyG', 'KeyB'],
     start: ['Tab'],
   },
   {
     id: 'kb2',
     name: 'Keyboard (Arrows)',
     left: ['ArrowLeft'], right: ['ArrowRight'], up: ['ArrowUp'], down: ['ArrowDown'],
-    jump: ['Period', 'Numpad0', 'ShiftRight', 'KeyK'], attack: ['Slash', 'Numpad1', 'ControlRight', 'KeyL', 'Comma'],
+    jump: ['Period', 'Numpad0', 'ShiftRight', 'KeyK'], attack: ['Slash', 'Numpad1', 'ControlRight', 'KeyL'], swing: ['Comma', 'KeyJ', 'Numpad2'],
     start: ['Tab'],
   },
 ] as const;
 
-const ALL_GAME_KEYS = new Set<string>(KB_LAYOUTS.flatMap((l) => [...l.left, ...l.right, ...l.up, ...l.down, ...l.jump, ...l.attack]));
+const ALL_GAME_KEYS = new Set<string>(KB_LAYOUTS.flatMap((l) => [...l.left, ...l.right, ...l.up, ...l.down, ...l.jump, ...l.attack, ...l.swing]));
 
 function anyKey(codes: readonly string[], set: Set<string>): boolean {
   for (const c of codes) if (set.has(c)) return true;
@@ -87,6 +87,7 @@ class KeyboardDevice implements Device {
     if (anyKey(l.down, keysDown)) b |= BTN_DOWN;
     if (anyKey(l.jump, keysDown)) b |= BTN_JUMP;
     if (anyKey(l.attack, keysDown)) b |= BTN_ATTACK;
+    if (anyKey(l.swing, keysDown)) b |= BTN_SWING;
     this.buttons = b;
     const n = this.nav;
     n.up = repeat(this.id + 'u', anyKey(l.up, keysDown));
@@ -160,7 +161,9 @@ class GamepadDevice implements Device {
     // A / Cross / bottom face button jumps (like the original "Press A to jump"),
     // X / Square / left face button attacks ("Press X to attack").
     if (btn(0) || btn(4) || btn(6)) b |= BTN_JUMP;
-    if (btn(2) || btn(1) || btn(5) || btn(7) || btn(3)) b |= BTN_ATTACK;
+    if (btn(2) || btn(5) || btn(7)) b |= BTN_ATTACK;
+    // B / Circle and Y / Triangle swing the sword (Crusade); in Classic they throw.
+    if (btn(1) || btn(3)) b |= BTN_SWING;
     this.buttons = b;
     const pressed = (i: number) => btn(i) && !this.prev[i];
     const n = this.nav;
@@ -331,13 +334,13 @@ export function isTouchDevice(): boolean {
 export const input = new InputManager();
 
 /** Button labels per glyph set. */
-export function label(g: Glyphs, action: 'jump' | 'attack' | 'confirm' | 'back' | 'start' | 'alt'): string {
+export function label(g: Glyphs, action: 'jump' | 'attack' | 'swing' | 'confirm' | 'back' | 'start' | 'alt'): string {
   const table: Record<Glyphs, Record<string, string>> = {
-    xbox: { jump: 'A', attack: 'X', confirm: 'A', back: 'B', start: 'Menu', alt: 'X' },
-    playstation: { jump: '✕', attack: '□', confirm: '✕', back: '○', start: 'Options', alt: '□' },
-    nintendo: { jump: 'B', attack: 'Y', confirm: 'B', back: 'A', start: '+', alt: 'Y' },
-    keyboard: { jump: 'Space', attack: 'F', confirm: 'Space', back: 'Esc', start: 'Tab', alt: 'F' },
-    touch: { jump: 'JUMP', attack: 'THROW', confirm: 'Tap', back: 'Back', start: 'Pause', alt: 'Tap' },
+    xbox: { jump: 'A', attack: 'X', swing: 'B', confirm: 'A', back: 'B', start: 'Menu', alt: 'X' },
+    playstation: { jump: '✕', attack: '□', swing: '○', confirm: '✕', back: '○', start: 'Options', alt: '□' },
+    nintendo: { jump: 'B', attack: 'Y', swing: 'A', confirm: 'B', back: 'A', start: '+', alt: 'Y' },
+    keyboard: { jump: 'Space', attack: 'F', swing: 'G', confirm: 'Space', back: 'Esc', start: 'Tab', alt: 'F' },
+    touch: { jump: 'JUMP', attack: 'THROW', swing: 'SWING', confirm: 'Tap', back: 'Back', start: 'Pause', alt: 'Tap' },
   };
   return table[g][action];
 }

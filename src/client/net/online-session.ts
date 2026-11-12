@@ -61,7 +61,7 @@ export class OnlineSession implements Session {
 
   constructor(public conn: Connection, public start: StartInfo, public locals: Map<number, string>, delay: number) {
     const cfg = start.cfg;
-    this.match = { cfg, level: getLevel(cfg.level) };
+    this.match = { cfg, level: getLevel(cfg.level, cfg.mode ?? 'classic') };
     this.state = createGame(this.match);
     this.owners = start.owners;
     this.names = cfg.slots.map((s) => s.name);

@@ -3,9 +3,9 @@
 // manages rooms (4-letter codes, quick match) and relays inputs between peers
 // who each run the deterministic simulation with rollback.
 
-import type { LevelId, MatchConfig } from './types';
+import type { GameMode, LevelId, MatchConfig } from './types';
 
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
 export const MAX_PEERS = 4;
 export const CODE_ALPHABET = 'BCDFGHJKLMNPQRSTVWXZ';
 export const CODE_LENGTH = 4;
@@ -28,6 +28,7 @@ export interface PeerInfo {
 
 export interface RoomSettings {
   level: LevelId;
+  mode: GameMode;
   targetScore: number;
   timeLimit: number;
   items: boolean;
@@ -89,6 +90,7 @@ export type ServerMsg =
 
 export const DEFAULT_ROOM_SETTINGS: RoomSettings = {
   level: 'dungeon',
+  mode: 'classic',
   targetScore: 5,
   timeLimit: 0,
   items: true,

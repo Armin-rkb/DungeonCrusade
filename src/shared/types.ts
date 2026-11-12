@@ -18,8 +18,12 @@ export interface SlotConfig {
   name: string;
 }
 
+export type GameMode = 'classic' | 'crusade';
+
 export interface MatchConfig {
   level: LevelId;
+  /** 'classic' = the original rules, 'crusade' = the remix. Missing = classic. */
+  mode?: GameMode;
   seed: number;
   /** KOs needed to win. */
   targetScore: number;
@@ -76,6 +80,20 @@ export interface PlayerState {
   act: number;
   actTimer: number;
   airTime: number;
+  // ---- Crusade mode
+  /** Frames left in the current sword swing (0 = not swinging). */
+  swing: number;
+  swingCd: number;
+  /** Slots already hit by the current swing. */
+  swingHit: number;
+  /** Shots left for the held weapon (-1 = unlimited). */
+  ammo: number;
+  splatCd: number;
+  /** Damage taken from each slot during this life (for assists). */
+  dmgBy: number[];
+  assists: number;
+  parries: number;
+  splats: number;
   score: number;
   kos: number;
   deaths: number;
@@ -99,6 +117,8 @@ export interface Projectile {
   life: number;
   bounces: number;
   dead: boolean;
+  /** Times this projectile was parried (Crusade). */
+  refl: number;
   /** Free parameter: music note size, base y for wave motion... */
   p: number;
   q: number;
@@ -188,6 +208,9 @@ export interface GameState {
   dragon: DragonState;
   /** Frames until the level armor spot is available again (0 = available). */
   armorCd: number;
+  /** Crusade: hit points of breakable tiles / the Dragon temple. */
+  tileHp: number[];
+  templeHp: number;
   winner: number; // slot (or team when teams) or -1
   winnerTeam: number;
   events: GameEvent[];

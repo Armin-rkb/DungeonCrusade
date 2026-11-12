@@ -72,7 +72,7 @@ describe('levels', () => {
     const s = createGame(m);
     for (let i = 0; i < 200; i++) step(m, s, [0, 0, 0, 0]);
     // Place a ticking nuke in the temple.
-    s.projs.push({ id: 999, kind: 8, owner: 0, team: 0, x: 0, y: -2, vx: 0, vy: 0, age: 50, life: 1, bounces: 0, dead: false, p: 1, q: 0 });
+    s.projs.push({ id: 999, kind: 8, owner: 0, team: 0, x: 0, y: -2, vx: 0, vy: 0, age: 50, life: 1, bounces: 0, dead: false, p: 1, q: 0, refl: 0 });
     const seen = new Set<string>();
     for (let i = 0; i < 60 * 12; i++) {
       step(m, s, [0, 0, 0, 0]);

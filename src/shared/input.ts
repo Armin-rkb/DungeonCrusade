@@ -8,6 +8,8 @@ export const BTN_UP = 4;
 export const BTN_DOWN = 8;
 export const BTN_JUMP = 16;
 export const BTN_ATTACK = 32;
+/** Crusade mode: sword swing / parry. In Classic it acts as another throw button. */
+export const BTN_SWING = 64;
 
 export const MAX_PLAYERS = 4;
 
@@ -25,5 +27,6 @@ export function describeButtons(b: number): string {
   if (b & BTN_DOWN) parts.push('D');
   if (b & BTN_JUMP) parts.push('J');
   if (b & BTN_ATTACK) parts.push('A');
+  if (b & BTN_SWING) parts.push('S');
   return parts.join('') || '-';
 }

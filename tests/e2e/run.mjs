@@ -24,8 +24,8 @@ const waitFor = async (url, ms = 30000) => {
   }
   throw new Error(`timeout waiting for ${url}`);
 };
-const run = (script) => new Promise((resolve) => {
-  const p = spawn(process.execPath, [path.join(root, 'tests/e2e', script), 'http://localhost:5173/', out], { cwd: root, stdio: 'inherit' });
+const run = (script, ...extra) => new Promise((resolve) => {
+  const p = spawn(process.execPath, [path.join(root, 'tests/e2e', script), 'http://localhost:5173/', out, ...extra], { cwd: root, stdio: 'inherit' });
   p.on('exit', (code) => resolve(code ?? 1));
 });
 
@@ -36,9 +36,9 @@ try {
   start('npx', ['tsx', 'server/index.ts'], { LAG_MS: '50', JITTER_MS: '30', PORT: '8787' });
   await waitFor('http://localhost:5173/');
   await waitFor('http://localhost:8787/health');
-  for (const s of ['online.mjs', 'gamepad.mjs', 'mobile.mjs']) {
-    console.log(`\n=== ${s}`);
-    const code = await run(s);
+  for (const [s, ...args] of [['online.mjs', 'classic'], ['online.mjs', 'crusade'], ['gamepad.mjs'], ['mobile.mjs']]) {
+    console.log(`\n=== ${s} ${args.join(' ')}`);
+    const code = await run(s, ...args);
     if (code !== 0) failed++;
   }
 } finally {

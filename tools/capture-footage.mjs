@@ -6,7 +6,7 @@
 // machine is. Every sound the game plays is logged and mixed afterwards from
 // the original sound files, together with the stage music.
 //
-// Usage: node tools/capture-footage.mjs [out.mp4]
+// Usage: node tools/capture-footage.mjs [out.mp4] [--crusade]
 // Needs: Playwright with Chromium, ffmpeg. Starts its own Vite dev server.
 
 import { spawn, execFileSync } from 'node:child_process';
@@ -16,7 +16,9 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = path.resolve(process.argv[2] ?? path.join(ROOT, 'test-results', 'footage', 'dungeon-crusade-gameplay.mp4'));
+const MODE = process.argv.includes('--crusade') ? 'crusade' : 'classic';
+const argOut = process.argv.slice(2).find((a) => !a.startsWith('--'));
+const OUT = path.resolve(argOut ?? path.join(ROOT, 'test-results', 'footage', `dungeon-crusade-${MODE}.mp4`));
 const WORK = path.join(path.dirname(OUT), 'frames');
 const FPS = 30;
 const W = 1280;
@@ -107,25 +109,27 @@ async function play(seconds, capture = true) {
 
 async function scene(level, weapons, opts = {}) {
   cuts.push(frame);
-  await page.evaluate(({ level, weapons, skipCountdown, seed }) => {
+  await page.evaluate(({ level, weapons, skipCountdown, seed, mode }) => {
     const app = window.__app;
     const names = ['GOLD', 'SILVER', 'GREEN', 'RED'];
     const cfg = {
-      level, seed, targetScore: 20, timeLimit: 0, teams: false, items: true,
+      level, mode, seed, targetScore: 40, timeLimit: 0, teams: false, items: true,
       slots: [0, 1, 2, 3].map((k) => ({ active: true, knight: k, bot: 3, team: 0, name: names[k] })),
     };
     app.startLocal(cfg, new Map(), names);
     const s = app.session.state;
     if (skipCountdown) s.phaseTimer = 2;
     window.__weapons = weapons;
-  }, { level, weapons, skipCountdown: !!opts.skipCountdown, seed: opts.seed ?? 7 });
+  }, { level, weapons, skipCountdown: !!opts.skipCountdown, seed: opts.seed ?? 7, mode: MODE });
   // Hand out a mix of weapons once the fight starts so the clip shows them off.
   const arm = () => page.evaluate(() => {
     const s = window.__app.session.state;
+    const crusade = window.__app.session.match.cfg.mode === 'crusade';
     s.players.forEach((p, i) => {
       p.weapon = window.__weapons[i];
       p.cdMax = 12;
       p.cd = 0;
+      if (crusade) p.ammo = 6;
     });
   });
   return arm;

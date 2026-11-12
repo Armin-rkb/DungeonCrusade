@@ -2,7 +2,7 @@
 // the game state and draw from the shared PRNG), so they behave identically on
 // every peer and can fill empty slots in online matches too.
 
-import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_UP } from './input';
+import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_SWING, BTN_UP } from './input';
 import { rand } from './rng';
 import type { Match } from './sim';
 import { T } from './tuning';
@@ -12,6 +12,7 @@ import { W, WEAPONS } from './weapons';
 const THINK = [0, 15, 8, 4]; // frames between decisions per difficulty
 const DODGE = [0, 0.12, 0.4, 0.75];
 const AIM_SLOP = [0, 1.0, 0.65, 0.45]; // vertical tolerance when shooting
+const PARRY = [0, 0.15, 0.45, 0.75]; // chance to bat back a projectile (Crusade)
 
 function teamOf(m: Match, slot: number): number {
   return m.cfg.teams ? m.cfg.slots[slot]?.team ?? slot : slot;
@@ -42,7 +43,8 @@ export function botInput(m: Match, s: GameState, p: PlayerState, level: number):
   if (!p.alive || !p.active) return 0;
   const ai = p.ai;
   const lvl = Math.max(1, Math.min(3, level));
-  let out = p.btn & ~(BTN_JUMP | BTN_ATTACK);
+  let out = p.btn & ~(BTN_JUMP | BTN_ATTACK | BTN_SWING);
+  const crusade = m.cfg.mode === 'crusade';
 
   // Hold jump for a few frames for full height jumps.
   if (ai.jumpHold > 0) {
@@ -89,7 +91,13 @@ export function botInput(m: Match, s: GameState, p: PlayerState, level: number):
     return out;
   }
 
-  // ---- choose a target: nearest living enemy
+  // ---- choose a target: nearest living enemy (in Crusade, the crowned leader is juicier)
+  let crown = -1;
+  if (crusade) {
+    let top = 0;
+    for (const o of s.players) if (o.active && o.score > top) { top = o.score; crown = o.slot; }
+    if (s.players.filter((o) => o.active && o.score === top).length > 1) crown = -1;
+  }
   let target: PlayerState | null = null;
   let best = 1e9;
   for (const o of s.players) {
@@ -97,7 +105,7 @@ export function botInput(m: Match, s: GameState, p: PlayerState, level: number):
     if (teamOf(m, o.slot) === teamOf(m, p.slot)) continue;
     const dx = wrappedDx(m, p.x, o.x);
     const dy = o.y - p.y;
-    const d = dx * dx + dy * dy * 1.5 + (o.invuln > 0 ? 40 : 0);
+    const d = (dx * dx + dy * dy * 1.5) * (o.slot === crown ? 0.5 : 1) + (o.invuln > 0 ? 40 : 0);
     if (d < best) { best = d; target = o; }
   }
 
@@ -156,11 +164,30 @@ export function botInput(m: Match, s: GameState, p: PlayerState, level: number):
     const ry = p.y + T.height / 2 - pr.y;
     if (Math.abs(ry) > 0.8 || Math.abs(rx) > 4) continue;
     if (Math.sign(pr.vx) !== Math.sign(rx)) continue;
+    if (crusade && p.swingCd <= 0 && Math.abs(rx) < 1.8 && rand(s) < PARRY[lvl]) {
+      // Face the incoming shot and bat it back.
+      out &= ~(BTN_LEFT | BTN_RIGHT);
+      out |= rx > 0 ? BTN_LEFT : BTN_RIGHT;
+      out |= BTN_SWING;
+      return out;
+    }
     if (rand(s) < DODGE[lvl]) {
       out |= BTN_JUMP;
       ai.jumpHold = 10;
     }
     break;
+  }
+
+  // ---- Crusade: sword swipe when someone is in reach
+  if (crusade && target && p.swingCd <= 0) {
+    const tdx = wrappedDx(m, p.x, target.x);
+    const tdy = target.y - p.y;
+    if (Math.abs(tdx) < 1.1 && Math.abs(tdy) < 0.9 && rand(s) < 0.35 + lvl * 0.15) {
+      out &= ~(BTN_LEFT | BTN_RIGHT);
+      out |= tdx >= 0 ? BTN_RIGHT : BTN_LEFT;
+      out |= BTN_SWING;
+      return out;
+    }
   }
 
   // ---- shooting

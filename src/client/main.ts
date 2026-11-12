@@ -192,14 +192,15 @@ class App implements AppApi {
     this.world.setLevel(s.match.level);
     this.renderer.setView(s.match.level.view);
     audio.playMusic(levelInfo(s.match.cfg.level as LevelId).music || MUSIC.dungeon);
-    this.touch.show([...s.locals.values()].includes('touch'));
+    this.touch.show([...s.locals.values()].includes('touch'), s.match.cfg.mode === 'crusade');
     if (!settings.tutorialSeen) {
       // First match ever: a one-line controls reminder for the device in use.
       const dev = input.device([...s.locals.values()][0] ?? '');
       const g = dev?.glyphs ?? 'keyboard';
-      this.tip = g === 'touch' ? 'Left side: move & aim  ·  JUMP  ·  THROW  ·  jump twice to double jump'
-        : g === 'keyboard' ? 'WASD move/aim · Space jump · F throw  |  P2: arrows · . jump · / throw'
-        : `Stick move/aim · ${label(g, 'jump')} jump · ${label(g, 'attack')} throw · jump on heads!`;
+      const cr = s.match.cfg.mode === 'crusade';
+      this.tip = g === 'touch' ? `Left side: move & aim  ·  JUMP  ·  THROW${cr ? '  ·  SWING parries shots' : '  ·  jump twice to double jump'}`
+        : g === 'keyboard' ? `WASD move/aim · Space jump · F throw${cr ? ' · G swing' : ''}  |  P2: arrows · . jump · / throw${cr ? ' · , swing' : ''}`
+        : `Stick move/aim · ${label(g, 'jump')} jump · ${label(g, 'attack')} throw${cr ? ` · ${label(g, 'swing')} swing/parry` : ' · jump on heads!'}`;
       this.tipUntil = performance.now() + 9000;
       settings.tutorialSeen = true;
       saveSettings();
@@ -286,7 +287,7 @@ class App implements AppApi {
         if (myWin) achievement(s.kind === 'online' ? 'WIN_ONLINE' : 'WIN_LOCAL');
         this.ui.set(new ResultsScreen(this));
       }
-      this.touch.show(!this.ui.top && [...s.locals.values()].includes('touch'));
+      this.touch.show(!this.ui.top && [...s.locals.values()].includes('touch'), s.match.cfg.mode === 'crusade');
     } else if (this.attract) {
       const events = this.attract.update(t);
       audio.sfxMuted = true;

@@ -30,6 +30,23 @@ on **PC (Steam / Windows / macOS / Linux), Android, iOS and the web**, offers
   - Free-for-all or 2v2 teams.
   - First-to-N KOs, optional time limit with sudden death.
 
+### Two modes
+
+- **Classic**: the original game's rules. Throw, dodge, and the first to the KO target wins.
+- **Crusade ★**: a remix that fixes the original's weak spots (pick it on the stage screen, or as host in an online room).
+
+| Problem in the original | Crusade's answer |
+| --- | --- |
+| No way to defend against a projectile | **Swing** your sword to parry shots back at whoever threw them, faster and glowing gold. The blade also shoves knights, and a parry refunds the swing. |
+| Knockback never mattered (closed arenas) | **SPLAT!** Knights launched into walls, floors or ceilings take bonus damage, and the lower your health the further you fly. |
+| Random weapons snowball the leader | Chest weapons have **ammo**, then it's back to the stone. Chests favour the **underdog**, and the leader wears a **crown** worth a +1 bounty. |
+| Last hit steals the KO | Points: **KO = 2, assist = 1** (2+ damage dealt), self-KO = -1. |
+| Four identical knights | **Perks:** Gold is Lucky (2x ammo, luckier loot), Silver is Swift, Green is Bouncy (triple jump), Red is Heavy (hard to launch). |
+| Dungeon blocks sightlines; the dragon almost never appears | Dungeon walls **crumble** under fire. The Dragon Temple has health and can be shot down (or falls after 75 s), and the dragon then keeps swooping. |
+| The Bomb's 75% dud does nothing | The confetti dud now **shoves** everyone nearby. |
+
+Perks were balanced over 96 simulated 4-CPU matches (23/30/22/21 wins for Gold/Silver/Green/Red).
+
 ### Game feel (new in v2)
 
 - Snappy movement with acceleration curves:
@@ -50,15 +67,18 @@ on **PC (Steam / Windows / macOS / Linux), Android, iOS and the web**, offers
   - dust, sparks, confetti, debris and projectile trails, using the original FX sprite sheets
   - the original sounds with pitch variation, stereo panning and music ducking
 - Controller rumble on gamepads, and haptics on phones.
+- Optional player-coloured outlines around every knight (Settings), for readability in 4-player chaos.
 
 ## Controls
 
-| | Move / aim | Jump | Throw | Pause |
-| --- | --- | --- | --- | --- |
-| Gamepad (Xbox, PlayStation, Switch Pro, 8BitDo, generic) | Stick / D-pad | A / ✕ / B | X / □ / Y, RB, RT | Menu / Options / + |
-| Keyboard P1 | WASD | Space / C | F / V | Esc |
-| Keyboard P2 | Arrows | `.` / K | `/` / L | Backspace |
-| Touch | Left half: floating stick | JUMP button | THROW button | ⏸ |
+| | Move / aim | Jump | Throw | Swing (Crusade) | Pause |
+| --- | --- | --- | --- | --- | --- |
+| Gamepad (Xbox, PlayStation, Switch Pro, 8BitDo, generic) | Stick / D-pad | A / ✕ / B | X / □ / Y, RB, RT | B / ○ / A, Y / △ | Menu / Options / + |
+| Keyboard P1 | WASD | Space / C | F / V | G / B | Esc |
+| Keyboard P2 | Arrows | `.` / K | `/` / L | `,` / J | Backspace |
+| Touch | Left half: floating stick | JUMP button | THROW button | SWING button | ⏸ |
+
+In Classic there is no sword: the swing buttons act as extra throw buttons.
 
 - Hold up or down while throwing to aim.
 - Press Down + Jump to drop through a platform.
@@ -104,6 +124,7 @@ Other scripts:
 | `node tests/e2e/online.mjs` | Two browsers play online through the relay (needs `dev` + `dev:server`). Run the server with `LAG_MS=60 JITTER_MS=40` to test rollback. |
 | `node tests/e2e/gamepad.mjs` / `mobile.mjs` | Emulated Xbox + DualSense controllers; touch-only phone flow |
 | `node tools/build-assets.mjs` / `node tools/extract-levels.mjs` | Regenerate the asset manifest / level JSON from the Unity project |
+| `npm run footage` (`-- --crusade`) | Record an MP4 with sound straight from the game (Classic or Crusade) |
 
 Desktop (Steam), Android, iOS, server deployment and CI are described in
 [platforms/README.md](platforms/README.md).

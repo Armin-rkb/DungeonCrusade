@@ -13,6 +13,7 @@ import { LEVELS, levelInfo } from '../../shared/levels';
 import { normalizeCode, type RoomState, type ServerMsg } from '../../shared/protocol';
 import { Phase, type LevelId, type MatchConfig } from '../../shared/types';
 import { WEAPONS } from '../../shared/weapons';
+import { PERKS } from '../../shared/tuning';
 
 const VERSION = '2.0.0';
 
@@ -55,6 +56,19 @@ function newSeed(): number {
 }
 
 const SCORE_OPTS = [3, 5, 7, 10].map((v) => ({ label: `${v} KOs`, value: v }));
+const MODE_OPTS = [
+  { label: 'CLASSIC', value: 'classic' as const },
+  { label: 'CRUSADE ★', value: 'crusade' as const },
+];
+export const MODE_BLURB = {
+  classic: 'The original rules: throw, dodge, first to the KO target wins.',
+  crusade: 'The remix: SWING to parry shots back, SPLAT rivals into walls, ammo-limited loot that favours the underdog, a crown bounty on the leader, assists, knight perks and crumbling stages. KO = 2 pts, assist = 1.',
+};
+
+/** Crusade scores points (KO = 2), so the target doubles. */
+function targetFor(mode: 'classic' | 'crusade', kos: number): number {
+  return mode === 'crusade' ? kos * 2 : kos;
+}
 const TIME_OPTS = [
   { label: 'OFF', value: 0 },
   { label: '2 MIN', value: 120 },
@@ -114,7 +128,7 @@ export class MainMenuScreen extends Screen {
     this.el.appendChild(h('h1', {}, 'DUNGEON CRUSADE'));
     const menu = h('div', { class: 'menu' });
     menu.append(
-      button('VERSUS', () => this.app.ui.push(new FightersScreen(this.app)), { cls: 'primary', sub: 'Couch battle for 2-4 players and CPUs', autofocus: true, key: 'versus' }),
+      button('VERSUS', () => this.app.ui.push(new FightersScreen(this.app)), { cls: 'primary', sub: 'Couch battle for 2-4 players and CPUs · Classic or Crusade ★', autofocus: true, key: 'versus' }),
       button('ONLINE', () => this.app.ui.push(new OnlineScreen(this.app)), { sub: 'Play friends on any device: PC, Steam, mobile', key: 'online' }),
       button('HOW TO PLAY', () => this.app.ui.push(new HowToScreen(this.app)), { key: 'how' }),
       button('SETTINGS', () => this.app.ui.push(new SettingsScreen(this.app)), { key: 'settings' }),
@@ -224,6 +238,7 @@ export class FightersScreen extends Screen {
     kn.appendChild(knightCanvas(s.knight, 3));
     c.appendChild(kn);
     c.appendChild(h('div', { class: 'name' }, KNIGHTS[s.knight].name.toUpperCase() + ' KNIGHT'));
+    c.appendChild(h('div', { class: 'perk', title: 'Crusade mode perk' }, `★ <b>${PERKS[s.knight].name}</b> ${PERKS[s.knight].blurb}`));
     if (s.kind === 'human') c.appendChild(h('div', { class: 'dev' }, deviceLabel(input.device(s.device))));
     const btns = h('div', { class: 'kbtns' });
     btns.append(
@@ -380,7 +395,10 @@ export class StageScreen extends Screen {
     const rules = h('div', { class: 'list' });
     rules.style.marginTop = '12px';
     const humans = this.app.couch.filter((s) => s).length;
+    const blurb = h('div', { class: 'sub mode-blurb' }, MODE_BLURB[settings.mode]);
     rules.append(
+      selector('MODE', MODE_OPTS, () => settings.mode, (v) => { settings.mode = v; saveSettings(); blurb.textContent = MODE_BLURB[v]; }, 'mode'),
+      blurb,
       selector('FIRST TO', SCORE_OPTS, () => settings.targetScore, (v) => { settings.targetScore = v; saveSettings(); }, 'score'),
       selector('TIME LIMIT', TIME_OPTS, () => settings.timeLimit, (v) => { settings.timeLimit = v; saveSettings(); }, 'time'),
       toggle('ITEM CHESTS', () => settings.items, (v) => { settings.items = v; saveSettings(); }, 'items'),
@@ -411,8 +429,9 @@ export class StageScreen extends Screen {
     let humanIdx = 0;
     const cfg: MatchConfig = {
       level: settings.lastLevel as LevelId,
+      mode: settings.mode,
       seed: newSeed(),
-      targetScore: settings.targetScore,
+      targetScore: targetFor(settings.mode, settings.targetScore),
       timeLimit: settings.timeLimit,
       teams,
       items: settings.items,
@@ -639,6 +658,7 @@ export class RoomScreen extends Screen {
       const list = h('div', { class: 'list' });
       list.style.width = '100%';
       list.append(
+        selector('MODE', MODE_OPTS, () => s.mode, (v) => set({ mode: v }), 'mode'),
         selector('STAGE', LEVELS.map((l) => ({ label: l.name.toUpperCase(), value: l.id })), () => s.level, (v) => set({ level: v }), 'lvl'),
         selector('FIRST TO', SCORE_OPTS, () => s.targetScore, (v) => set({ targetScore: v }), 'score'),
         selector('TIME LIMIT', TIME_OPTS, () => s.timeLimit, (v) => set({ timeLimit: v }), 'time'),
@@ -648,9 +668,10 @@ export class RoomScreen extends Screen {
         selector('CPU LEVEL', CPU_LEVELS, () => s.cpuLevel, (v) => set({ cpuLevel: v }), 'cpulvl'),
       );
       right.appendChild(list);
+      right.appendChild(h('div', { class: 'sub mode-blurb' }, MODE_BLURB[s.mode ?? 'classic']));
     } else {
       const info = levelInfo(s.level);
-      right.appendChild(h('div', { class: 'sub' }, `<br>${info.name.toUpperCase()}<br>FIRST TO ${s.targetScore}${s.timeLimit ? ` · ${s.timeLimit / 60} MIN` : ''}<br>ITEMS ${s.items ? 'ON' : 'OFF'}${s.teams ? ' · TEAMS' : ''}${s.cpus ? ` · ${s.cpus} CPU` : ''}`));
+      right.appendChild(h('div', { class: 'sub' }, `<br>${(s.mode ?? 'classic').toUpperCase()} MODE · ${info.name.toUpperCase()}<br>FIRST TO ${s.targetScore}${s.timeLimit ? ` · ${s.timeLimit / 60} MIN` : ''}<br>ITEMS ${s.items ? 'ON' : 'OFF'}${s.teams ? ' · TEAMS' : ''}${s.cpus ? ` · ${s.cpus} CPU` : ''}`));
     }
     grid.appendChild(right);
     this.el.appendChild(grid);
@@ -779,7 +800,8 @@ export class RoomScreen extends Screen {
       let t = 0;
       for (const sc of slots) if (sc.active) sc.team = t++ % 2;
     }
-    const cfg: MatchConfig = { level: s.level, seed: newSeed(), targetScore: s.targetScore, timeLimit: s.timeLimit, teams, items: s.items, slots };
+    const mode = s.mode ?? 'classic';
+    const cfg: MatchConfig = { level: s.level, mode, seed: newSeed(), targetScore: targetFor(mode, s.targetScore), timeLimit: s.timeLimit, teams, items: s.items, slots };
     conn.send({ t: 'start', cfg, owners });
   }
 
@@ -818,6 +840,7 @@ export class SettingsScreen extends Screen {
       selector('ONLINE INPUT DELAY', [{ label: 'AUTO', value: 0 }, 1, 2, 3, 4].map((v) => (typeof v === 'number' ? { label: `${v} FRAME${v > 1 ? 'S' : ''}`, value: v } : v)), () => settings.inputDelay, (v) => { settings.inputDelay = v; save(); }, 'delay'),
       toggle('SHOW PING', () => settings.showPing, (v) => { settings.showPing = v; save(); }, 'ping'),
       toggle('SHOW FPS', () => settings.showFps, (v) => { settings.showFps = v; save(); }, 'fps'),
+      toggle('KNIGHT OUTLINES', () => settings.outlines, (v) => { settings.outlines = v; save(); }, 'outlines'),
     );
     this.el.appendChild(list);
     const row = h('div', { class: 'row' });
@@ -847,11 +870,21 @@ export class HowToScreen extends Screen {
     const grid = h('div', { class: 'controls-grid panel' });
     grid.style.marginTop = '10px';
     grid.innerHTML = `
-      <div><b style="color:var(--gold)">CONTROLLER</b><br>Move: Stick / D-pad<br>Jump: A / ✕ / B(Switch) — press again to double jump<br>Throw: X / □ / Y(Switch), RB, RT<br>Aim up / down: hold Up / Down while throwing<br>Drop through platforms: Down + Jump<br>Pause: Menu / Options / +</div>
-      <div><b style="color:var(--gold)">KEYBOARD</b><br>P1: WASD move, Space/C jump, F/V throw, Esc pause<br>P2: Arrows move, . (period)/K jump, / (slash)/L throw, Enter pause<br>Two players can share one keyboard.</div>
-      <div><b style="color:var(--gold)">TOUCH</b><br>Drag on the left half to move (up/down aims)<br>JUMP and THROW buttons on the right<br>Left-handed layout & button size in Settings<br>Bluetooth controllers work too!</div>
+      <div><b style="color:var(--gold)">CONTROLLER</b><br>Move: Stick / D-pad<br>Jump: A / ✕ / B(Switch) — press again to double jump<br>Throw: X / □ / Y(Switch), RB, RT<br>Swing (Crusade): B / ○ / A(Switch), Y / △<br>Aim up / down: hold Up / Down while throwing<br>Drop through platforms: Down + Jump<br>Pause: Menu / Options / +</div>
+      <div><b style="color:var(--gold)">KEYBOARD</b><br>P1: WASD move, Space/C jump, F/V throw, G/B swing, Esc pause<br>P2: Arrows move, . (period)/K jump, / (slash)/L throw, , (comma)/J swing, Backspace pause<br>Two players can share one keyboard.</div>
+      <div><b style="color:var(--gold)">TOUCH</b><br>Drag on the left half to move (up/down aims)<br>JUMP and THROW buttons on the right (+ SWING in Crusade)<br>Left-handed layout & button size in Settings<br>Bluetooth controllers work too!</div>
       <div><b style="color:var(--gold)">MOVES</b><br>Wall slide & wall jump off any wall<br>Coyote time + jump buffering = forgiving jumps<br>Hold jump for higher jumps, hold down to fast-fall<br>Strong shots clash with and destroy weaker ones</div>`;
     this.el.appendChild(grid);
+    this.el.appendChild(h('h2', {}, 'CRUSADE MODE'));
+    const crusade = h('div', { class: 'controls-grid panel' });
+    crusade.innerHTML = `
+      <div><b style="color:var(--gold)">SWING &amp; PARRY</b><br>Swing your sword to bat projectiles back at whoever threw them - faster.<br>The blade also shoves knights. A parry refunds your swing.</div>
+      <div><b style="color:var(--gold)">SPLAT!</b><br>Knights launched into walls, floors or ceilings take extra damage.<br>The lower your health, the further you fly.</div>
+      <div><b style="color:var(--gold)">LOOT &amp; AMMO</b><br>Chest weapons have limited shots, then it's back to the stone.<br>Whoever is behind gets better odds of the big guns.</div>
+      <div><b style="color:var(--gold)">POINTS</b><br>KO = 2 pts, assist = 1 pt (dealt 2+ damage).<br>The leader wears a crown: KO them for +1 bounty. Self-KO = -1.</div>
+      <div><b style="color:var(--gold)">PERKS</b><br>${PERKS.map((p, i) => `<span style="color:${KNIGHTS[i].color}">${KNIGHTS[i].name}</span>: ${p.name} - ${p.blurb}`).join('<br>')}</div>
+      <div><b style="color:var(--gold)">STAGES</b><br>Dungeon walls crumble under fire. The Dragon Temple can be shot down (or falls after 75 s).<br>Seagulls drop loot more often. Confetti bombs shove!</div>`;
+    this.el.appendChild(crusade);
     this.el.appendChild(h('h2', {}, 'WEAPONS'));
     const ws = h('div', { class: 'weapons' });
     for (const w of WEAPONS) {
@@ -954,13 +987,19 @@ export class ResultsScreen extends Screen {
     }
     this.el.appendChild(win);
     const table = h('table', { class: 'stats' });
-    table.innerHTML = '<tr><th>FIGHTER</th><th>KOs</th><th>FALLS</th><th>DAMAGE</th><th>ACCURACY</th></tr>';
+    const crusade = m.cfg.mode === 'crusade';
+    table.innerHTML = crusade
+      ? '<tr><th>FIGHTER</th><th>POINTS</th><th>KOs</th><th>ASSISTS</th><th>PARRIES</th><th>SPLATS</th><th>FALLS</th></tr>'
+      : '<tr><th>FIGHTER</th><th>KOs</th><th>FALLS</th><th>DAMAGE</th><th>ACCURACY</th></tr>';
     const rows = s.players.filter((p) => p.active).sort((a, b) => b.score - a.score || a.deaths - b.deaths);
     for (const p of rows) {
       const tr = h('tr', p.slot === winner || (teams && m.cfg.slots[p.slot].team === s.winnerTeam) ? { class: 'win' } : {});
       const kv = KNIGHTS[m.cfg.slots[p.slot].knight];
       const acc = p.shots ? Math.round((p.hits / p.shots) * 100) : 0;
-      tr.innerHTML = `<td><span style="color:${kv.color}">■</span> ${escapeHtml(sess.names[p.slot] || `P${p.slot + 1}`)}${m.cfg.slots[p.slot].bot && !/^CPU/.test(sess.names[p.slot] ?? '') ? ' (CPU)' : ''}</td><td>${p.score}</td><td>${p.deaths}</td><td>${p.damageDealt}</td><td>${acc}%</td>`;
+      const who = `<td><span style="color:${kv.color}">■</span> ${escapeHtml(sess.names[p.slot] || `P${p.slot + 1}`)}${m.cfg.slots[p.slot].bot && !/^CPU/.test(sess.names[p.slot] ?? '') ? ' (CPU)' : ''}</td>`;
+      tr.innerHTML = crusade
+        ? `${who}<td>${p.score}</td><td>${p.kos}</td><td>${p.assists}</td><td>${p.parries}</td><td>${p.splats}</td><td>${p.deaths}</td>`
+        : `${who}<td>${p.score}</td><td>${p.deaths}</td><td>${p.damageDealt}</td><td>${acc}%</td>`;
       table.appendChild(tr);
     }
     this.el.appendChild(table);

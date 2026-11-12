@@ -32,7 +32,7 @@ export class LocalSession implements Session {
   private last = 0;
 
   constructor(cfg: MatchConfig, public locals: Map<number, string>, public names: string[]) {
-    this.match = { cfg, level: getLevel(cfg.level) };
+    this.match = { cfg, level: getLevel(cfg.level, cfg.mode ?? 'classic') };
     this.state = createGame(this.match);
   }
 

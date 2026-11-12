@@ -158,3 +158,22 @@ export function tintedImage(imgId: string, color: string): HTMLCanvasElement | H
   assets.tinted.set(key, c);
   return c;
 }
+
+/** Image filled with a flat colour (outlines). */
+export function silhouette(imgId: string, color: string): HTMLCanvasElement | undefined {
+  const key = `sil:${imgId}${color}`;
+  let c = assets.tinted.get(key);
+  if (c) return c;
+  const img = assets.images.get(imgId);
+  if (!img) return undefined;
+  c = document.createElement('canvas');
+  c.width = img.naturalWidth;
+  c.height = img.naturalHeight;
+  const g = c.getContext('2d')!;
+  g.drawImage(img, 0, 0);
+  g.globalCompositeOperation = 'source-in';
+  g.fillStyle = color;
+  g.fillRect(0, 0, c.width, c.height);
+  assets.tinted.set(key, c);
+  return c;
+}

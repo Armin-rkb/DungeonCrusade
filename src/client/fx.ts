@@ -291,6 +291,13 @@ export class Effects {
         break;
       case 'hit': {
         const dmg = e.v ?? 1;
+        if (dmg === 0) {
+          // Confetti shove: no damage, just a big push.
+          this.burst(x, y, 8, ['#ff5d6c', '#ffc53d', '#5fd35f', '#4fa8ff'], 6, { grav: 4 });
+          this.shake(0.12);
+          ctx.rumble(e.b ?? -1, 0.3, 0.4, 80);
+          break;
+        }
         audio.play(SFX.hit, { volume: 0.55 + dmg * 0.08, pan, maxVoices: 3 });
         audio.play(SFX.bulletHit, { volume: 0.5, pan, pitch: 1.2 - dmg * 0.05 });
         const col = ['#ffffff', '#ffe066', '#ff9a3d'];
@@ -325,6 +332,63 @@ export class Effects {
         ctx.rumble(e.a ?? -1, 0.5, 0.6, 160);
         break;
       }
+      case 'swing':
+        audio.play(SFX.shuriken, { volume: 0.35, pitch: 0.6, pan });
+        ctx.rumble(e.a ?? -1, 0.05, 0.15, 30);
+        break;
+      case 'parry': {
+        audio.play(SFX.bulletHit, { volume: 0.8, pitch: 1.9, pan });
+        audio.play(SFX.plusOne, { volume: 0.35, pitch: 1.5, pan });
+        this.burst(x, y, 18, ['#fff', '#ffd34d', '#ffe9a8'], 9, { grav: 2 });
+        this.ring(x, y, 0.8, '#ffd34d', 0.25);
+        this.text(x, y + 0.6, 'PARRY!', '#ffd34d', 0.42, 0.8, 2.4);
+        this.shake(0.18);
+        this.punch = Math.max(this.punch, 0.025);
+        ctx.rumble(e.a ?? -1, 0.5, 0.7, 90);
+        break;
+      }
+      case 'splat': {
+        audio.play(SFX.footstool, { volume: 0.7, pitch: 0.7, pan });
+        audio.play(SFX.hit, { volume: 0.5, pitch: 0.75, pan });
+        this.dust(x, y - 0.3, 10, -(e.v ?? 0));
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2;
+          this.add({ kind: 'text', x, y: y + 0.2, vx: Math.cos(a) * 3, vy: Math.sin(a) * 3 + 2, drag: 3, text: '*', color: '#ffe066', size: 0.35, max: 0.6, front: true });
+        }
+        this.text(x, y + 0.7, 'SPLAT!', '#ff9a3d', 0.5, 0.9, 1.8);
+        this.shake(0.4);
+        this.kick(-(e.v ?? 0), -(e.w ?? 0), 6);
+        ctx.rumble(e.b ?? -1, 0.8, 0.9, 160);
+        ctx.rumble(e.a ?? -1, 0.2, 0.5, 80);
+        break;
+      }
+      case 'points': {
+        const pts = e.v ?? 0;
+        const kind = e.w ?? 0; // 0 KO, 1 bounty, 2 assist, 3 self-KO
+        const label = kind === 1 ? `+${pts} BOUNTY!` : kind === 2 ? '+1 ASSIST' : kind === 3 ? 'OOPS -1' : `+${pts}`;
+        const color = kind === 3 ? '#ff5050' : kind === 1 ? '#ffd34d' : kc(e.a);
+        this.text(x, y + (kind === 2 ? 0.3 : 0.7), label, color, kind === 1 ? 0.5 : 0.4, 1.4, 1.2);
+        if (kind === 1) {
+          audio.play(SFX.win, { volume: 0.35, pitch: 1.6 });
+          this.showBanner('BOUNTY!', `${ctx.names[e.a ?? 0] ?? ''} dethroned the leader`, '#ffd34d', 1.6);
+        }
+        if (kind === 2) audio.play(SFX.plusOne, { volume: 0.35, pitch: 1.25 });
+        break;
+      }
+      case 'empty':
+        this.text(x, y, 'OUT OF AMMO', '#bbb', 0.24, 0.9, 1.4);
+        audio.play(SFX.button, { volume: 0.4, pitch: 0.6, pan });
+        break;
+      case 'tile-hit':
+        audio.play(SFX.bulletHit, { volume: 0.35, pitch: 0.6, pan, maxVoices: 2 });
+        this.burst(x, y, 6, ['#2c5e3a', '#3f7d4d', '#6b4a33'], 4, { grav: 14, size: 0.1 });
+        this.shake(0.05);
+        break;
+      case 'temple-hit':
+        audio.play(SFX.bulletHit, { volume: 0.4, pitch: 0.5, pan, maxVoices: 2 });
+        this.burst(x, y, 8, ['#c0392b', '#2a9d8f', '#ffd166'], 5, { grav: 12, size: 0.1 });
+        this.shake(0.06);
+        break;
       case 'stomp':
         audio.play(SFX.footstool, { volume: 0.55, pan });
         this.dust(x, y, 6);
