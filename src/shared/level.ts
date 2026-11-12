@@ -49,6 +49,10 @@ export interface LevelRuntime {
   name: string;
   view: Rect;
   wrapX: boolean;
+  /** Falling out of the bottom re-enters from the top (and jumping out of the top re-enters from the bottom). */
+  wrapY: boolean;
+  /** No side walls: leaving the arena sideways is a KO (like falling). */
+  ringOut: boolean;
   killY: number;
   ceilY: number;
   solids: Solid[];
@@ -62,12 +66,23 @@ export interface LevelRuntime {
     temple?: { x: number; y: number; w: number; h: number };
     armor?: { x: number; y: number; w: number; h: number; respawn: number };
     dragon?: { x: number; y: number };
+    /**
+     * The sea rises and falls on a fixed cycle (frames of play): calm at `low`
+     * for `calm` frames (the last `warn` of them announce the flood), rises
+     * for `rise`, stays at `high` for `flood`, ebbs for `ebb`. Water drowns
+     * knights and swallows chests and shots.
+     */
+    tide?: { low: number; high: number; calm: number; rise: number; flood: number; ebb: number; warn: number };
+    /** Gusts of wind every `every` (+ up to `jitter`) frames, announced `warn` frames ahead, lasting `length` frames. */
+    gusts?: { every: number; jitter: number; warn: number; length: number; speed: number };
   };
   data: LevelData;
 }
 
 export interface LevelTweaks {
   wrapX?: boolean;
+  wrapY?: boolean;
+  ringOut?: boolean;
   /** Override the camera rect (e.g. to include the gap next to side walls). */
   view?: Rect;
   /** Solids (matched by name or predicate) that become jump-through. */
@@ -103,7 +118,9 @@ export function buildLevel(data: LevelData, tweaks: LevelTweaks = {}): LevelRunt
     name: data.name,
     view,
     wrapX: tweaks.wrapX ?? true,
-    killY: tweaks.killY ?? view.y - 3,
+    wrapY: tweaks.wrapY ?? false,
+    ringOut: tweaks.ringOut ?? false,
+    killY: tweaks.wrapY ? -1e9 : tweaks.killY ?? (tweaks.ringOut ? view.y - 1.5 : view.y - 3),
     ceilY: view.y + view.h + 4,
     solids,
     spawns: tweaks.spawns ?? data.spawns,

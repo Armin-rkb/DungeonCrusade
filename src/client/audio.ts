@@ -95,7 +95,11 @@ class AudioEngine {
    */
   play(id: string, opts: { volume?: number; pitch?: number; vary?: number; pan?: number; maxVoices?: number } = {}) {
     if (this.sfxMuted || !this.ctx || this.ctx.state !== 'running') return;
-    const buf = this.buffers.get(id);
+    let buf = this.buffers.get(id);
+    if (!buf && id.startsWith('synth:')) {
+      buf = this.synth(id);
+      this.buffers.set(id, buf);
+    }
     if (!buf) {
       void this.load(id);
       return;
@@ -121,6 +125,39 @@ class AudioEngine {
     node.connect(this.sfx);
     src.onended = () => this.voices.set(id, Math.max(0, (this.voices.get(id) ?? 1) - 1));
     src.start();
+  }
+
+  /**
+   * Procedural effects for things the original game had no sound for (waves,
+   * wind, splashes): filtered noise with an envelope.
+   */
+  private synth(id: string): AudioBuffer {
+    const ctx = this.ctx!;
+    const sr = ctx.sampleRate;
+    const spec: Record<string, { len: number; att: number; rel: number; cut0: number; cut1: number; gain: number; lfo?: number }> = {
+      'synth:wave': { len: 2.4, att: 0.7, rel: 1.4, cut0: 300, cut1: 1400, gain: 0.55 },
+      'synth:wind': { len: 3.8, att: 0.9, rel: 1.2, cut0: 500, cut1: 900, gain: 0.35, lfo: 1.3 },
+      'synth:splash': { len: 0.55, att: 0.01, rel: 0.5, cut0: 3200, cut1: 600, gain: 0.7 },
+      'synth:whoosh': { len: 0.45, att: 0.12, rel: 0.3, cut0: 600, cut1: 2600, gain: 0.5 },
+    };
+    const sp = spec[id] ?? spec['synth:splash'];
+    const n = Math.floor(sp.len * sr);
+    const buf = ctx.createBuffer(1, n, sr);
+    const d = buf.getChannelData(0);
+    let lp = 0;
+    let lp2 = 0;
+    for (let i = 0; i < n; i++) {
+      const t = i / sr;
+      const u = t / sp.len;
+      let cut = sp.cut0 + (sp.cut1 - sp.cut0) * Math.sin(Math.PI * Math.min(1, u * 1.2)) ;
+      if (sp.lfo) cut *= 1 + 0.45 * Math.sin(t * Math.PI * 2 * sp.lfo);
+      const a = 1 - Math.exp((-2 * Math.PI * cut) / sr);
+      lp += a * (Math.random() * 2 - 1 - lp);
+      lp2 += a * (lp - lp2);
+      const env = Math.min(1, t / sp.att) * Math.min(1, (sp.len - t) / sp.rel);
+      d[i] = lp2 * env * sp.gain * 2.2;
+    }
+    return buf;
   }
 
   playMusic(id: string, volume = 1) {
@@ -201,6 +238,10 @@ export const SFX = {
   seagull: 'sound/fx/level/beach/seagull',
   dragonAwake: 'sound/fx/level/dragon/dragonawake',
   dragonEnter: 'sound/fx/level/dragon/dragonenter',
+  wave: 'synth:wave',
+  wind: 'synth:wind',
+  splash: 'synth:splash',
+  whoosh: 'synth:whoosh',
 } as const;
 
 export const MUSIC = {

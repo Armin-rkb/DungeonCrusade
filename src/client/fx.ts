@@ -482,6 +482,50 @@ export class Effects {
         this.shake(0.7);
         this.showBanner('DRAGON!', '', '#ff5050', 1.4);
         break;
+      // ---- v2 arenas
+      case 'tide-warn':
+        this.showBanner('HIGH TIDE!', 'get to the high piers', '#7fe0ff', 2.2);
+        audio.play(SFX.wave, { volume: 0.6, vary: 0 });
+        audio.play(SFX.seagull, { volume: 0.4 });
+        break;
+      case 'tide-rise':
+        audio.play(SFX.wave, { volume: 0.9, pitch: 0.8, vary: 0 });
+        this.shake(0.25);
+        break;
+      case 'tide-ebb':
+        audio.play(SFX.wave, { volume: 0.5, pitch: 1.15, vary: 0 });
+        break;
+      case 'drown':
+        audio.play(SFX.splash, { volume: 0.9, pan, pitch: 0.8 });
+        this.burst(x, y, 30, ['#ffffff', '#bfe8ff', '#7fc8f5'], 9, { grav: 22, vy: 6, max: 0.8, size: 0.1 });
+        this.ring(x, y, 1.2, '#ffffff', 0.4);
+        this.text(x, y + 1.2, 'SPLASH!', '#bfe8ff', 0.45, 1.1, 2);
+        break;
+      case 'splash':
+        audio.play(SFX.splash, { volume: 0.35, pan, pitch: 1.3, maxVoices: 3 });
+        this.burst(x, y, 10, ['#ffffff', '#bfe8ff'], 5, { grav: 18, max: 0.5, size: 0.07 });
+        break;
+      case 'gust-warn': {
+        const right = (e.v ?? 1) > 0;
+        this.showBanner(right ? 'GUST >>>' : '<<< GUST', 'hold your ground', '#e8f4ff', 1.6);
+        audio.play(SFX.whoosh, { volume: 0.6, pan: right ? -0.6 : 0.6 });
+        break;
+      }
+      case 'gust':
+        audio.play(SFX.wind, { volume: 0.8, vary: 0.04 });
+        this.shake(0.15);
+        break;
+      case 'ringout': {
+        const v = ctx.level.view;
+        const ex = Math.max(v.x + 0.6, Math.min(v.x + v.w - 0.6, x));
+        const ey = Math.max(v.y + 1, Math.min(v.y + v.h - 2.5, y));
+        audio.play(SFX.explosion, { volume: 0.7, pan, pitch: 1.3 });
+        this.burst(ex, ey, 34, [kc(e.a), '#ffffff', '#ffe066'], 12, { grav: 4, max: 0.8, size: 0.12 });
+        this.ring(ex, ey, 1.6, kc(e.a), 0.45);
+        this.text(ex - (e.v ?? 1) * 1.6, ey + 0.8, 'RING OUT!', '#ffe066', 0.55, 1.2, 1.5);
+        this.shake(0.5);
+        break;
+      }
     }
   }
 

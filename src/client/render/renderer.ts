@@ -38,7 +38,8 @@ export class Renderer {
   /** Extra screen-space margins reserved for the HUD (CSS px). */
   safe = { top: 0, bottom: 0, left: 0, right: 0 };
 
-  constructor(canvas: HTMLCanvasElement) {
+  /** `fixed` renders at a set pixel size instead of filling the window (stage previews). */
+  constructor(canvas: HTMLCanvasElement, private fixed?: { w: number; h: number }) {
     this.canvas = canvas;
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) throw new Error('Canvas 2D not supported');
@@ -47,9 +48,9 @@ export class Renderer {
   }
 
   resize() {
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const cw = Math.floor(window.innerWidth * this.dpr);
-    const ch = Math.floor(window.innerHeight * this.dpr);
+    this.dpr = this.fixed ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+    const cw = this.fixed?.w ?? Math.floor(window.innerWidth * this.dpr);
+    const ch = this.fixed?.h ?? Math.floor(window.innerHeight * this.dpr);
     if (cw !== this.canvas.width || ch !== this.canvas.height) {
       this.canvas.width = cw;
       this.canvas.height = ch;

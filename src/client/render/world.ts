@@ -7,7 +7,7 @@ import { settings } from '../settings';
 import type { Renderer } from './renderer';
 import { CHEST, FX, KNIGHTS, MUSIC_NOTES, PROJECTILES, TEAM_COLORS, WEAPON_ICONS } from './visuals';
 import type { LevelLayer, LevelRuntime } from '../../shared/level';
-import { crownHolder, type Match } from '../../shared/sim';
+import { crownHolder, tideDanger, tideLevel, type Match } from '../../shared/sim';
 import { CR, T, FPS } from '../../shared/tuning';
 import { Phase, type GameState, type PlayerState } from '../../shared/types';
 import { W } from '../../shared/weapons';
@@ -47,6 +47,7 @@ interface LayerItem {
 interface Streak { x: number; y: number; life: number }
 interface Emitter { x: number; y: number; w: number; h: number; dx: number; n: number; streaks: Streak[] }
 interface FallingPiece { l: LevelLayer; vx: number; vy: number; vr: number; x: number; y: number; rot: number }
+interface WindStreak { x: number; y: number; len: number; life: number; max: number }
 
 export class WorldRenderer {
   level: LevelRuntime | null = null;
@@ -58,6 +59,7 @@ export class WorldRenderer {
   vis: PlayerVis[] = [];
   time = 0;
   private lightningOn = false;
+  private wind: WindStreak[] = [];
   private lastTempleHp = -1;
   private templeShake = 0;
 
@@ -124,6 +126,8 @@ export class WorldRenderer {
     this.drawGull(r, s);
     this.drawPlayers(r, m, s, hud);
     this.drawProjectiles(r, s);
+    this.drawWater(r, m, s);
+    this.drawWind(r, m, s, dt);
     this.drawDragon(r, m, s);
     fx.draw(r, true);
     if (fx.flash > 0) {
@@ -359,6 +363,11 @@ export class WorldRenderer {
         for (const [ox, oy] of [[px, 0], [-px, 0], [0, px], [0, -px]]) r.drawSpriteDef(def, x + ox, pivotY + oy, { flipX, sx: v.sx, sy: v.sy, fill: col, alpha: 0.9 });
       }
       r.drawSpriteDef(def, x, pivotY, { flipX, sx: v.sx, sy: v.sy, alpha: blink ? 0.35 : 1 });
+      // Wrap-around arenas: the part poking out of one edge shows at the other.
+      const av = m.level.view;
+      const gx = m.level.wrapX ? (p.x + 0.5 > av.x + av.w ? -av.w : p.x - 0.5 < av.x ? av.w : 0) : 0;
+      const gy = m.level.wrapY ? (p.y + T.height + 0.3 > av.y + av.h ? -av.h : p.y - 0.2 < av.y ? av.h : 0) : 0;
+      if (gx || gy) r.drawSpriteDef(def, x + gx, pivotY + gy, { flipX, sx: v.sx, sy: v.sy, alpha: blink ? 0.35 : 1 });
       if (p.swing > 0) this.drawSwing(r, p);
       if (p.flash > 0 && p.flash % 3 !== 0) r.drawSpriteDef(def, x, pivotY, { flipX, sx: v.sx, sy: v.sy, white: true, alpha: 0.9 });
       if (p.hp > T.maxHp) {
@@ -433,6 +442,76 @@ export class WorldRenderer {
       c.globalAlpha = 1;
     }
     r.drawSprite('levi/animations/projectiles/_0009_zwaard', bx, by, { sx: 1.6, sy: 1.6, rot: f > 0 ? a : 180 - a, flipY: f < 0 });
+  }
+
+  /** High Tide: the sea in front of everything, plus the high-water mark while a flood is due. */
+  private drawWater(r: Renderer, m: Match, s: GameState) {
+    const t = m.level.features.tide;
+    if (!t) return;
+    const v = m.level.view;
+    const c = r.ctx;
+    if (tideDanger(m, s)) {
+      // Dashed high-water mark, pulsing while the flood is announced.
+      r.world();
+      const y = r.sy(t.high);
+      c.globalAlpha = 0.45 + 0.35 * Math.sin(this.time * 8);
+      c.strokeStyle = '#ffffff';
+      c.lineWidth = Math.max(2, 0.06 * r.scale);
+      c.setLineDash([0.4 * r.scale, 0.3 * r.scale]);
+      c.lineDashOffset = -this.time * 0.8 * r.scale;
+      c.beginPath();
+      c.moveTo(r.sx(v.x), y);
+      c.lineTo(r.sx(v.x + v.w), y);
+      c.stroke();
+      c.setLineDash([]);
+      c.globalAlpha = 1;
+    }
+    const sea = tideLevel(m, s);
+    const id = animFrame('levi/map-2/de-zee-twee', this.time) ?? 'levi/map-2/zee-spritesheet-v2#0';
+    const def = sprite(id);
+    if (!def) return;
+    const bw = def.w / def.ppu;
+    const bh = def.h / def.ppu;
+    const cy = sea + 0.25 - bh / 2;
+    const drift = (this.time * 0.6) % bw;
+    for (let x = v.x - bw / 2 + drift - bw; x < v.x + v.w + bw; x += bw) r.drawSprite(id, x, cy, { alpha: 0.95, tint: '#5f9effff' });
+    r.world();
+    c.globalAlpha = 0.95;
+    c.fillStyle = '#2c5f8a';
+    const top = r.sy(cy - bh / 2) - 1;
+    if (top < r.h) c.fillRect(0, top, r.w, r.h - top);
+    c.globalAlpha = 1;
+  }
+
+  /** Sky Shrine: streaks blowing across the arena during (and just before) a gust. */
+  private drawWind(r: Renderer, m: Match, s: GameState, dt: number) {
+    const g = m.level.features.gusts;
+    if (!g) return;
+    const v = m.level.view;
+    const dir = s.wind !== 0 ? Math.sign(s.wind) : s.windDir;
+    const warn = s.wind === 0 && s.windDir !== 0 && s.windTimer <= g.warn;
+    const target = s.wind !== 0 ? 46 : warn ? 10 : 0;
+    while (this.wind.length < target) {
+      this.wind.push({ x: v.x + Math.random() * v.w, y: v.y + 0.5 + Math.random() * (v.h - 1), len: 0.6 + Math.random() * 1.4, life: 0, max: 0.4 + Math.random() * 0.5 });
+    }
+    if (!this.wind.length) return;
+    const c = r.ctx;
+    r.world();
+    c.strokeStyle = '#ffffff';
+    c.lineWidth = Math.max(1.5, 0.06 * r.scale);
+    c.lineCap = 'round';
+    for (const w of this.wind) {
+      w.life += dt;
+      w.x += dir * (s.wind !== 0 ? 22 : 12) * dt;
+      const k = w.life / w.max;
+      c.globalAlpha = Math.max(0, Math.sin(Math.min(1, k) * Math.PI)) * (s.wind !== 0 ? 0.7 : 0.35);
+      c.beginPath();
+      c.moveTo(r.sx(w.x), r.sy(w.y));
+      c.lineTo(r.sx(w.x - dir * w.len), r.sy(w.y));
+      c.stroke();
+    }
+    c.globalAlpha = 1;
+    this.wind = this.wind.filter((w) => w.life < w.max);
   }
 
   // ---------------------------------------------------------------- projectiles

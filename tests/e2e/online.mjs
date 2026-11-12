@@ -6,6 +6,7 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 const base = process.argv[2] ?? 'http://localhost:5173/';
 const out = process.argv[3] ?? '.';
 const MODE = process.argv[4] ?? 'classic';
+const LEVEL = process.argv[5] ?? 'dungeon';
 const browser = await chromium.launch();
 const logs = [];
 
@@ -33,8 +34,8 @@ console.log('room code', code);
 await b.fill('.code-input', code);
 await b.waitForSelector('.code', { timeout: 5000 });
 await a.waitForFunction(() => window.__app.conn.room.peers.length === 2);
-await a.evaluate((mode) => window.__app.conn.send({ t: 'settings', settings: { mode } }), MODE);
-await a.waitForFunction((mode) => window.__app.conn.room.settings.mode === mode, MODE);
+await a.evaluate(([mode, level]) => window.__app.conn.send({ t: 'settings', settings: { mode, level } }), [MODE, LEVEL]);
+await a.waitForFunction(([mode, level]) => window.__app.conn.room.settings.mode === mode && window.__app.conn.room.settings.level === level, [MODE, LEVEL]);
 await a.waitForTimeout(400);
 await a.click('button:has-text("START MATCH")');
 await a.waitForFunction(() => window.__app.session?.kind === 'online', null, { timeout: 5000 });
@@ -57,7 +58,7 @@ await Promise.all([
 await a.waitForTimeout(1500);
 const info = async (p) => p.evaluate(() => {
   const s = window.__app.session;
-  return { mode: s.match.cfg.mode, frame: s.current, desyncs: s.desyncs, rollbacks: s.rollbacks, maxRollback: s.maxRollback, delay: s.delay, shots: s.state.players.map((x) => x.shots), hp: s.state.players.map((x) => x.hp) };
+  return { mode: s.match.cfg.mode, level: s.match.cfg.level, frame: s.current, desyncs: s.desyncs, rollbacks: s.rollbacks, maxRollback: s.maxRollback, delay: s.delay, shots: s.state.players.map((x) => x.shots), hp: s.state.players.map((x) => x.hp) };
 });
 const ia = await info(a);
 const ib = await info(b);
@@ -90,5 +91,5 @@ const continued = afterLeave.frame > ia.frame + 100 && !afterLeave.waiting;
 
 console.log(logs.filter((l) => !l.includes('[vite]')).slice(-20).join('\n'));
 await browser.close();
-const ok = ha && ha === hb && ia.desyncs === 0 && ib.desyncs === 0 && ia.shots[0] > 0 && ia.shots[1] > 0 && continued && ia.mode === MODE;
+const ok = ha && ha === hb && ia.desyncs === 0 && ib.desyncs === 0 && ia.shots[0] > 0 && ia.shots[1] > 0 && continued && ia.mode === MODE && ia.level === LEVEL;
 process.exit(ok ? 0 : 1);

@@ -50,7 +50,8 @@ export interface Room {
   gameStartAt?: number;
 }
 
-const LEVELS = ['dungeon', 'beach', 'dragon'];
+/** Stage ids a room may pick (keep in sync with src/shared/levels; checked by tests/rooms.test.ts). */
+export const LEVELS = ['dungeon', 'beach', 'dragon', 'oubliette', 'tide', 'shrine', 'keeps'];
 
 /** Minimal shape check of a host's match start so peers never get garbage. */
 function validStart(cfg: unknown, owners: unknown): boolean {

@@ -312,7 +312,7 @@ class App implements AppApi {
     if (view) {
       const pts = view.state.players.filter((p) => p.active && p.alive).map((p) => ({ x: p.x, y: p.y + 0.4 }));
       // Wrap-around arenas always show everything.
-      this.renderer.follow(view.match.level.wrapX || !s ? [] : pts, dt, isTouchDevice() ? 1.6 : 1.35);
+      this.renderer.follow(view.match.level.wrapX || view.match.level.wrapY || !s ? [] : pts, dt, isTouchDevice() ? 1.6 : 1.35);
     }
     this.fx.applyCamera(this.renderer);
     this.world.fpsDt = this.frameDt;

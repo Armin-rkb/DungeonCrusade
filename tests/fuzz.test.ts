@@ -241,11 +241,15 @@ describe('netcode fuzz (rollback over a simulated network)', () => {
     { name: '3 peers + CPU, 90ms lag, crusade', peers: 3, lag: 90, jitter: 40, reorder: false, mode: 'crusade' as GameMode, level: 'dungeon' as LevelId },
     { name: '4 peers, 120ms lag, crusade dragon, reordered', peers: 4, lag: 120, jitter: 80, reorder: true, mode: 'crusade' as GameMode, level: 'dragon' as LevelId },
     { name: '3 peers, one disconnects mid-match', peers: 3, lag: 60, jitter: 30, reorder: false, mode: 'crusade' as GameMode, level: 'beach' as LevelId, dropAt: 9000 },
+    // Long enough for the first flood / first gust (level events driven by the play clock).
+    { name: '3 peers, 70ms lag, High Tide through a flood', peers: 3, lag: 70, jitter: 50, reorder: true, mode: 'classic' as GameMode, level: 'tide' as LevelId, seconds: 26 },
+    { name: '4 peers, 100ms lag, Sky Shrine through a gust', peers: 4, lag: 100, jitter: 40, reorder: false, mode: 'crusade' as GameMode, level: 'shrine' as LevelId, seconds: 30 },
+    { name: '2 peers, 50ms lag, Oubliette loops', peers: 2, lag: 50, jitter: 60, reorder: true, mode: 'crusade' as GameMode, level: 'oubliette' as LevelId },
   ];
   for (const c of cases) {
     it(c.name, () => {
       for (let run = 0; run < Math.ceil(RUNS / 3); run++) {
-        const res = netFuzz({ ...c, seed: c.peers * 17 + c.lag + run * 104729, seconds: 20 });
+        const res = netFuzz({ ...c, seed: c.peers * 17 + c.lag + run * 104729, seconds: c.seconds ?? 20 });
         expect(res.common).toBeGreaterThan(900);
         expect(new Set(res.sums).size, `run ${run}`).toBe(1);
         for (const p of res.alive) expect(p.session.desyncs, `run ${run}`).toBe(0);

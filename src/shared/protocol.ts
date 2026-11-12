@@ -5,7 +5,7 @@
 
 import type { GameMode, LevelId, MatchConfig } from './types';
 
-export const PROTOCOL_VERSION = 3;
+export const PROTOCOL_VERSION = 4;
 export const MAX_PEERS = 4;
 export const CODE_ALPHABET = 'BCDFGHJKLMNPQRSTVWXZ';
 export const CODE_LENGTH = 4;

@@ -16,10 +16,12 @@ on **PC (Steam / Windows / macOS / Linux), Android, iOS and the web**, offers
 
 ## What's in the game
 
-- **3 arenas from the original**: Dungeon, Wacky Beach and Dragon Temple, extracted 1:1 from the Unity scenes.
-  - Dungeon has barrel-breakable walls and a respawning armor candle.
-  - Wacky Beach has jump-through piers, wrap-around edges and seagulls dropping chests.
-  - In Dragon Temple, nuking the temple wakes a dragon that swoops through the arena.
+- **7 arenas**: the original 3, plus 4 new ones built only from the original art.
+  - **From the original** (extracted 1:1 from the Unity scenes):
+    - Dungeon has barrel-breakable walls and a respawning armor candle.
+    - Wacky Beach has jump-through piers, wrap-around edges and seagulls dropping chests.
+    - In Dragon Temple, nuking the temple wakes a dragon that swoops through the arena.
+  - **New in v2** (see [New arenas](#new-arenas)): Oubliette, High Tide, Sky Shrine and Twin Keeps.
 - **10 weapons**, each with its own behaviour:
   - Stone, Pill (bounces), Shuriken, Fireball (eats small shots), Pizza.
   - Barrel (rolls, smashes walls), Stinky Sock (lobbed AoE), Rubber Duck (quack pulses).
@@ -46,6 +48,21 @@ on **PC (Steam / Windows / macOS / Linux), Android, iOS and the web**, offers
 | The Bomb's 75% dud does nothing | The confetti dud now **shoves** everyone nearby. |
 
 Perks were balanced over 96 simulated 4-CPU matches (23/30/22/21 wins for Gold/Silver/Green/Red).
+
+### New arenas
+
+Each one is built around a single idea that changes how projectile fights play out.
+
+![New arenas](docs/screenshots/new-arenas.png)
+
+| Arena | Art from | The idea |
+| --- | --- | --- |
+| **Oubliette** | Dungeon tiles, glowing bone tiles | A bottomless shaft. Fall out of the floor and you drop in from the ceiling, and walk off one side to come back on the other. Shots loop too, so a stone thrown down the shaft can land on someone's head. |
+| **High Tide** | Beach planks and pier legs, the unused daytime sky | The sea rises every 30 seconds and floods the sand and the low piers. A dashed line marks the high-water level while "HIGH TIDE!" is announced. Getting knocked into the water is a KO for whoever hit you, and chests and shots that land in it are lost. |
+| **Sky Shrine** | Temple stones and torii, clouds made from the beach sun | Three islands with no walls and no floor: you score by knocking rivals off. Every 20-25 seconds a gust blows for 4 seconds, pushing knights and bending every shot. |
+| **Twin Keeps** | Dungeon tiles, the original's glowing cracked-wall tiles | Two castles face off across a rainy courtyard. Each floor is guarded by a low wall that blocks shots: hide behind it and jump up to throw. In Classic, barrels and nukes smash the walls; in Crusade, any shot wears them down. Spawns are split by keep for 2v2. |
+
+The new arenas are written as plain-text maps in `src/shared/levels/arenas.ts`, and `src/shared/levels/arena.ts` tiles them with the original sprites. Stage-select thumbnails are rendered from the level data. CPU players know about the new hazards: they climb before the flood, use their double jump to get back onto an island, and jump gaps instead of walking off them.
 
 ### Game feel (new in v2)
 
@@ -121,12 +138,12 @@ Other scripts:
 | `npm run build` | Asset pipeline + typecheck + production web build into `dist/` |
 | `npm run build:server` / `npm start` | Bundle and run the relay server. It also serves `dist/`, so one process hosts both. |
 | `npm test` | Unit tests: determinism, rollback replay, full CPU matches on every stage, rooms |
-| `node tests/e2e/online.mjs` | Two browsers play online through the relay (needs `dev` + `dev:server`). Run the server with `LAG_MS=60 JITTER_MS=40` to test rollback. |
+| `node tests/e2e/online.mjs [url] [out] [mode] [stage]` | Two browsers play online through the relay (needs `dev` + `dev:server`). Run the server with `LAG_MS=60 JITTER_MS=40` to test rollback. |
 | `node tests/e2e/gamepad.mjs` / `mobile.mjs` | Emulated Xbox + DualSense controllers; touch-only phone flow |
 | `node tests/e2e/monkey.mjs [url] [out] [seconds] [seed]` | Seeded random keyboard/gamepad/mouse/touch mashing across every screen; fails on any error or stall |
 | `FUZZ_RUNS=25 npx vitest run tests/fuzz.test.ts` | Deep fuzz: random inputs on every stage/mode with physics invariants, rollback over a simulated lossy network, random server traffic |
 | `node tools/build-assets.mjs` / `node tools/extract-levels.mjs` | Regenerate the asset manifest / level JSON from the Unity project |
-| `npm run footage` (`-- --crusade` / `-- --highlights`) | Record an MP4 with sound straight from the game. `--highlights` records ~2.5 min of unscripted CPU play in both modes and auto-cuts the most action-packed moments into a ~45 s reel |
+| `npm run footage` (`-- --crusade` / `-- --highlights` / `-- --arenas`) | Record an MP4 with sound straight from the game. `--highlights` records ~2.5 min of unscripted CPU play in both modes and auto-cuts the most action-packed moments into a ~45 s reel. `--arenas` does the same on the four new arenas. |
 
 Desktop (Steam), Android, iOS, server deployment and CI are described in
 [platforms/README.md](platforms/README.md).
@@ -136,7 +153,7 @@ Desktop (Steam), Android, iOS, server deployment and CI are described in
 ```
 Assets/, ProjectSettings/   The original 2016 Unity project (source art, sound, scenes; kept for reference)
 tools/                      Asset pipeline (Unity .meta/.anim -> manifest) and level extractor (scenes -> JSON)
-src/shared/                 Deterministic simulation: rules, weapons, CPUs, levels, wire protocol
+src/shared/                 Deterministic simulation: rules, weapons, CPUs, levels (+ ASCII arena builder), wire protocol
 src/client/                 Renderer, effects, audio, input (keyboard/gamepad/touch), menus, netcode, platform bridges
 server/                     Relay + matchmaking server (rooms, quick match, input relay, idle drop)
 platforms/                  Electron + Steam wrapper, mobile (Capacitor) setup, Steam depot scripts

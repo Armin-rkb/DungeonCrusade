@@ -4,7 +4,7 @@
 
 import type { W, BlastKind } from './weapons';
 
-export type LevelId = 'dungeon' | 'beach' | 'dragon' | 'test';
+export type LevelId = 'dungeon' | 'beach' | 'dragon' | 'oubliette' | 'tide' | 'shrine' | 'keeps' | 'test';
 
 export interface SlotConfig {
   /** Slot participates in the match. */
@@ -101,7 +101,7 @@ export interface PlayerState {
   shots: number;
   hits: number;
   /** Bot memory. */
-  ai: { target: number; timer: number; jumpHold: number; dir: number; reaction: number; wantShoot: number; stuck: number; lastX: number; idle: number };
+  ai: { target: number; timer: number; jumpHold: number; pressJump: number; dir: number; reaction: number; wantShoot: number; stuck: number; lastX: number; idle: number };
 }
 
 export interface Projectile {
@@ -213,6 +213,10 @@ export interface GameState {
   /** Crusade: hit points of breakable tiles / the Dragon temple. */
   tileHp: number[];
   templeHp: number;
+  /** Sky Shrine: current gust (signed air speed, 0 = calm), its upcoming direction and frames to the next change. */
+  wind: number;
+  windDir: number;
+  windTimer: number;
   winner: number; // slot (or team when teams) or -1
   winnerTeam: number;
   events: GameEvent[];

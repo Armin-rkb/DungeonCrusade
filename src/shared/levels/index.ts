@@ -1,15 +1,19 @@
-// Level registry: the three arenas of the original game plus a test arena.
+// Level registry: the three arenas of the original game, the arenas designed
+// for v2 (./arenas.ts) and a test arena.
 import { buildLevel, testArenaData, type LevelData, type LevelRuntime, type LevelTweaks } from '../level';
 import type { GameMode, LevelId } from '../types';
 import dungeonData from './dungeon.json';
 import beachData from './beach.json';
 import dragonData from './dragon.json';
+import { HIGH_TIDE, OUBLIETTE, SKY_SHRINE, TWIN_KEEPS } from './arenas';
 
 export interface LevelInfo {
   id: LevelId;
   name: string;
-  /** manifest image id of the menu preview */
+  /** manifest image id of the menu preview ('' = rendered from the level itself) */
   preview: string;
+  /** Designed for v2 (not in the original game). */
+  isNew?: boolean;
   music: string;
   blurb: string;
 }
@@ -18,6 +22,10 @@ export const LEVELS: LevelInfo[] = [
   { id: 'dungeon', name: 'Dungeon', preview: 'sprites/menu/dungeonpreview', music: 'sound/music/dungeon', blurb: 'Stormy castle crypt. Barrels smash cracked walls.' },
   { id: 'beach', name: 'Wacky Beach', preview: 'sprites/menu/wackypreview', music: 'sound/music/wackybeach', blurb: 'Sunset piers. Seagulls drop surprise chests.' },
   { id: 'dragon', name: 'Dragon Temple', preview: 'sprites/menu/dragonpreview', music: 'sound/music/dragon', blurb: 'Nuke the temple... and wake what sleeps inside.' },
+  { id: 'oubliette', name: 'Oubliette', preview: '', music: 'sound/music/dungeon', blurb: 'A bottomless shaft. Fall out the floor, drop in from the ceiling. Shots loop too.', isNew: true },
+  { id: 'tide', name: 'High Tide', preview: '', music: 'sound/music/wackybeach', blurb: 'The sea rises every 30 seconds. Get to the high piers or get washed away.', isNew: true },
+  { id: 'shrine', name: 'Sky Shrine', preview: '', music: 'sound/music/dragon', blurb: 'Islands above the clouds. No walls, no floor: knock them off. Gusts bend every shot.', isNew: true },
+  { id: 'keeps', name: 'Twin Keeps', preview: '', music: 'sound/music/chiptune_motorcade', blurb: 'Two castles, one courtyard. Hide behind the glowing walls until they crumble.', isNew: true },
 ];
 
 type TweaksFor = (mode: GameMode) => LevelTweaks;
@@ -61,6 +69,43 @@ registerLevel('dragon', dragonData as unknown as LevelData, {
   features: {
     temple: { x: -2.5, y: -4.5, w: 5, h: 8 },
     dragon: { x: -7, y: -2 },
+  },
+});
+
+// ---- Oubliette: no floor, no walls. Everything wraps both ways.
+registerLevel('oubliette', OUBLIETTE, {
+  wrapX: true,
+  wrapY: true,
+  features: { lightning: true },
+});
+
+// ---- High Tide: wrap-around beach; the tide floods the sand and the low piers.
+registerLevel('tide', HIGH_TIDE, (mode) => ({
+  wrapX: true,
+  oneway: (s) => !!(s as SolidLike).oneWay,
+  features: {
+    tide: { low: -7.2, high: -4.1, calm: 900, rise: 240, flood: 420, ebb: 240, warn: 180 },
+    seagulls: mode === 'crusade' ? { y: 5.6, minDelay: 720, maxDelay: 1200 } : { y: 5.6, minDelay: 1500, maxDelay: 2400 },
+  },
+}));
+
+// ---- Sky Shrine: ring-out arena with periodic gusts of wind.
+registerLevel('shrine', SKY_SHRINE, {
+  wrapX: false,
+  ringOut: true,
+  oneway: (s) => !!(s as SolidLike).oneWay,
+  features: { gusts: { every: 1260, jitter: 360, warn: 120, length: 240, speed: 3.2 } },
+});
+
+// ---- Twin Keeps: closed castle courtyard. The keeps' merlons crumble (barrels
+// and nukes in Classic, any fire in Crusade).
+registerLevel('keeps', TWIN_KEEPS, {
+  wrapX: false,
+  breakable: (s) => !!s.group?.startsWith('crumble'),
+  features: {
+    lightning: true,
+    rain: true,
+    armor: { x: -0.25, y: -6.5, w: 0.5, h: 1.63, respawn: 1800 },
   },
 });
 

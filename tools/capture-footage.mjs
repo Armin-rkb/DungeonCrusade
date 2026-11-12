@@ -6,7 +6,7 @@
 // machine is. Every sound the game plays is logged and mixed afterwards from
 // the original sound files, together with the stage music.
 //
-// Usage: node tools/capture-footage.mjs [out.mp4] [--crusade | --highlights]
+// Usage: node tools/capture-footage.mjs [out.mp4] [--crusade | --highlights | --arenas]
 //
 // --highlights records ~2.5 minutes of unscripted CPU play in both modes, scores
 // every moment by what happens (KOs, parries, splats, bounties, explosions, the
@@ -20,7 +20,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const HIGHLIGHTS = process.argv.includes('--highlights');
+const ARENAS = process.argv.includes('--arenas');
+const HIGHLIGHTS = ARENAS || process.argv.includes('--highlights');
 const MODE = HIGHLIGHTS ? 'highlights' : process.argv.includes('--crusade') ? 'crusade' : 'classic';
 const argOut = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const OUT = path.resolve(argOut ?? path.join(ROOT, 'test-results', 'footage', `dungeon-crusade-${MODE}.mp4`));
@@ -122,7 +123,7 @@ async function play(seconds, capture = true) {
 
 async function scene(level, weapons, opts = {}) {
   cuts.push(frame);
-  await page.evaluate(({ level, weapons, skipCountdown, seed, mode }) => {
+  await page.evaluate(({ level, weapons, skipCountdown, seed, mode, stage }) => {
     const lvl = level;
     const app = window.__app;
     const names = ['GOLD', 'SILVER', 'GREEN', 'RED'];
@@ -135,7 +136,10 @@ async function scene(level, weapons, opts = {}) {
     if (skipCountdown) s.phaseTimer = 2;
     window.__weapons = weapons;
     if (lvl === 'dragon' && mode === 'crusade' && window.__weakTemple) s.templeHp = window.__weakTemple;
-  }, { level, weapons, skipCountdown: !!opts.skipCountdown, seed: opts.seed ?? 7, mode: opts.mode ?? MODE });
+    // Fast-forward a level's clock-driven events (the tide, the next gust) so they land in the clip.
+    if (stage?.clock) s.clock = stage.clock;
+    if (stage?.windTimer) s.windTimer = stage.windTimer;
+  }, { level, weapons, skipCountdown: !!opts.skipCountdown, seed: opts.seed ?? 7, mode: opts.mode ?? MODE, stage: opts.stage ?? null });
   // Hand out a mix of weapons once the fight starts so the clip shows them off.
   const arm = () => page.evaluate(() => {
     const s = window.__app.session.state;
@@ -158,12 +162,20 @@ if (HIGHLIGHTS) {
   const scenes = [];
   await play(2.2);
   const titleEnd = frame;
-  const record = async (level, mode, seconds, seed, caption) => {
+  const record = async (level, mode, seconds, seed, caption, picks = level === 'dragon' ? 3 : 2, stage = null) => {
     const from = frame;
-    await scene(level, null, { mode, seed, skipCountdown: true });
+    await scene(level, null, { mode, seed, skipCountdown: true, stage });
     await play(seconds);
-    scenes.push({ from, to: frame, caption, picks: level === 'dragon' ? 3 : 2 });
+    scenes.push({ from, to: frame, caption, picks });
   };
+  if (ARENAS) {
+    // The arenas designed for v2. Only staging: the tide and the first gust come early.
+    await record('oubliette', 'crusade', 34, 5, 'OUBLIETTE', 2);
+    await record('tide', 'crusade', 40, 9, 'HIGH TIDE', 3, { clock: 900 - 240 });
+    await record('shrine', 'crusade', 40, 3, 'SKY SHRINE', 3, { windTimer: 300 });
+    await record('keeps', 'crusade', 36, 12, 'TWIN KEEPS', 2);
+    reel = { titleEnd, scenes };
+  } else {
   await record('beach', 'classic', 32, 21, 'CLASSIC MODE');
   await record('dungeon', 'crusade', 40, 8, 'CRUSADE MODE');
   await record('beach', 'crusade', 32, 13, 'CRUSADE MODE');
@@ -171,6 +183,7 @@ if (HIGHLIGHTS) {
   await page.evaluate(() => (window.__weakTemple = 12));
   await record('dragon', 'crusade', 45, 31, 'CRUSADE MODE');
   reel = { titleEnd, scenes };
+  }
 } else {
 // 1. Title screen with the attract-mode brawl behind it.
 await play(2.5);
@@ -281,7 +294,7 @@ fs.writeFileSync(rawPath, Buffer.from(mix.buffer));
 
 // ------------------------------------------------------------------ highlights
 /** How exciting each game event is. */
-const WEIGHT = { ko: 10, parry: 6, splat: 6, temple: 16, 'dragon-wake': 6, 'dragon-swoop': 14, stomp: 4, tile: 4, clash: 3, pickup: 2, hit: 2, armor: 2, quack: 1, sudden: 6, gull: 3 };
+const WEIGHT = { ko: 10, parry: 6, splat: 6, temple: 16, 'dragon-wake': 6, 'dragon-swoop': 14, stomp: 4, tile: 4, clash: 3, pickup: 2, hit: 2, armor: 2, quack: 1, sudden: 6, gull: 3, drown: 14, ringout: 14, 'tide-rise': 10, 'tide-warn': 4, gust: 10, 'gust-warn': 3 };
 function eventScore(e) {
   if (e.t === 'points') return e.w === 1 ? 12 : e.w === 2 ? 3 : 0; // bounty / assist
   if (e.t === 'boom') return e.b === 2 ? 12 : 3; // nuke vs other blasts

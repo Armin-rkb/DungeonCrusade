@@ -6,6 +6,7 @@ import { audio, MUSIC, SFX } from '../audio';
 import { input, isTouchDevice, label, type Device } from '../input/input';
 import { applySettingsSideEffects } from '../options';
 import { copy, inviteLink, isDesktopApp, native, quit, share, toggleFullscreen } from '../platform';
+import { levelPreview } from '../render/preview';
 import { KNIGHTS, WEAPON_ICONS } from '../render/visuals';
 import { playerName, saveSettings, settings } from '../settings';
 import { button, h, hints, Screen, selector, slider, spriteCanvas, toast, toggle } from './core';
@@ -392,6 +393,7 @@ export class StageScreen extends Screen {
       saveSettings();
       this.app.ui.refresh();
     }));
+    this.el.appendChild(h('div', { class: 'sub stage-blurb' }, levelInfo(settings.lastLevel as LevelId).blurb));
     const rules = h('div', { class: 'list' });
     rules.style.marginTop = '12px';
     const humans = this.app.couch.filter((s) => s).length;
@@ -460,8 +462,9 @@ function stagePicker(get: () => LevelId, set: (id: LevelId) => void, readonly = 
   for (const l of LEVELS) {
     const st = h('div', { class: `stage${get() === l.id ? ' selected' : ''}`, ...(readonly ? {} : { 'data-nav': '' }) });
     st.dataset.key = `stage-${l.id}`;
-    const src = assets.manifest.images[l.preview];
-    if (src) st.appendChild(h('img', { src: url(src), alt: l.name }));
+    const src = l.preview ? assets.manifest.images[l.preview] : '';
+    st.appendChild(h('img', { src: src ? url(src) : levelPreview(l.id), alt: l.name }));
+    if (l.isNew) st.appendChild(h('div', { class: 'new' }, 'NEW'));
     st.appendChild(h('div', { class: 'label' }, l.name.toUpperCase()));
     if (!readonly) {
       st.addEventListener('click', () => {

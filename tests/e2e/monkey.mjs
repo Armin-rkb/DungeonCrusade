@@ -77,7 +77,7 @@ while (Date.now() - t0 < seconds * 1000) {
       await page.evaluate((mode) => {
         const app = window.__app;
         if (app.session) return;
-        const cfg = { level: ['dungeon', 'beach', 'dragon'][Math.floor(Math.random() * 3)], mode, seed: 5, targetScore: 2, timeLimit: 0, teams: Math.random() < 0.3, items: true,
+        const cfg = { level: ['dungeon', 'beach', 'dragon', 'oubliette', 'tide', 'shrine', 'keeps'][Math.floor(Math.random() * 7)], mode, seed: 5, targetScore: 2, timeLimit: 0, teams: Math.random() < 0.3, items: true,
           slots: [0, 1, 2, 3].map((k) => ({ active: true, knight: k, bot: k < 2 ? 0 : 3, team: k % 2, name: `M${k}` })) };
         app.startLocal(cfg, new Map([[0, 'kb1'], [1, 'pad0']]), cfg.slots.map((s) => s.name));
       }, rnd() < 0.5 ? 'crusade' : 'classic');

@@ -21,7 +21,7 @@ import {
 } from './types';
 import { BLASTS, W, WEAPONS, WEAPON_COUNT, type BlastKind } from './weapons';
 import { botInput } from './bot';
-import { crownHolder, isCrusade, teamOf } from './rules';
+import { crownHolder, isCrusade, teamOf, tideDanger, tideLevel } from './rules';
 import { AMMO, CR, T, FPS, DT } from './tuning';
 
 export { T, FPS, DT };
@@ -51,7 +51,7 @@ function newPlayer(slot: number, active: boolean): PlayerState {
     btn: 0, prevBtn: 0, act: 0, actTimer: 0, airTime: 0,
     swing: 0, swingCd: 0, swingHit: 0, ammo: -1, splatCd: 0, dmgBy: [0, 0, 0, 0], assists: 0, parries: 0, splats: 0,
     score: 0, kos: 0, deaths: 0, damageDealt: 0, shots: 0, hits: 0,
-    ai: { target: -1, timer: 0, jumpHold: 0, dir: 0, reaction: 0, wantShoot: 0, stuck: 0, lastX: 0, idle: 0 },
+    ai: { target: -1, timer: 0, jumpHold: 0, pressJump: 0, dir: 0, reaction: 0, wantShoot: 0, stuck: 0, lastX: 0, idle: 0 },
   };
 }
 
@@ -79,6 +79,9 @@ export function createGame(match: Match): GameState {
     armorCd: 0,
     tileHp: new Array(level.breakables).fill(CR.tileHp),
     templeHp: level.features.temple ? CR.templeHp : 0,
+    wind: 0,
+    windDir: 0,
+    windTimer: level.features.gusts ? level.features.gusts.every : 0,
     winner: -1,
     winnerTeam: -1,
     events: [],
@@ -145,7 +148,8 @@ function approach(v: number, target: number, delta: number): number {
 }
 
 interface Body { x: number; y: number }
-interface MoveResult { hitX: number; hitY: number; solid: number }
+/** solid = the last solid hit; solidX = the one that blocked sideways movement. */
+interface MoveResult { hitX: number; hitY: number; solid: number; solidX: number }
 
 /**
  * Moves an axis-aligned box (centre x/y, half extents hw/hh) through the level.
@@ -153,7 +157,7 @@ interface MoveResult { hitX: number; hitY: number; solid: number }
  */
 function moveBox(m: Match, s: GameState, b: Body, hw: number, hh: number, dx: number, dy: number, oneway: boolean, dropping = false): MoveResult {
   const solids = m.level.solids;
-  const res: MoveResult = { hitX: 0, hitY: 0, solid: -1 };
+  const res: MoveResult = { hitX: 0, hitY: 0, solid: -1, solidX: -1 };
   // X axis
   if (dx !== 0) {
     let nx = b.x + dx;
@@ -163,8 +167,8 @@ function moveBox(m: Match, s: GameState, b: Body, hw: number, hh: number, dx: nu
       if (so.oneway || !solidActive(s, so)) continue;
       if (y1 <= so.y || y0 >= so.y + so.h) continue;
       if (nx + hw <= so.x || nx - hw >= so.x + so.w) continue;
-      if (dx > 0 && b.x + hw <= so.x + EPS * 4) { nx = so.x - hw - EPS; res.hitX = 1; res.solid = i; }
-      else if (dx < 0 && b.x - hw >= so.x + so.w - EPS * 4) { nx = so.x + so.w + hw + EPS; res.hitX = -1; res.solid = i; }
+      if (dx > 0 && b.x + hw <= so.x + EPS * 4) { nx = so.x - hw - EPS; res.hitX = 1; res.solid = res.solidX = i; }
+      else if (dx < 0 && b.x - hw >= so.x + so.w - EPS * 4) { nx = so.x + so.w + hw + EPS; res.hitX = -1; res.solid = res.solidX = i; }
     }
     b.x = nx;
   }
@@ -226,12 +230,35 @@ function wallContact(m: Match, s: GameState, p: PlayerState): number {
   return 0;
 }
 
-function wrapX(m: Match, b: { x: number }) {
-  if (!m.level.wrapX) return;
+/** Wrap-around arenas: leaving one side re-enters from the opposite one. Returns true on a vertical wrap. */
+function wrap(m: Match, b: { x: number; y: number }): boolean {
   const v = m.level.view;
-  if (b.x < v.x) b.x += v.w;
-  else if (b.x > v.x + v.w) b.x -= v.w;
+  if (m.level.wrapX) {
+    if (b.x < v.x) b.x += v.w;
+    else if (b.x > v.x + v.w) b.x -= v.w;
+  }
+  if (m.level.wrapY) {
+    if (b.y < v.y) { b.y += v.h; return true; }
+    if (b.y > v.y + v.h) { b.y -= v.h; return true; }
+  }
+  return false;
 }
+
+/** Solid block overlapping the box [x-hw, x+hw] x [y0, y1], or null. */
+function solidIn(m: Match, s: GameState, x: number, hw: number, y0: number, y1: number): Solid | null {
+  for (const so of m.level.solids) {
+    if (so.oneway || !solidActive(s, so)) continue;
+    if (x + hw <= so.x || x - hw >= so.x + so.w || y1 <= so.y || y0 >= so.y + so.h) continue;
+    return so;
+  }
+  return null;
+}
+
+/** Wind push per projectile kind (multiplies the gust speed per second). */
+const WIND_PUSH: Record<number, number> = {
+  [W.Stone]: 1.6, [W.Pill]: 1.4, [W.Shuriken]: 1, [W.Hadouken]: 0.6, [W.Pizza]: 1.2,
+  [W.Barrel]: 0.5, [W.Sock]: 1.6, [W.Duck]: 1.8, [W.Bomb]: 1.2, [W.Music]: 1.4,
+};
 
 // ------------------------------------------------------------------ step
 /**
@@ -335,9 +362,10 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
   if (!stunned && pressed & BTN_JUMP) p.jumpBuf = T.jumpBuffer;
   else if (p.jumpBuf > 0) p.jumpBuf--;
 
-  // ---- horizontal
+  // ---- horizontal (gusts move the air: knights drift with it, less so on the ground)
+  const windV = s.phase === Phase.Play && s.wind !== 0 ? s.wind * (p.ground ? 0.4 : 1) : 0;
   if (!stunned) {
-    const target = dir * runSpeed;
+    const target = dir * runSpeed + windV;
     let accel: number;
     if (p.ground) accel = dir !== 0 ? T.groundAccel : T.groundDecel;
     else accel = dir !== 0 ? T.airAccel : T.airDecel;
@@ -348,7 +376,7 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
     else p.vx = approach(p.vx, target, T.airDecel * dt);
     if (dir !== 0 && p.wallLock <= 0) p.face = dir;
   } else {
-    p.vx = approach(p.vx, 0, (p.ground ? 30 : 6) * dt);
+    p.vx = approach(p.vx, windV, (p.ground ? 30 : 6) * dt);
   }
 
   // ---- wall contact
@@ -422,7 +450,15 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
   if (r.hitX !== 0) p.vx = 0;
   if (r.hitY === 1 && p.vy > 0) p.vy = 0;
   if (r.hitY === -1) p.vy = 0;
-  wrapX(m, p);
+  if (wrap(m, p)) {
+    // Re-entering at the opposite edge can overshoot into a ledge there: bonk
+    // its underside (going up) or land on it (going down).
+    const so = solidIn(m, s, p.x, T.halfW, p.y, p.y + T.height);
+    if (so) {
+      p.y = p.vy > 0 ? so.y - T.height - EPS : so.y + so.h + EPS;
+      p.vy = 0;
+    }
+  }
 
   p.ground = p.vy <= 0 && onGround(m, s, p);
   if (p.ground) {
@@ -440,6 +476,18 @@ function updatePlayer(m: Match, s: GameState, p: PlayerState, dt: number) {
   if (p.y < m.level.killY) {
     ko(m, s, p, -1, -1);
     return;
+  }
+  // Ring-out arenas: flying off the side is a KO too.
+  if (m.level.ringOut && (p.x < m.level.view.x - 1 || p.x > m.level.view.x + m.level.view.w + 1)) {
+    emit(s, 'ringout', p.slot, { a: p.slot, x: p.x, y: p.y, v: p.x < 0 ? -1 : 1 });
+    ko(m, s, p, -1, -1);
+    return;
+  }
+  // Closed arenas: never let anyone sneak over the top of a side wall.
+  if (!m.level.wrapX && !m.level.ringOut) {
+    const v = m.level.view;
+    if (p.x < v.x - 0.2) { p.x = v.x - 0.2; p.vx = 0; }
+    else if (p.x > v.x + v.w + 0.2) { p.x = v.x + v.w + 0.2; p.vx = 0; }
   }
 
   // ---- shooting
@@ -486,7 +534,11 @@ function respawn(m: Match, s: GameState, p: PlayerState) {
   const spawns = m.level.spawns;
   let best = 0;
   let bestScore = -1;
+  // Never respawn into the sea (or where the announced flood will reach).
+  const tide = m.level.features.tide;
+  const sea = tide ? (tideDanger(m, s) ? tide.high : tideLevel(m, s)) : -Infinity;
   for (let i = 0; i < spawns.length; i++) {
+    if (spawns[i].y < sea + 0.6) continue;
     let minD = 1e9;
     for (const o of s.players) {
       if (o === p || !o.active || !o.alive) continue;
@@ -848,6 +900,7 @@ function updateProjectiles(m: Match, s: GameState, dt: number) {
       pr.y += wave * 3.2 * dt;
     }
     if (pr.kind === W.Barrel && pr.bounces > 0) pr.vx = pr.q * def.speed;
+    if (s.wind !== 0 && s.phase === Phase.Play) pr.vx += s.wind * (WIND_PUSH[pr.kind] ?? 1) * dt;
     if (pr.vy < -20) pr.vy = -20;
 
     const body = { x: pr.x, y: pr.y };
@@ -855,16 +908,23 @@ function updateProjectiles(m: Match, s: GameState, dt: number) {
     const landOnPlatforms = bouncy || pr.kind === W.Sock;
     // Sub-step fast projectiles to avoid tunnelling.
     const steps = Math.abs(pr.vx * dt) > hw || Math.abs(pr.vy * dt) > hh ? 2 : 1;
-    let hit: MoveResult = { hitX: 0, hitY: 0, solid: -1 };
+    let hit: MoveResult = { hitX: 0, hitY: 0, solid: -1, solidX: -1 };
     for (let k = 0; k < steps && !hit.hitX && !hit.hitY; k++) {
       hit = moveBox(m, s, body, hw, hh, (pr.vx * dt) / steps, (pr.vy * dt) / steps, landOnPlatforms);
     }
     pr.x = body.x;
     pr.y = body.y;
-    wrapX(m, pr);
+    if (wrap(m, pr) && solidIn(m, s, pr.x, hw, pr.y - hh, pr.y + hh)) {
+      breakProj(s, pr);
+      continue;
+    }
 
     if (hit.hitX || hit.hitY) projHitsWorld(m, s, pr, hit);
     if (pr.dead) continue;
+    if (pr.y < tideLevel(m, s)) {
+      breakProj(s, pr, 'splash');
+      continue;
+    }
 
     // ---- players
     for (const v of s.players) {
@@ -882,6 +942,7 @@ function updateProjectiles(m: Match, s: GameState, dt: number) {
     pr.life--;
     if (pr.life <= 0) projExpire(m, s, pr);
     if (pr.y < m.level.killY - 2 || pr.y > m.level.ceilY + 6) pr.dead = true;
+    if (!m.level.wrapX && (pr.x < m.level.view.x - 6 || pr.x > m.level.view.x + m.level.view.w + 6)) pr.dead = true;
   }
   s.projs = s.projs.filter((p) => !p.dead);
 }
@@ -892,7 +953,9 @@ function breakProj(s: GameState, pr: Projectile, how = 'break') {
 }
 
 function projHitsWorld(m: Match, s: GameState, pr: Projectile, hit: MoveResult) {
-  const sol = hit.solid >= 0 ? m.level.solids[hit.solid] : null;
+  // A shot rolling along a floor into a wall hits both: the wall is what it smashes into.
+  const idx = hit.hitX && hit.solidX >= 0 ? hit.solidX : hit.solid;
+  const sol = idx >= 0 ? m.level.solids[idx] : null;
   if (sol && isCrusade(m) && impactsTerrain(pr, hit)) {
     // Crusade: walls crumble and the temple cracks under fire.
     const dmg = Math.max(1, WEAPONS[pr.kind].damage);
@@ -1183,6 +1246,7 @@ function updatePickups(m: Match, s: GameState, dt: number) {
       const r = moveBox(m, s, body, HW, HH, 0, c.vy * dt, true);
       c.x = body.x;
       c.y = body.y;
+      wrap(m, c);
       if (r.hitY === -1) {
         c.ground = true;
         c.vy = 0;
@@ -1192,6 +1256,11 @@ function updatePickups(m: Match, s: GameState, dt: number) {
       c.ground = false; // floor was destroyed
     }
     if (c.y < m.level.killY) { c.opened = 999; continue; }
+    if (c.y < tideLevel(m, s)) {
+      c.opened = 999;
+      emit(s, 'splash', `chest-${c.id}`, { x: c.x, y: c.y, v: 0 });
+      continue;
+    }
     if (c.age > 1500) { c.opened = 999; continue; }
     for (const p of s.players) {
       if (!p.active || !p.alive) continue;
@@ -1308,6 +1377,38 @@ function splat(m: Match, s: GameState, p: PlayerState, vx: number, vy: number, h
 function updateLevel(m: Match, s: GameState, dt: number) {
   const f = m.level.features;
   const v = m.level.view;
+  if (f.tide && s.phase === Phase.Play) {
+    const t = f.tide;
+    const k = s.clock % (t.calm + t.rise + t.flood + t.ebb);
+    if (k === t.calm - t.warn) emit(s, 'tide-warn', s.clock);
+    else if (k === t.calm) emit(s, 'tide-rise', s.clock);
+    else if (k === t.calm + t.rise + t.flood) emit(s, 'tide-ebb', s.clock);
+    const sea = tideLevel(m, s);
+    for (const p of s.players) {
+      if (!p.active || !p.alive || p.y + T.height * 0.5 >= sea) continue;
+      emit(s, 'drown', p.slot, { a: p.slot, x: p.x, y: sea });
+      ko(m, s, p, -1, -1);
+    }
+  }
+  const gu = f.gusts;
+  if (gu && s.phase === Phase.Play) {
+    s.windTimer--;
+    if (s.wind === 0) {
+      if (s.windTimer === gu.warn) {
+        s.windDir = rand(s) < 0.5 ? -1 : 1;
+        emit(s, 'gust-warn', s.clock, { v: s.windDir });
+      }
+      if (s.windTimer <= 0) {
+        s.wind = s.windDir * gu.speed;
+        s.windTimer = gu.length;
+        emit(s, 'gust', s.clock, { v: s.windDir });
+      }
+    } else if (s.windTimer <= 0) {
+      s.wind = 0;
+      s.windTimer = gu.every + randInt(s, 0, gu.jitter);
+      emit(s, 'gust-end', s.clock);
+    }
+  }
   if (f.seagulls && s.phase === Phase.Play) {
     const g = s.gull;
     if (!g.active) {
@@ -1419,4 +1520,4 @@ export function isTeamMatch(m: Match): boolean {
   return m.cfg.teams;
 }
 
-export { teamOf, teamScore, crownHolder, isCrusade };
+export { teamOf, teamScore, crownHolder, isCrusade, tideLevel, tideDanger };
