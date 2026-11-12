@@ -27,6 +27,12 @@ export interface ArenaDef {
   wrapY?: boolean;
   /** Art behind the tiles (z < 500000) or in front (z > 700000). */
   layers?: LevelLayer[];
+  /** Look of the '=' platforms when it differs from the theme (e.g. wooden planks in a stone castle). */
+  planks?: Theme;
+  /** Extra solid block characters with their own art. */
+  blocks?: Record<string, (x: number, y: number) => LevelLayer[]>;
+  /** Art for '%' breakable blocks (must carry the given group so it vanishes when broken). */
+  crumble?: (x: number, y: number, group: string) => LevelLayer[];
   legend?: Record<string, (x: number, y: number) => LevelLayer[]>;
   props?: LevelData['props'];
 }
@@ -61,7 +67,8 @@ export function buildArena(def: ArenaDef): LevelData {
     if (r < 0 || r >= rows || c < 0 || c >= cols) return 'OUT';
     return grid[r][c];
   };
-  const isBlock = (ch: string) => ch === '#' || ch === '%' || ch === 'OUT';
+  const solidCh = (ch: string) => ch === '#' || !!def.blocks?.[ch];
+  const isBlock = (ch: string) => solidCh(ch) || ch === '%' || ch === 'OUT';
   const solidAt = (c: number, r: number) => isBlock(at(c, r));
 
   const layers: LevelLayer[] = [...(def.layers ?? [])];
@@ -92,9 +99,9 @@ export function buildArena(def: ArenaDef): LevelData {
   const runs: Array<{ c0: number; c1: number; r0: number; r1: number }> = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      if (grid[r][c] !== '#') continue;
+      if (!solidCh(grid[r][c])) continue;
       let e = c;
-      while (e + 1 < cols && grid[r][e + 1] === '#') e++;
+      while (e + 1 < cols && solidCh(grid[r][e + 1])) e++;
       const above = runs.find((u) => u.r1 === r - 1 && u.c0 === c && u.c1 === e);
       if (above) above.r1 = r;
       else runs.push({ c0: c, c1: e, r0: r, r1: r });
@@ -111,9 +118,9 @@ export function buildArena(def: ArenaDef): LevelData {
       if (grid[r][c] !== '=') continue;
       let e = c;
       while (e + 1 < cols && grid[r][e + 1] === '=') e++;
-      const top = cy(r) + ONEWAY_TOP[def.theme];
+      const top = cy(r) + ONEWAY_TOP[def.planks ?? def.theme];
       solids.push({ x: cx(c) - 0.5, y: top - 0.1, w: e - c + 1, h: 0.1, tag: 'Ground', name: `Plank ${c},${r}`, oneWay: true } as LevelData['solids'][number]);
-      platformArt(def.theme, c, e, r, cx, cy, tile, at);
+      platformArt(def.planks ?? def.theme, c, e, r, cx, cy, tile, at);
       c = e;
     }
   }
@@ -124,7 +131,11 @@ export function buildArena(def: ArenaDef): LevelData {
       const ch = grid[r][c];
       const x = cx(c);
       const y = cy(r);
-      if (ch === '#' || ch === '%') {
+      if (def.blocks?.[ch]) {
+        for (const l of def.blocks[ch](x, y)) layers.push({ ...l, z: (z += 0.01) });
+      } else if (ch === '%' && def.crumble) {
+        for (const l of def.crumble(x, y, crumbleGroup[r][c])) layers.push({ ...l, z: (z += 0.01) });
+      } else if (ch === '#' || ch === '%') {
         blockArt(def.theme, c, r, x, y, solidAt, tile, crumbleGroup[r][c] || undefined);
       } else if (ch >= '1' && ch <= '4') {
         spawns[Number(ch) - 1] = { x, y: y - 0.5 + 0.55 };

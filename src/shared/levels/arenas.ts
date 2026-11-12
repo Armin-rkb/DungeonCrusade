@@ -7,8 +7,8 @@
 //                   the sand and the low piers.
 //  * Sky Shrine   - floating shrine islands with no walls and no floor: knock
 //                   rivals off. Gusts of wind push knights and bend shots.
-//  * Twin Keeps   - two castle keeps facing off over a courtyard in the rain;
-//                   their glowing merlons give cover until they crumble.
+//  * Twin Keeps   - two stone keeps facing off over a courtyard at sunset;
+//                   wooden barricades give cover until they are smashed.
 //
 // The top two rows sit under the HUD, so they never hold anything you stand on.
 
@@ -156,41 +156,56 @@ export const SKY_SHRINE: LevelData = buildArena({
 });
 
 // ------------------------------------------------------------------ Twin Keeps
-/** Rain over the courtyard and the keeps' roofs (not inside them). */
-const rain = (x: number, y: number, w: number, h: number) => ({ type: 'rain', x, y, emitter: { x, y, w, h }, direction: { x: 0.18, y: 0.98 }, z: 499999 });
+const MAP2_TILES = 'levi/map-2/tiles/';
+/** Dark stone behind the keeps' rooms. */
+const inside = (x: number, y: number) => deco(`${DRG}stone_tile1`, x, y, 550000, { color: '#4a465eff' });
 
 export const TWIN_KEEPS: LevelData = buildArena({
   id: 'keeps',
   name: 'Twin Keeps',
-  theme: 'crypt',
-  bgColor: '#0b0f2a',
+  theme: 'shrine',
+  planks: 'beach',
+  bgColor: '#f3a04b',
   music: 'sound/music/chiptune_motorcade',
   map: [
-    '#########################',
+    '#.......................#',
     '#.......................#',
     '#..........c.c..........#',
-    '#........#######........#',
+    '#........=======........#',
     '#.......................#',
-    '######.............######',
-    '#,,,,...##.....##...,,,,#',
+    '#RRRRR.............RRRRR#',
+    '#,,,,...==.....==...,,,,#',
     '#,,,,...............,,,,#',
     '#,1,,%.............%,,2,#',
-    '######...#######...######',
+    '######...=======...######',
     '#,,,,...............,,,,#',
-    '#,,,,..##.......##..,,,,#',
+    '#,,,,..==.......==..,,,,#',
     '#,3,,%....c...c....%,,4,#',
     '#########################',
   ],
-  legend: {
-    ',': (x, y) => [deco(`${TILES}black-tile`, x, y, 550000, { color: '#000000b8' })],
+  legend: { ',': (x, y) => [inside(x, y)] },
+  // Blue tiled roofs on the keeps (slanted at the courtyard end).
+  blocks: {
+    R: (x, y) => [x === -7 || x === 7
+      ? deco(`${DRG}blueroofleft`, x, y, 0, { sx: x < 0 ? -1 : 1 })
+      : deco(`${DRG}blueroofmid`, x, y, 0)],
   },
+  // The breakable cover is a wooden barricade: wood breaks, stone doesn't.
+  crumble: (x, y, group) => [
+    deco(`${MAP2_TILES}${y % 2 === 0 ? '_0000_tile-basic-1' : '_0002_tile-basic-2'}`, x, y, 0, { rot: 90, sy: 1.2, group }),
+  ],
   layers: [
-    deco(SPACE, 0, -0.5, 100000, { sx: 5.2, sy: 3, color: '#0b0f2aff', group: 'lightning-bg' }),
-    deco(SUN, 7.5, 4.2, 150000, { sx: 0.35, sy: 0.35, color: '#fff6d8e0' }),
-    deco(`${BG}towers`, 0, -0.5, 300000, { sx: 3, sy: 3, color: '#ffffff68' }),
-    ...[[-10, -2], [10, -2], [-10, -6], [10, -6]].map(([x, y]) => deco(`${TILES}black-tile`, x, y, 550000, { color: '#000000b8' })),
+    // Sunset over the mountains: dark keeps against a bright sky read clearly.
+    deco(`${MAP2}moving-sky#0`, 0, 1.8, 100000, { anim: 'levi/map-2/background-sprite' }),
+    deco(`${MAP2}moving-sky#0`, 0, 10.8, 100001, { sy: -1, anim: 'levi/map-2/background-sprite' }),
+    deco(SUN, 0, -1.6, 150000, { sx: 0.8, sy: 0.8, color: '#ffe39aff' }),
+    deco(`${DRG}background`, 0, -4.2, 200000, { color: '#6d4a78ff' }),
+    // Wooden scaffolding: posts under the courtyard platforms.
+    ...legs([-2.6, 2.6], 3.15),
+    ...legs([-3.5, 3.5], 0.15),
+    ...legs([-4.5, 4.5], -4.85),
+    ...[[-10, -2], [10, -2], [-10, -6], [10, -6]].map(([x, y]) => inside(x, y)),
     deco(`${TILES}candle-holder-stand`, 0, -5.7, 700000, { group: 'armor' }),
     deco('levi/fx/sparkles#0', 0, -5, 700001, { group: 'armor', anim: 'levi/fx/sparkles-fx', name: 'SparkleFX' }),
   ],
-  props: [rain(-6.5, -6.5, 13, 13), rain(-12, 1.5, 6, 5), rain(6, 1.5, 6, 5)],
 });

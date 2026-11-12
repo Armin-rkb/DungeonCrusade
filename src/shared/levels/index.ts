@@ -25,7 +25,7 @@ export const LEVELS: LevelInfo[] = [
   { id: 'oubliette', name: 'Oubliette', preview: '', music: 'sound/music/dungeon', blurb: 'A bottomless shaft. Fall out the floor, drop in from the ceiling. Shots loop too.', isNew: true },
   { id: 'tide', name: 'High Tide', preview: '', music: 'sound/music/wackybeach', blurb: 'The sea rises every 30 seconds. Get to the high piers or get washed away.', isNew: true },
   { id: 'shrine', name: 'Sky Shrine', preview: '', music: 'sound/music/dragon', blurb: 'Islands above the clouds. No walls, no floor: knock them off. Gusts bend every shot.', isNew: true },
-  { id: 'keeps', name: 'Twin Keeps', preview: '', music: 'sound/music/chiptune_motorcade', blurb: 'Two castles, one courtyard. Hide behind the glowing walls until they crumble.', isNew: true },
+  { id: 'keeps', name: 'Twin Keeps', preview: '', music: 'sound/music/chiptune_motorcade', blurb: 'Two stone keeps, one courtyard. Hide behind the wooden barricades until they get smashed.', isNew: true },
 ];
 
 type TweaksFor = (mode: GameMode) => LevelTweaks;
@@ -97,14 +97,12 @@ registerLevel('shrine', SKY_SHRINE, {
   features: { gusts: { every: 1260, jitter: 360, warn: 120, length: 240, speed: 3.2 } },
 });
 
-// ---- Twin Keeps: closed castle courtyard. The keeps' merlons crumble (barrels
+// ---- Twin Keeps: closed castle courtyard. The keeps' barricades break (barrels
 // and nukes in Classic, any fire in Crusade).
 registerLevel('keeps', TWIN_KEEPS, {
   wrapX: false,
   breakable: (s) => !!s.group?.startsWith('crumble'),
   features: {
-    lightning: true,
-    rain: true,
     armor: { x: -0.25, y: -6.5, w: 0.5, h: 1.63, respawn: 1800 },
   },
 });
