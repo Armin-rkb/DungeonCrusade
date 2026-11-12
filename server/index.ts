@@ -64,7 +64,14 @@ function serveStatic(pathname: string, res: http.ServerResponse) {
     res.end('Dungeon Crusade server is running. (No web build found in ./dist)');
     return;
   }
-  let rel = decodeURIComponent(pathname);
+  let rel: string;
+  try {
+    rel = decodeURIComponent(pathname);
+  } catch {
+    res.writeHead(400);
+    res.end();
+    return;
+  }
   if (rel.endsWith('/')) rel += 'index.html';
   const file = path.join(STATIC_DIR, path.normalize(rel).replace(/^(\.\.[/\\])+/, ''));
   if (!file.startsWith(STATIC_DIR)) {
@@ -123,8 +130,11 @@ wss.on('connection', (ws: WebSocket) => {
     if (!timer) timer = setTimeout(pump, Math.max(1, queue[0].due - Date.now()));
   });
   let alive = true;
-  let budget = 400; // messages per second
-  const refill = setInterval(() => (budget = 400), 1000);
+  // Messages per second. A client catching up after a stall legitimately sends
+  // up to ~12 inputs per frame (~720/s), so leave plenty of headroom.
+  const BUDGET = 1500;
+  let budget = BUDGET;
+  const refill = setInterval(() => (budget = BUDGET), 1000);
   const heartbeat = setInterval(() => {
     if (!alive) {
       ws.terminate();
@@ -143,7 +153,11 @@ wss.on('connection', (ws: WebSocket) => {
     } catch {
       return;
     }
-    rooms.handle(client, msg);
+    try {
+      rooms.handle(client, msg);
+    } catch (e) {
+      console.error('message handling failed', e);
+    }
   });
   ws.on('close', () => {
     clearInterval(heartbeat);

@@ -98,7 +98,7 @@ export class Connection {
           this.lastError = m.msg;
           reject(new Error(m.msg));
         }
-        for (const l of this.listeners) l(m);
+        this.emit(m);
       };
       ws.onerror = () => {
         this.lastError = 'Connection error.';
@@ -112,9 +112,20 @@ export class Connection {
           window.clearTimeout(timer);
           reject(new Error(this.lastError || 'Connection closed.'));
         }
-        for (const l of this.listeners) l({ t: 'error', code: 'closed', msg: 'Disconnected from server.' });
+        this.emit({ t: 'error', code: 'closed', msg: 'Disconnected from server.' });
       };
     });
+  }
+
+  /** A throwing listener must not stop the others (or the socket handler). */
+  private emit(m: ServerMsg) {
+    for (const l of [...this.listeners]) {
+      try {
+        l(m);
+      } catch (e) {
+        console.error('listener failed', e);
+      }
+    }
   }
 
   private startPings() {

@@ -123,6 +123,8 @@ Other scripts:
 | `npm test` | Unit tests: determinism, rollback replay, full CPU matches on every stage, rooms |
 | `node tests/e2e/online.mjs` | Two browsers play online through the relay (needs `dev` + `dev:server`). Run the server with `LAG_MS=60 JITTER_MS=40` to test rollback. |
 | `node tests/e2e/gamepad.mjs` / `mobile.mjs` | Emulated Xbox + DualSense controllers; touch-only phone flow |
+| `node tests/e2e/monkey.mjs [url] [out] [seconds] [seed]` | Seeded random keyboard/gamepad/mouse/touch mashing across every screen; fails on any error or stall |
+| `FUZZ_RUNS=25 npx vitest run tests/fuzz.test.ts` | Deep fuzz: random inputs on every stage/mode with physics invariants, rollback over a simulated lossy network, random server traffic |
 | `node tools/build-assets.mjs` / `node tools/extract-levels.mjs` | Regenerate the asset manifest / level JSON from the Unity project |
 | `npm run footage` (`-- --crusade`) | Record an MP4 with sound straight from the game (Classic or Crusade) |
 

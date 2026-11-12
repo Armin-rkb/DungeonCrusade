@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { RoomManager, type Client } from '../server/rooms';
 import { PROTOCOL_VERSION, type ServerMsg } from '../src/shared/protocol';
 
+const VALID_CFG = { level: 'dungeon', seed: 1, targetScore: 5, timeLimit: 0, teams: false, items: true, slots: [0, 1, 2, 3].map((k) => ({ active: k < 2, knight: k, bot: 0, team: 0, name: '' })) } as const;
+
 function setup() {
   const rm = new RoomManager();
   const inbox = new Map<Client, ServerMsg[]>();
@@ -87,7 +89,7 @@ describe('room manager', () => {
     expect(rm.rooms.get(code)!.settings.level).toBe('dungeon');
     rm.handle(a, { t: 'settings', settings: { level: 'beach', targetScore: 99, cpus: 2 } });
     expect(rm.rooms.get(code)!.settings).toMatchObject({ level: 'beach', targetScore: 20, cpus: 2 });
-    const cfg = { level: 'beach', seed: 1, targetScore: 5, timeLimit: 0, teams: false, items: true, slots: [] } as never;
+    const cfg = VALID_CFG;
     rm.handle(b, { t: 'start', cfg, owners: [a.id, b.id, null, null] });
     expect(last(a, 'start')).toBeUndefined();
     rm.handle(a, { t: 'start', cfg, owners: [a.id, b.id, null, null] });
@@ -114,7 +116,7 @@ describe('room manager', () => {
     const code = (last(a, 'room') as Extract<ServerMsg, { t: 'room' }>).room.code;
     const b = join('B');
     rm.handle(b, { t: 'join', code, players: P('B') });
-    rm.handle(a, { t: 'start', cfg: {} as never, owners: [a.id, b.id, null, null] });
+    rm.handle(a, { t: 'start', cfg: VALID_CFG, owners: [a.id, b.id, null, null] });
     now += 6000;
     rm.handle(a, { t: 'i', f: 300, d: [0] });
     rm.handle(b, { t: 'i', f: 120, d: [0] });

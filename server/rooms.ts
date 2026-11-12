@@ -14,6 +14,7 @@ import {
   type RoomSettings,
   type RoomState,
   type ServerMsg,
+  normalizeCode,
 } from '../src/shared/protocol';
 
 export interface Client {
@@ -31,6 +32,10 @@ export interface Client {
   lastInputAt: number;
   /** Dropped from the current match (idle); inputs are ignored until the next one. */
   dropped: boolean;
+  /** Playing in the current match (people who join mid-match wait for the next one). */
+  inMatch: boolean;
+  /** Reported that the current match reached its results screen. */
+  ended: boolean;
 }
 
 export interface Room {
@@ -46,6 +51,18 @@ export interface Room {
 }
 
 const LEVELS = ['dungeon', 'beach', 'dragon'];
+
+/** Minimal shape check of a host's match start so peers never get garbage. */
+function validStart(cfg: unknown, owners: unknown): boolean {
+  if (!cfg || typeof cfg !== 'object' || !Array.isArray(owners) || owners.length !== 4) return false;
+  const c = cfg as Record<string, unknown>;
+  if (!Array.isArray(c.slots) || c.slots.length !== 4) return false;
+  if (typeof c.level !== 'string' || !LEVELS.includes(c.level)) return false;
+  if (typeof c.seed !== 'number' || typeof c.targetScore !== 'number' || typeof c.timeLimit !== 'number') return false;
+  if (c.mode !== undefined && c.mode !== 'classic' && c.mode !== 'crusade') return false;
+  return c.slots.every((sl) => !!sl && typeof sl === 'object' && typeof (sl as { active?: unknown }).active === 'boolean')
+    && owners.every((o) => o === null || typeof o === 'string');
+}
 const MAX_PLAYERS = 4;
 
 function clampPlayers(list: unknown): LobbyPlayer[] {
@@ -69,7 +86,7 @@ export class RoomManager {
     const c: Client = {
       id: (this.nextId++).toString(36) + Math.random().toString(36).slice(2, 6),
       name: 'Knight', platform: 'web', players: [], ready: false, ping: 0, room: null, send, hello: false, lastFrame: -1,
-      lastInputAt: 0, dropped: false,
+      lastInputAt: 0, dropped: false, inMatch: false, ended: false,
     };
     this.clients.add(c);
     return c;
@@ -130,10 +147,18 @@ export class RoomManager {
   }
 
   private enter(c: Client, r: Room) {
+    if (c.room === r) {
+      // Already here (double click / quick match into your own room). Leaving
+      // first would delete the room while we are still in it.
+      this.sync(r);
+      return;
+    }
     if (c.room) this.leave(c);
     c.room = r;
     c.ready = false;
     c.lastFrame = -1;
+    c.inMatch = false;
+    c.ended = false;
     r.clients.push(c);
     this.sync(r);
   }
@@ -144,7 +169,8 @@ export class RoomManager {
     r.clients = r.clients.filter((x) => x !== c);
     c.room = null;
     c.ready = false;
-    if (r.phase === 'game' && !c.dropped) this.broadcast(r, { t: 'peer-left', p: c.id, lastFrame: c.lastFrame });
+    if (r.phase === 'game' && c.inMatch && !c.dropped) this.broadcast(r, { t: 'peer-left', p: c.id, lastFrame: c.lastFrame });
+    c.inMatch = false;
     if (r.clients.length === 0) {
       this.rooms.delete(r.code);
       return;
@@ -185,10 +211,11 @@ export class RoomManager {
         return;
       }
       case 'join': {
-        const code = String(m.code ?? '').toUpperCase();
+        const code = normalizeCode(typeof m.code === 'string' ? m.code : '');
         const r = this.rooms.get(code);
         if (!r) return this.err(c, 'not-found', `Room ${code} does not exist.`);
         const players = clampPlayers(m.players);
+        if (c.room === r) return this.sync(r);
         if (r.clients.length >= MAX_PEERS || this.playerCount(r) + Math.max(1, players.length) > MAX_PLAYERS) {
           return this.err(c, 'full', 'That room is full.');
         }
@@ -201,7 +228,7 @@ export class RoomManager {
         const need = Math.max(1, players.length);
         let best: Room | null = null;
         for (const r of this.rooms.values()) {
-          if (!r.public || r.phase !== 'lobby' || r.clients.length >= MAX_PEERS) continue;
+          if (r === c.room || !r.public || r.phase !== 'lobby' || r.clients.length >= MAX_PEERS) continue;
           if (this.playerCount(r) + need > MAX_PLAYERS) continue;
           if (!best || this.playerCount(r) > this.playerCount(best)) best = r;
         }
@@ -245,7 +272,7 @@ export class RoomManager {
       case 'start': {
         const r = c.room;
         if (!r || r.host !== c.id) return;
-        if (!m.cfg || !Array.isArray(m.owners) || m.owners.length !== 4) return;
+        if (!validStart(m.cfg, m.owners)) return;
         r.phase = 'game';
         r.matchId++;
         for (const x of r.clients) {
@@ -256,6 +283,8 @@ export class RoomManager {
         for (const x of r.clients) {
           x.lastInputAt = startAt + 4000;
           x.dropped = false;
+          x.ended = false;
+          x.inMatch = m.owners.includes(x.id);
         }
         r.gameStartAt = startAt;
         this.broadcast(r, { t: 'start', start: { cfg: m.cfg, owners: m.owners, startAt, matchId: r.matchId } });
@@ -264,7 +293,7 @@ export class RoomManager {
       }
       case 'i': {
         const r = c.room;
-        if (!r || r.phase !== 'game' || c.dropped || !Array.isArray(m.d) || typeof m.f !== 'number') return;
+        if (!r || r.phase !== 'game' || !c.inMatch || c.dropped || !Array.isArray(m.d) || typeof m.f !== 'number' || !Number.isFinite(m.f)) return;
         if (m.f > c.lastFrame) c.lastFrame = m.f;
         c.lastInputAt = this.now();
         this.broadcast(r, { t: 'i', p: c.id, f: m.f, d: m.d.slice(0, 4).map((x) => Number(x) & 255) }, c);
@@ -291,10 +320,16 @@ export class RoomManager {
         return;
       }
       case 'end': {
+        // Everyone reaches the results screen on the same simulated frame; the
+        // room returns to its lobby once the host or all players got there.
         const r = c.room;
-        if (!r || r.host !== c.id) return;
-        r.phase = 'lobby';
-        this.sync(r);
+        if (!r || r.phase !== 'game') return;
+        c.ended = true;
+        const playing = r.clients.filter((x) => x.inMatch && !x.dropped);
+        if (r.host === c.id || playing.every((x) => x.ended)) {
+          r.phase = 'lobby';
+          this.sync(r);
+        }
         return;
       }
     }
@@ -310,13 +345,13 @@ export class RoomManager {
     for (const r of this.rooms.values()) {
       if (r.phase !== 'game') continue;
       for (const c of r.clients) {
-        if (c.dropped || now - c.lastInputAt < idleMs) continue;
+        if (!c.inMatch || c.ended || c.dropped || now - c.lastInputAt < idleMs) continue;
         c.dropped = true;
         this.broadcast(r, { t: 'peer-left', p: c.id, lastFrame: c.lastFrame }, c);
         c.send({ t: 'error', code: 'dropped', msg: 'You were inactive and left the match.' });
       }
-      // Everyone gone idle (e.g. all on the results screen): back to the lobby.
-      if (r.clients.every((c) => c.dropped)) {
+      // Everyone gone idle or finished: back to the lobby.
+      if (r.clients.filter((c) => c.inMatch).every((c) => c.dropped || c.ended)) {
         r.phase = 'lobby';
         this.sync(r);
       }

@@ -36,7 +36,7 @@ try {
   start('npx', ['tsx', 'server/index.ts'], { LAG_MS: '50', JITTER_MS: '30', PORT: '8787' });
   await waitFor('http://localhost:5173/');
   await waitFor('http://localhost:8787/health');
-  for (const [s, ...args] of [['online.mjs', 'classic'], ['online.mjs', 'crusade'], ['gamepad.mjs'], ['mobile.mjs']]) {
+  for (const [s, ...args] of [['online.mjs', 'classic'], ['online.mjs', 'crusade'], ['gamepad.mjs'], ['mobile.mjs'], ['monkey.mjs', '40', '1']]) {
     console.log(`\n=== ${s} ${args.join(' ')}`);
     const code = await run(s, ...args);
     if (code !== 0) failed++;

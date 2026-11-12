@@ -5,6 +5,7 @@
 import { BTN_ATTACK, BTN_DOWN, BTN_JUMP, BTN_LEFT, BTN_RIGHT, BTN_SWING, BTN_UP } from './input';
 import { rand } from './rng';
 import type { Match } from './sim';
+import { crownHolder, teamOf } from './rules';
 import { T } from './tuning';
 import type { GameState, PlayerState } from './types';
 import { W, WEAPONS } from './weapons';
@@ -14,9 +15,6 @@ const DODGE = [0, 0.12, 0.4, 0.75];
 const AIM_SLOP = [0, 1.0, 0.65, 0.45]; // vertical tolerance when shooting
 const PARRY = [0, 0.15, 0.45, 0.75]; // chance to bat back a projectile (Crusade)
 
-function teamOf(m: Match, slot: number): number {
-  return m.cfg.teams ? m.cfg.slots[slot]?.team ?? slot : slot;
-}
 
 function groundAhead(m: Match, s: GameState, x: number, y: number): boolean {
   for (const so of m.level.solids) {
@@ -92,12 +90,7 @@ export function botInput(m: Match, s: GameState, p: PlayerState, level: number):
   }
 
   // ---- choose a target: nearest living enemy (in Crusade, the crowned leader is juicier)
-  let crown = -1;
-  if (crusade) {
-    let top = 0;
-    for (const o of s.players) if (o.active && o.score > top) { top = o.score; crown = o.slot; }
-    if (s.players.filter((o) => o.active && o.score === top).length > 1) crown = -1;
-  }
+  const crown = crusade ? crownHolder(m, s) : -1;
   let target: PlayerState | null = null;
   let best = 1e9;
   for (const o of s.players) {

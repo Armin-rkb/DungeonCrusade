@@ -155,7 +155,9 @@ class AudioEngine {
   stopMusic() {
     if (this.music) {
       this.music.pause();
-      this.music.src = '';
+      // Not `src = ''`: that resolves to the page URL and refetches it.
+      this.music.removeAttribute('src');
+      this.music.load();
     }
     this.music = null;
     this.musicId = '';

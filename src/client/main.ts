@@ -112,8 +112,18 @@ class App implements AppApi {
   }
 
   // ---------------------------------------------------------------- AppApi
-  async ensureConnection(): Promise<Connection> {
-    if (this.conn && this.conn.status === 'open') return this.conn;
+  private connecting: Promise<Connection> | null = null;
+
+  /** One connection attempt at a time: concurrent callers share it. */
+  ensureConnection(): Promise<Connection> {
+    if (this.conn && this.conn.status === 'open') return Promise.resolve(this.conn);
+    if (!this.connecting) {
+      this.connecting = this.openConnection().finally(() => (this.connecting = null));
+    }
+    return this.connecting;
+  }
+
+  private async openConnection(): Promise<Connection> {
     this.conn?.close();
     const conn = new Connection(settings.server || defaultServerUrl(), playerName(), platformName());
     this.conn = conn;
@@ -124,7 +134,7 @@ class App implements AppApi {
       // also jump into the rematch.
       if (m.t === 'start' && conn === this.conn) {
         const running = this.session && this.session.state.phase !== Phase.End;
-        if (!running) this.startOnline(m.start);
+        if (!running && validStart(m.start)) this.startOnline(m.start);
       }
       if (m.t === 'error' && m.code === 'dropped') toast(m.msg, true);
     });
@@ -282,7 +292,7 @@ class App implements AppApi {
       if (st.phase === Phase.End && st.slowmo === 0 && st.phaseTimer > 50 && !this.resultsShown) {
         this.resultsShown = true;
         this.touch.show(false);
-        if (s.kind === 'online' && this.conn?.isHost()) this.conn.send({ t: 'end' });
+        if (s.kind === 'online') this.conn?.send({ t: 'end' });
         const myWin = [...s.locals.keys()].includes(st.winner) || (s.match.cfg.teams && [...s.locals.keys()].some((k) => s.match.cfg.slots[k].team === st.winnerTeam));
         if (myWin) achievement(s.kind === 'online' ? 'WIN_ONLINE' : 'WIN_LOCAL');
         this.ui.set(new ResultsScreen(this));
@@ -320,6 +330,13 @@ class App implements AppApi {
       this.renderer.clear('#0b0b16');
     }
   }
+}
+
+/** Ignore malformed match starts instead of crashing (the host could be modded). */
+function validStart(st: StartInfo | undefined): boolean {
+  const cfg = st?.cfg;
+  return !!cfg && Array.isArray(cfg.slots) && cfg.slots.length === 4 && Array.isArray(st.owners) && st.owners.length === 4
+    && typeof cfg.seed === 'number' && typeof st.startAt === 'number' && LEVELS.some((l) => l.id === cfg.level);
 }
 
 const app = new App();

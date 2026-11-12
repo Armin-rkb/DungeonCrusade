@@ -170,6 +170,8 @@ export interface DragonState {
   x: number;
   y: number;
   by: number; // slot that woke the dragon
+  /** Slots already hit during the current swoop. */
+  hitMask: number;
 }
 
 export interface GameEvent {

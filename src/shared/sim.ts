@@ -21,6 +21,7 @@ import {
 } from './types';
 import { BLASTS, W, WEAPONS, WEAPON_COUNT, type BlastKind } from './weapons';
 import { botInput } from './bot';
+import { crownHolder, isCrusade, teamOf } from './rules';
 import { AMMO, CR, T, FPS, DT } from './tuning';
 
 export { T, FPS, DT };
@@ -32,11 +33,6 @@ const S35 = 0.573576436351046;
 export interface Match {
   cfg: MatchConfig;
   level: LevelRuntime;
-}
-
-/** Crusade = the remixed rules (parry, splats, ammo, bounty, perks). */
-export function isCrusade(m: Match): boolean {
-  return m.cfg.mode === 'crusade';
 }
 
 /** Knight perk in Crusade: 0 lucky, 1 swift, 2 bouncy, 3 heavy (-1 in Classic). */
@@ -79,7 +75,7 @@ export function createGame(match: Match): GameState {
     destroyed: new Array(level.breakables).fill(0),
     groupsGone: [],
     gull: { active: false, x: 0, y: 0, vx: 0, dropX: 0, dropped: false, timer: 600 },
-    dragon: { stage: 0, timer: 0, x: 0, y: 0, by: -1 },
+    dragon: { stage: 0, timer: 0, x: 0, y: 0, by: -1, hitMask: 0 },
     armorCd: 0,
     tileHp: new Array(level.breakables).fill(CR.tileHp),
     templeHp: level.features.temple ? CR.templeHp : 0,
@@ -130,10 +126,6 @@ export function checksum(s: GameState): number {
 // ------------------------------------------------------------------ helpers
 function emit(s: GameState, t: string, id: number | string, e: Omit<GameEvent, 'k' | 't'> = {}) {
   s.events.push({ k: `${s.frame}:${t}:${id}`, t, ...e });
-}
-
-function teamOf(m: Match, slot: number): number {
-  return m.cfg.teams ? m.cfg.slots[slot]?.team ?? slot : slot;
 }
 
 function solidActive(s: GameState, sol: Solid): boolean {
@@ -508,7 +500,9 @@ function respawn(m: Match, s: GameState, p: PlayerState) {
     if (sc > bestScore) { bestScore = sc; best = i; }
   }
   const sp = spawns[best];
-  placeAt(p, sp.x, sp.y + 0.2);
+  // Spawn points are already free spots (see buildLevel): lifting the knight
+  // could push it into a low ceiling.
+  placeAt(p, sp.x, sp.y + 0.01);
   p.alive = true;
   p.hp = T.maxHp;
   p.weapon = W.Stone;
@@ -518,8 +512,9 @@ function respawn(m: Match, s: GameState, p: PlayerState) {
   p.stun = 0;
   p.hitstop = 0;
   p.invuln = T.spawnInvuln;
-  p.jumps = 1;
+  p.jumps = perkOf(m, p.slot) === 2 ? 2 : 1;
   p.ammo = -1;
+  p.splatCd = 0;
   p.swing = 0;
   p.dmgBy = [0, 0, 0, 0];
   p.face = sp.x > m.level.view.x + m.level.view.w / 2 ? -1 : 1;
@@ -535,12 +530,14 @@ function stomps(m: Match, s: GameState) {
       const head = b.y + T.height;
       if (a.y > head + 0.05 || a.y < head - 0.3) continue;
       a.vy = T.stompBounce;
-      a.jumps = 1;
-      a.y = head + 0.01;
+      a.jumps = perkOf(m, a.slot) === 2 ? 2 : 1;
+      // Snap onto the head, but never up into a low ceiling.
+      const body = { x: a.x, y: a.y + T.height / 2 };
+      moveBox(m, s, body, T.halfW, T.height / 2, 0, head + 0.01 - a.y, false);
+      a.y = body.y - T.height / 2;
       emit(s, 'stomp', `${a.slot}-${b.slot}`, { a: a.slot, b: b.slot, x: b.x, y: head });
       if (teamOf(m, a.slot) !== teamOf(m, b.slot) && b.invuln <= 0) {
-        b.vy = Math.min(b.vy, -4);
-        damage(m, s, b, a.slot, 1, 0, -2, -1);
+        damage(m, s, b, a.slot, 1, 0, -4, -1);
         b.stun = Math.max(b.stun, 16);
       }
       break;
@@ -571,6 +568,7 @@ function damage(m: Match, s: GameState, v: PlayerState, attacker: number, dmg: n
     v.ground = false;
   }
   v.burst = 0;
+  if (dmg > 0 || kb > 0) v.swing = 0; // getting hit interrupts a sword swing
   if (attacker >= 0 && attacker !== v.slot) {
     v.lastHitBy = attacker;
     v.lastHitFrame = s.frame;
@@ -578,7 +576,9 @@ function damage(m: Match, s: GameState, v: PlayerState, attacker: number, dmg: n
     a.hits++;
     a.damageDealt += dmg;
   }
-  emit(s, 'hit', `${v.slot}-${kind}-${attacker}`, { a: attacker, b: v.slot, x: v.x, y: v.y + T.height / 2, v: dmg, w: kind });
+  let nth = 0; // several hits on one knight in the same frame need distinct keys
+  for (const e of s.events) if (e.t === 'hit' && e.b === v.slot) nth++;
+  emit(s, 'hit', `${v.slot}-${kind}-${attacker}-${nth}`, { a: attacker, b: v.slot, x: v.x, y: v.y + T.height / 2, v: dmg, w: kind });
   if (v.hp <= 0) ko(m, s, v, attacker, kind);
   return true;
 }
@@ -613,7 +613,7 @@ function ko(m: Match, s: GameState, v: PlayerState, attacker: number, kind: numb
   v.lastHitBy = -1;
   s.freeze = T.koFreeze;
   emit(s, 'ko', v.slot, { a: killer, b: v.slot, x: v.x, y: v.y + T.height / 2, w: kind });
-  if (play) {
+  if (play && s.phase === Phase.Play) {
     if (isCrusade(m)) checkWinAny(m, s, killer);
     else checkWin(m, s, killer);
   }
@@ -642,23 +642,10 @@ function crusadeScore(m: Match, s: GameState, v: PlayerState, killer: number, pl
   }
 }
 
-/** Slot of the crowned leader: strictly highest score (Crusade). -1 when tied or nobody scored. */
-export function crownHolder(m: Match, s: GameState): number {
-  let best = -1;
-  let bestScore = 0;
-  let tie = false;
-  for (const p of s.players) {
-    if (!p.active) continue;
-    if (p.score > bestScore) { bestScore = p.score; best = p.slot; tie = false; }
-    else if (p.score === bestScore && bestScore > 0) tie = true;
-  }
-  return tie ? -1 : best;
-}
-
 /** Anyone (or any team) may cross the target in Crusade (assists also score). */
 function checkWinAny(m: Match, s: GameState, preferred: number) {
   const reached = (slot: number) => (m.cfg.teams ? teamScore(m, s, teamOf(m, slot)) : s.players[slot].score) >= m.cfg.targetScore;
-  if (s.suddenDeath && preferred >= 0) return endMatch(m, s, preferred);
+  if (s.suddenDeath) return checkSuddenDeath(m, s, preferred);
   if (preferred >= 0 && reached(preferred)) return endMatch(m, s, preferred);
   let best = -1;
   for (const p of s.players) {
@@ -675,10 +662,32 @@ function teamScore(m: Match, s: GameState, team: number): number {
 }
 
 function checkWin(m: Match, s: GameState, scorer: number) {
+  if (s.suddenDeath) return checkSuddenDeath(m, s, scorer);
   if (scorer < 0) return;
   const team = teamOf(m, scorer);
   const sc = m.cfg.teams ? teamScore(m, s, team) : s.players[scorer].score;
-  if (sc >= m.cfg.targetScore || s.suddenDeath) endMatch(m, s, scorer);
+  if (sc >= m.cfg.targetScore) endMatch(m, s, scorer);
+}
+
+/** Sudden death ends as soon as one player (or team) leads alone. */
+function checkSuddenDeath(m: Match, s: GameState, preferred: number) {
+  let best = -1;
+  let bestScore = -Infinity;
+  let tie = false;
+  const seen: number[] = [];
+  for (const p of s.players) {
+    if (!p.active) continue;
+    const team = teamOf(m, p.slot);
+    if (m.cfg.teams && seen.includes(team)) continue;
+    seen.push(team);
+    const sc = m.cfg.teams ? teamScore(m, s, team) : p.score;
+    if (sc > bestScore) { bestScore = sc; best = p.slot; tie = false; }
+    else if (sc === bestScore) tie = true;
+  }
+  if (tie || best < 0) return;
+  // Credit the scorer when they belong to the leading team.
+  const winner = preferred >= 0 && teamOf(m, preferred) === teamOf(m, best) ? preferred : best;
+  endMatch(m, s, winner);
 }
 
 function endMatch(m: Match, s: GameState, winner: number) {
@@ -884,10 +893,10 @@ function breakProj(s: GameState, pr: Projectile, how = 'break') {
 
 function projHitsWorld(m: Match, s: GameState, pr: Projectile, hit: MoveResult) {
   const sol = hit.solid >= 0 ? m.level.solids[hit.solid] : null;
-  if (sol && isCrusade(m) && pr.kind !== W.Barrel && pr.kind !== W.Sock) {
+  if (sol && isCrusade(m) && impactsTerrain(pr, hit)) {
     // Crusade: walls crumble and the temple cracks under fire.
     const dmg = Math.max(1, WEAPONS[pr.kind].damage);
-    if (sol.breakable >= 0 && !s.destroyed[sol.breakable] && (hit.hitX || pr.kind !== W.Pill)) damageTile(s, sol, dmg, pr.owner);
+    if (sol.breakable >= 0 && !s.destroyed[sol.breakable]) damageTile(s, sol, dmg, pr.owner);
     if (sol.group === 'temple') damageTemple(m, s, dmg, pr.owner, pr.x, pr.y);
   }
   switch (pr.kind) {
@@ -937,6 +946,29 @@ function projHitsWorld(m: Match, s: GameState, pr: Projectile, hit: MoveResult) 
       }
       if (hit.hitX) pr.vx = -pr.vx * 0.7;
       return;
+  }
+}
+
+/**
+ * Does this world collision chip Crusade terrain? Shots that shatter on impact
+ * do; bouncing / rolling objects only on a hard sideways hit (not while they
+ * rest or roll on a floor, which collides every frame). Barrels smash
+ * breakables their own way and explosives damage terrain with their blast.
+ */
+function impactsTerrain(pr: Projectile, hit: MoveResult): boolean {
+  switch (pr.kind) {
+    case W.Stone:
+    case W.Shuriken:
+    case W.Hadouken:
+    case W.Pizza:
+    case W.Music:
+      return true;
+    case W.Pill:
+    case W.Duck:
+    case W.Bomb:
+      return hit.hitX !== 0 && Math.abs(pr.vx) > 4;
+    default:
+      return false;
   }
 }
 
@@ -1341,9 +1373,11 @@ function updateLevel(m: Match, s: GameState, dt: number) {
       d.y = v.y + v.h - 2 - 7 * (1 - u * u);
       for (const p of s.players) {
         if (!p.active || !p.alive || p.invuln > 0) continue;
+        if (d.hitMask & (1 << p.slot)) continue; // once per swoop
         const dx = p.x - d.x;
         const dy = p.y + T.height / 2 - d.y;
         if (dx * dx + dy * dy < 0.9 * 0.9) {
+          d.hitMask |= 1 << p.slot;
           const [kx, ky] = knockFrom(10, dx || 1, dy + 0.5);
           damage(m, s, p, d.by >= 0 && d.by !== p.slot ? d.by : -1, 2, kx, ky, 200);
         }
@@ -1364,6 +1398,7 @@ function startSwoop(m: Match, s: GameState) {
   const d = s.dragon;
   const fromLeft = rand(s) < 0.5;
   d.timer = fromLeft ? 1 : -1; // direction flag while swooping
+  d.hitMask = 0;
   d.x = fromLeft ? v.x - 3 : v.x + v.w + 3;
   d.y = v.y + v.h - 2;
   emit(s, 'dragon-swoop', s.frame, { v: fromLeft ? 1 : -1 });
@@ -1384,4 +1419,4 @@ export function isTeamMatch(m: Match): boolean {
   return m.cfg.teams;
 }
 
-export { teamOf, teamScore };
+export { teamOf, teamScore, crownHolder, isCrusade };

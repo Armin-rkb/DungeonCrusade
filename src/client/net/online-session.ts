@@ -18,7 +18,7 @@ import { getLevel } from '../../shared/levels';
 import { INPUT_DISCONNECTED, type ServerMsg, type StartInfo } from '../../shared/protocol';
 import { checksum, cloneState, createGame, step, type Match } from '../../shared/sim';
 import { FPS } from '../../shared/tuning';
-import type { GameEvent, GameState } from '../../shared/types';
+import { Phase, type GameEvent, type GameState } from '../../shared/types';
 
 const RING = 512;
 const MAX_PREDICTION = 10;
@@ -93,6 +93,8 @@ export class OnlineSession implements Session {
         const f = m.f;
         if (f <= 0) return;
         slots.forEach((slot, k) => {
+          // Inputs from a peer that left still count up to its last frame
+          // (they may arrive after the peer-left notice).
           if (f <= this.confirmed[slot] || f > this.leftAt[slot]) return;
           if (f - this.confirmed[slot] >= RING - 8) return; // absurdly far ahead
           this.inp[f % RING][slot] = (m.d[k] ?? 0) & 255;
@@ -105,7 +107,7 @@ export class OnlineSession implements Session {
               this.rollbackFrom = Math.min(this.rollbackFrom, c);
             }
           }
-          this.confirmed[slot] = c;
+          this.confirmed[slot] = c >= this.leftAt[slot] ? Infinity : c;
         });
         return;
       }
@@ -114,25 +116,31 @@ export class OnlineSession implements Session {
         // becomes a CPU from the last frame we know.
         if (m.code !== 'closed' && m.code !== 'dropped') return;
         this.offline = true;
-        for (const [peer] of [...this.peerSlots]) {
-          const slots = this.peerSlots.get(peer)!;
-          this.onMessage({ t: 'peer-left', p: peer, lastFrame: Math.min(...slots.map((x) => this.confirmed[x])) });
+        for (const [peer, slots] of [...this.peerSlots]) {
+          // Nothing more will arrive: everything after what we have is a CPU.
+          const have = Math.min(...slots.map((x) => this.confirmed[x]));
+          if (Number.isFinite(have)) this.onMessage({ t: 'peer-left', p: peer, lastFrame: have });
+          else for (const x of slots) if (this.leftAt[x] !== Infinity) this.confirmed[x] = Infinity;
         }
         return;
       }
       case 'peer-left': {
         const slots = this.peerSlots.get(m.p);
-        if (!slots) return;
+        if (!slots || this.leftAt[slots[0]] !== Infinity) return;
         const last = Math.max(m.lastFrame, 0);
         for (const slot of slots) {
           this.leftAt[slot] = last;
-          for (let g = Math.max(this.confirmed[slot], last) + 1; g <= this.current + RING / 2; g++) {
-            this.inp[g % RING][slot] = INPUT_DISCONNECTED;
+          // After its last frame a CPU drives the knight on every peer.
+          for (let g = last + 1; g <= this.current + RING / 2; g++) this.inp[g % RING][slot] = INPUT_DISCONNECTED;
+          for (let g = last + 1; g <= this.current; g++) {
+            if (this.used[g % RING][slot] !== INPUT_DISCONNECTED) {
+              this.rollbackFrom = Math.min(this.rollbackFrom, g);
+              break;
+            }
           }
-          if (last + 1 <= this.current) this.rollbackFrom = Math.min(this.rollbackFrom, last + 1);
-          this.confirmed[slot] = Infinity;
+          // Still waiting for late inputs up to `last`? Otherwise fully known.
+          if (this.confirmed[slot] >= last) this.confirmed[slot] = Infinity;
         }
-        this.peerSlots.delete(m.p);
         return;
       }
       case 'h': {
@@ -143,14 +151,22 @@ export class OnlineSession implements Session {
         return;
       }
       case 'needsync': {
-        // Host: send our latest confirmed state to the peer that desynced.
-        const f = this.lastConfirmedFrame();
+        // Host: send our latest confirmed state to the peer that desynced. A
+        // rollback may still be pending (inputs arrived since the last update),
+        // so only frames before it are final.
+        const f = Math.min(this.lastConfirmedFrame(), this.rollbackFrom - 1);
         const snap = this.snaps[f % RING];
         if (snap && snap.frame === f) this.conn.send({ t: 'sync', to: m.p, f, s: JSON.stringify(snap) });
         return;
       }
       case 'sync': {
-        const s: GameState = JSON.parse(m.s);
+        let s: GameState;
+        try {
+          s = JSON.parse(m.s);
+        } catch {
+          return;
+        }
+        if (!s || !Array.isArray(s.players) || typeof s.frame !== 'number' || s.frame !== m.f) return;
         if (m.f >= this.current) {
           this.state = s;
           this.current = m.f;
@@ -224,6 +240,12 @@ export class OnlineSession implements Session {
     return Math.floor((this.conn.serverNow() - this.start.startAt) / FRAME_MS);
   }
 
+  /** The match is over and its slow-motion finished: nothing left to simulate. */
+  private finished(): boolean {
+    const st = this.state;
+    return st.phase === Phase.End && st.slowmo === 0 && st.phaseTimer > 90;
+  }
+
   update(_now: number): GameEvent[] {
     const events: GameEvent[] = [];
     if (!this.sentZeroes) {
@@ -245,12 +267,16 @@ export class OnlineSession implements Session {
       }
     }
     this.rollbackFrom = Infinity;
+    // Results reached (190+ frames after the final KO, far beyond the
+    // 10-frame prediction window, so it is confirmed): stop simulating and
+    // sending inputs.
+    if (this.finished()) return events;
 
     // ---- advance to the server clock
     const target = this.targetFrame();
     let steps = 0;
     this.waitingFor = '';
-    while (this.current < target && steps < 12) {
+    while (this.current < target && steps < 12 && !this.finished()) {
       const minConf = this.lastConfirmedFrame();
       if (this.current + 1 > minConf + MAX_PREDICTION) {
         if (!this.stallSince) this.stallSince = performance.now();
@@ -300,6 +326,7 @@ export class OnlineSession implements Session {
     let wf = Infinity;
     for (const [peer, slots] of this.peerSlots) {
       const c = this.confirmed[slots[0]];
+      if (!Number.isFinite(c)) continue;
       if (c < wf) {
         wf = c;
         worst = this.conn.room?.peers.find((p) => p.id === peer)?.name ?? 'opponent';
