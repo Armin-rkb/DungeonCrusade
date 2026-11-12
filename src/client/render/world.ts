@@ -654,8 +654,58 @@ export class WorldRenderer {
       ? fmtTime(Math.max(0, m.cfg.timeLimit * FPS - s.clock))
       : m.cfg.mode === 'crusade' ? `CRUSADE · FIRST TO ${m.cfg.targetScore} PTS` : `FIRST TO ${m.cfg.targetScore}`;
     c.font = `${compact ? 10 : 12}px EightBit, monospace`;
-    outlined(c, s.suddenDeath ? 'SUDDEN DEATH' : info, W_ / 2, top + ph + 6, s.suddenDeath ? '#ff5050' : '#ffffffcc');
+    const co = fx.callout;
+    // Narrow or short (landscape phone) screens have no spare room under the HUD.
+    const tight = compact || H_ < 520;
+    if (co && tight) {
+      // Small screens: the callout takes over the info line (no extra space).
+      const t = co.t / co.dur;
+      c.globalAlpha = t > 0.8 ? (1 - t) / 0.2 : 1;
+      c.font = `11px EightBit, monospace`;
+      const head = `${co.text}  `;
+      const hw = c.measureText(head).width;
+      const full = hw + (co.sub ? c.measureText(co.sub).width : 0);
+      c.textAlign = 'left';
+      outlined(c, head, W_ / 2 - full / 2, top + ph + 6, co.color);
+      if (co.sub) outlined(c, co.sub, W_ / 2 - full / 2 + hw, top + ph + 6, '#fff');
+      c.textAlign = 'center';
+      c.globalAlpha = 1;
+    } else {
+      outlined(c, s.suddenDeath ? 'SUDDEN DEATH' : info, W_ / 2, top + ph + 6, s.suddenDeath ? '#ff5050' : '#ffffffcc');
+    }
     if (hud.status) outlined(c, hud.status, W_ / 2, top + ph + 22, '#ffd166');
+
+    // Mid-match callout: a small strip under the HUD, never over the fight.
+    if (co && !tight) {
+      const b = co;
+      const t = b.t / b.dur;
+      const alpha = t < 0.08 ? t / 0.08 : t > 0.8 ? (1 - t) / 0.2 : 1;
+      const pop = t < 0.08 ? 0.8 + 0.2 * (t / 0.08) : 1;
+      const size = Math.round((compact ? 13 : Math.max(14, Math.min(20, W_ / 64))) * pop);
+      const sub = Math.max(9, Math.round(size * 0.55));
+      const y = top + ph + (hud.status ? 40 : 24);
+      c.font = `${size}px Karmatic, EightBit, monospace`;
+      const tw = c.measureText(b.text).width;
+      c.font = `${sub}px EightBit, monospace`;
+      const sw = b.sub ? c.measureText(b.sub).width : 0;
+      const w = Math.max(tw, sw) + 28;
+      const h = size + (b.sub ? sub + 10 : 8);
+      c.globalAlpha = alpha * 0.6;
+      c.fillStyle = '#0b0b16';
+      roundRect(c, W_ / 2 - w / 2, y - 4, w, h, 6);
+      c.fill();
+      c.globalAlpha = alpha;
+      c.textBaseline = 'top';
+      c.lineWidth = Math.max(2, size * 0.14);
+      c.font = `${size}px Karmatic, EightBit, monospace`;
+      outlined(c, b.text, W_ / 2, y, b.color);
+      if (b.sub) {
+        c.font = `${sub}px EightBit, monospace`;
+        c.lineWidth = Math.max(2, sub * 0.2);
+        outlined(c, b.sub, W_ / 2, y + size + 3, '#fff');
+      }
+      c.globalAlpha = 1;
+    }
 
     // Banner
     if (fx.banner) {

@@ -53,7 +53,10 @@ export class Effects {
   flashColor = '#ffffff';
   lightning = 0;
   nextLightning = 6 + Math.random() * 10;
+  /** Big centre-screen text: only for the countdown and "FIGHT!" (nobody is fighting yet). */
   banner: { text: string; sub: string; t: number; color: string; dur: number } | null = null;
+  /** Mid-match announcements: a compact strip under the HUD that keeps the arena clear. */
+  callout: { text: string; sub: string; t: number; color: string; dur: number } | null = null;
   private seen = new Map<string, number>();
   time = 0;
 
@@ -62,6 +65,7 @@ export class Effects {
     this.trauma = 0;
     this.kickX = this.kickY = this.punch = this.flash = 0;
     this.banner = null;
+    this.callout = null;
     this.seen.clear();
   }
 
@@ -77,6 +81,10 @@ export class Effects {
 
   showBanner(text: string, sub = '', color = '#fff', dur = 1.4) {
     this.banner = { text, sub, t: 0, color, dur };
+  }
+
+  showCallout(text: string, sub = '', color = '#fff', dur = 1.8) {
+    this.callout = { text, sub, t: 0, color, dur };
   }
 
   private add(p: Partial<Particle> & { x: number; y: number }): Particle {
@@ -145,6 +153,10 @@ export class Effects {
     if (this.banner) {
       this.banner.t += dt;
       if (this.banner.t > this.banner.dur) this.banner = null;
+    }
+    if (this.callout) {
+      this.callout.t += dt;
+      if (this.callout.t > this.callout.dur) this.callout = null;
     }
     if (level?.features.lightning) {
       this.nextLightning -= dt;
@@ -367,10 +379,10 @@ export class Effects {
         const kind = e.w ?? 0; // 0 KO, 1 bounty, 2 assist, 3 self-KO
         const label = kind === 1 ? `+${pts} BOUNTY!` : kind === 2 ? '+1 ASSIST' : kind === 3 ? 'OOPS -1' : `+${pts}`;
         const color = kind === 3 ? '#ff5050' : kind === 1 ? '#ffd34d' : kc(e.a);
-        this.text(x, y + (kind === 2 ? 0.3 : 0.7), label, color, kind === 1 ? 0.5 : 0.4, 1.4, 1.2);
+        this.text(x, y + (kind === 2 ? 0.3 : 0.7), label, color, 0.4, 1.2, 1.2);
         if (kind === 1) {
           audio.play(SFX.win, { volume: 0.35, pitch: 1.6 });
-          this.showBanner('BOUNTY!', `${ctx.names[e.a ?? 0] ?? ''} dethroned the leader`, '#ffd34d', 1.6);
+          this.showCallout('BOUNTY!', `${ctx.names[e.a ?? 0] ?? ''} dethroned the leader`, '#ffd34d', 1.8);
         }
         if (kind === 2) audio.play(SFX.plusOne, { volume: 0.35, pitch: 1.25 });
         break;
@@ -460,7 +472,7 @@ export class Effects {
         break;
       }
       case 'sudden':
-        this.showBanner('SUDDEN DEATH', 'next KO wins', '#ff5050', 2.2);
+        this.showCallout('SUDDEN DEATH', 'next KO wins', '#ff5050', 2.4);
         audio.play(SFX.pause, { volume: 0.8 });
         break;
       case 'gull':
@@ -471,7 +483,7 @@ export class Effects {
         this.shake(1);
         this.flash = 0.5;
         this.burst(x, y, 60, ['#c0392b', '#e74c3c', '#2a9d8f', '#ffd166'], 12, { grav: 14, max: 1.4, size: 0.15 });
-        this.showBanner('THE TEMPLE FALLS', 'something stirs...', '#ffd166', 2.5);
+        this.showCallout('THE TEMPLE FALLS', 'something stirs...', '#ffd166', 2.5);
         break;
       case 'dragon-wake':
         audio.play(SFX.dragonAwake, { volume: 0.9 });
@@ -480,11 +492,11 @@ export class Effects {
       case 'dragon-swoop':
         audio.play(SFX.dragonEnter, { volume: 0.9 });
         this.shake(0.7);
-        this.showBanner('DRAGON!', '', '#ff5050', 1.4);
+        this.showCallout('DRAGON!', '', '#ff5050', 1.6);
         break;
       // ---- v2 arenas
       case 'tide-warn':
-        this.showBanner('HIGH TIDE!', 'get to the high piers', '#7fe0ff', 2.2);
+        this.showCallout('HIGH TIDE!', 'get to the high piers', '#7fe0ff', 2.4);
         audio.play(SFX.wave, { volume: 0.6, vary: 0 });
         audio.play(SFX.seagull, { volume: 0.4 });
         break;
@@ -507,7 +519,7 @@ export class Effects {
         break;
       case 'gust-warn': {
         const right = (e.v ?? 1) > 0;
-        this.showBanner(right ? 'GUST >>>' : '<<< GUST', 'hold your ground', '#e8f4ff', 1.6);
+        this.showCallout(right ? 'GUST >>>' : '<<< GUST', 'hold your ground', '#e8f4ff', 2);
         audio.play(SFX.whoosh, { volume: 0.6, pan: right ? -0.6 : 0.6 });
         break;
       }
